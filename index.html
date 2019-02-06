@@ -4,19 +4,30 @@
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>BlockAttack</title>
+        <title>Block Attack!</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
         <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.js"></script>
-        <script src="dist/bundle/bundle.js"></script>
+        <script src="./bundle.js"></script>
+        <script src="./src/entry.js"></script>
     </head>
-    <body className="body">
-        <h1>BlockAttack</h1>
-        <h2>by David Anderson</h2>
-        <div>Controls</div>
+    <body class="body">
+        <h1>Block Attack!</h1>
+        <h3>by David Anderson</h3>
+        <aside class="controls">
+            <h4>Controls</h4>
+        </aside>
         <div id="game">
-            <canvas id="game-canvas"></canvas>
+            <canvas width=500 height=500 id="canvas"></canvas>
         </div>
-        <div>Contact Links</div>
+        <nav class="contact-links">
+            <a href="#">Github</a>
+            <a href="#">LinkedIn</a>
+            <a href="#">Portfolio</a>
+            <a href="mailto:dlande000@gmail.com">Email</a>
+        </nav>
     </body>
+    <footer>
+        <p>Block Attack! is inspired by Tetris Attack.</p>
+    </footer>
 </html>
