@@ -10,8 +10,7 @@ const BLOCKS = {
 const MOVEMENT = {
 	Static : "Static",
 	Fall : "Fall",
-	Clear : "Clear",
-	Null : "Null"
+	Clear : "Clear"
 };
 
 export default class Block {
@@ -20,5 +19,4 @@ export default class Block {
         this.color = BLOCKS[Math.floor(Math.random() * 6)];
         this.movement = MOVEMENT.Static;
     }
-
 }

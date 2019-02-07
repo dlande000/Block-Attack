@@ -3,6 +3,7 @@
 h1, h3, h4, p, a {
     font-family: 'Press Start 2P', cursive;
     text-decoration: none;
+    text-align: center;
 }
 
 body {
@@ -12,12 +13,7 @@ body {
     margin: 0 auto;
 }
 
-.canvas {
-    color: greenyellow;
-}
-
-.green-sprite {
-	background: url('imgs/SNES - Tetris Attack - Block Set.png') no-repeat -3px -3px;
-	width: 16px;
-	height: 16px;
+canvas {
+    border: solid .2em black;
+    height: 90vh;
 }
