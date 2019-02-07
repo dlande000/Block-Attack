@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Press+Start+2P');
 
-h1, h3, h4, p, a {
+h1, h3, h4, h5, p, a {
     font-family: 'Press Start 2P', cursive;
     text-decoration: none;
     text-align: center;
@@ -14,6 +14,6 @@ body {
 }
 
 canvas {
-    border: solid .2em black;
-    height: 90vh;
+    height: 80vh;
+    border: 1px solid black;
 }

@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
 
-    ctx.scale(10, 10);
+    ctx.scale(60, 60);
 
     // create empty starting grid
     function createBoard() {
@@ -99,4 +99,35 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     }
+
+    function updateScore() {
+        document.getElementById('score').innerText = player.score;
+    }
+
+    const COLORS = {
+        "R": 'red',
+        "Y": 'yellow',
+        "G": 'green',
+        "B": 'blue',
+        "P": 'purple',
+        "S": 'silver'
+    };
+
+    function drawBlock(block, y, x) {
+        ctx.fillStyle = COLORS[block];
+        ctx.fillRect(x, y, 1, 1);
+    }
+
+    function drawBoard(board) {
+        board.forEach((row, y) => {
+            row.forEach((block, x) => {
+                if (block !== 0) {
+                    drawBlock(block, y, x);
+                }
+            });
+        });
+    }
+
+    // testing
+    drawBoard(board);
 });
