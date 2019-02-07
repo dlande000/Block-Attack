@@ -90,4 +90,13 @@ document.addEventListener("DOMContentLoaded", () => {
         board.shift();
         board.push(row);
     }
+
+    // checks game over when given the pushed row from the grid
+    function checkGameOver(row) {
+        for (let i = 0; i < 6; i++) {
+            if (row[i] !== 0) {
+                // GAME OVER
+            }
+        }
+    }
 });
