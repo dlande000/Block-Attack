@@ -4,13 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ctx.scale(10, 10);
 
-    // change;
-    function createGrid(width, height) {
-        const grid = [];
-        while (height > 0) {
-            matrix.push(new Array(width).fill(0));
-            height--;
-        }
-        return grid;
-    }
+    const board = new Array(12).fill(new Array(6).fill(0));
+
 });
