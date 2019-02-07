@@ -28,11 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
             checking = false;
             board.forEach((width, y) => {
                 width.forEach((value, x) => {
-                    if (value !== 0 && y < 10 && x < 4) {
-                        if ((value == board[y][x + 1] && value == board[y][x + 2]) || (value == board[y + 1][x] && value == board[y + 2][x])) {
+                    if (value !== 0) {
+                        if ((x < 4 && value == board[y][x + 1] && value == board[y][x + 2]) || (y < 10 && value == board[y + 1][x] && value == board[y + 2][x])) {
                             board[y][x] = randomBlock();
                             checking = true;
-                            console.log(board);
                         }
                     }
                 });
@@ -104,6 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('score').innerText = player.score;
     }
 
+    // update at some point with better colors
     const COLORS = {
         "R": 'red',
         "Y": 'yellow',
@@ -114,8 +114,20 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     function drawBlock(block, y, x) {
+        ctx.beginPath();
+        ctx.lineWidth = ".04";
+        ctx.strokeStyle = "black";
+        ctx.rect(x, y, x + 1, y + 1);
+        ctx.stroke();
         ctx.fillStyle = COLORS[block];
         ctx.fillRect(x, y, 1, 1);
+    }
+
+    function drawCursor(y, x) {
+        ctx.beginPath();
+        ctx.lineWidth = "0.1";
+        ctx.strokeStyle = "pink";
+        ctx.rect(x + 0.1, y + 0.1, x + 1.9, y + 0.9);
     }
 
     function drawBoard(board) {
@@ -126,6 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
         });
+        drawCursor(10, 0);
     }
 
     // testing
