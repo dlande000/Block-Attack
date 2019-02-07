@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function createStartingBoard(board) {
         for (let row = 11; row > 6; row--) {
             for (let col = 0; col < 6; col++) {
-                board[row][col] = randomBlock();
+                if (col !== 3) {board[row][col] = randomBlock();}
             }
         }
         checkStartingClusters(board);
@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function moveCursor(x, y) {
         let dy = cursor.pos.y + y;
         let dx = cursor.pos.x + x;
-        if (dx <= 5 && dx >= 0) {
+        if (dx <= 4 && dx >= 0) {
             cursor.pos.x = dx;
         }
         
@@ -172,19 +172,90 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // function checkAndDeleteClusters(board) {
-    //     for (let row = 0; row < 12; row++) {
-    //         for (let col = 0; col < 6; col++) {
-    //             isFiveBelow();
-    //             isFourBelow();
-    //             isThreeBelow();
-    //             isFiveAcross();
-    //             isFourAcross();
-    //             isThreeAcross();
-    //             isNexus();
-    //         }
-    //     }
-    // }
+    function checkAndDeleteClusters(board) {
+        for (let row = 0; row < 12; row++) {
+            for (let col = 0; col < 6; col++) {
+                let pivot = board[row][col];
+                let oneBelow;
+                let twoBelow;
+                let threeBelow;
+                let fourBelow;
+                let oneRight;
+                let twoRight;
+                let threeRight;
+                let fourRight;
+                if (pivot !== 0) {
+                    if (col <= 1) {
+                        oneRight = board[row][col + 1];
+                        twoRight = board[row][col + 2];
+                        threeRight = board[row][col + 3];
+                        fourRight = board[row][col + 4];
+                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight && pivot === fourRight) {
+                            for (let i = 0; i < 5; i++) {
+                                board[row][col + i] = 0;
+                            }
+                        }} if (col <= 2) {
+                        oneRight = board[row][col + 1];
+                        twoRight = board[row][col + 2];
+                        threeRight = board[row][col + 3];
+                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight) {
+                            for (let i = 0; i < 4; i++) {
+                                board[row][col + i] = 0;
+                            }
+                        }
+                        } if (col <= 3) {
+                        oneRight = board[row][col + 1];
+                        twoRight = board[row][col + 2];
+                        if (pivot === oneRight && pivot === twoRight) {
+                            for (let i = 0; i < 3; i++) {
+                                board[row][col + i] = 0;
+                            }
+                        }
+
+                        if (row <= 7) {
+                            oneBelow = board[row + 1][col];
+                            twoBelow = board[row + 2][col];
+                            threeBelow = board[row + 3][col];
+                            fourBelow = board[row + 4][col];
+                            if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow && pivot === fourBelow) {
+                                for (let i = 0; i < 5; i++) {
+                                    board[row + i][col] = 0;
+                                }
+                            }
+                        }
+                        if (row <= 8) {
+                            oneBelow = board[row + 1][col];
+                            twoBelow = board[row + 2][col];
+                            threeBelow = board[row + 3][col];
+                            if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow) {
+                                for (let i = 0; i < 4; i++) {
+                                    board[row + i][col] = 0;
+                                }
+                            }
+                        }
+                            if (row <= 9) {
+                            oneBelow = board[row + 1][col];
+                            twoBelow = board[row + 2][col];
+                            if (pivot === oneBelow && pivot === twoBelow) {
+                                for (let i = 0; i < 3; i++) {
+                                    board[row + i][col] = 0;
+                                }
+                            }
+                        }
+                }
+            }
+        }}}
+
+    function fall(board) {
+        board.forEach((row, y) => {
+            row.forEach((val, x) => {
+                if (y < 11 && board[y + 1][x] === 0 && val !== 0) {
+                    board[y + 1][x] = val;
+                    board[y][x] = 0;
+                }
+            });
+        });
+    }
 
     document.addEventListener('keydown', event => {
         if (event.keyCode === 37) {
@@ -217,7 +288,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         lastTime = time;
 
-        // checkAndDeleteClusters(board);
+        checkAndDeleteClusters(board);
+        fall(board);
     
         drawBoard(board);
         requestAnimationFrame(update);
