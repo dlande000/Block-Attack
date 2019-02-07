@@ -21,6 +21,11 @@ document.addEventListener("DOMContentLoaded", () => {
         return blocks[Math.floor(Math.random() * 6)];
     }
 
+    // create cursor
+    let cursor = {
+        pos: {x: 2, y: 8}
+    };
+
     // checks a board for clusters of 3 colors
     function checkStartingClusters(board) {
         let checking = true;
@@ -76,12 +81,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // swap blocks
-    function swap(board, posY, pos1X, pos2X) {
-        let a = board[posY][pos1X];
-        let b = board[posY][pos2X];
+    function swap(board, cursor) {
+        let a = board[cursor.pos.y][cursor.pos.x];
+        let b = board[cursor.pos.y][cursor.pos.x + 1];
         [a, b] = [b, a];
-        board[posY][pos1X] = a;
-        board[posY][pos2X] = b;
+        board[cursor.pos.y][cursor.pos.x] = a;
+        board[cursor.pos.y][cursor.pos.x + 1] = b;
     }
 
     // add next row to grid
@@ -123,6 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.fillRect(x, y, 1, 1);
     }
 
+    // not working
     function drawCursor(y, x) {
         ctx.beginPath();
         ctx.lineWidth = "0.1";
@@ -138,8 +144,36 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
         });
-        drawCursor(10, 0);
     }
+
+    // cursor.pos: {x: 2, y: 8}
+    function moveCursor(x, y) {
+        let dy = cursor.pos.y + y;
+        let dx = cursor.pos.x + x;
+        if (dx <= 5 && dx >= 0) {
+            cursor.pos.x = dx;
+        }
+        
+        if (dy <= 11 && dy >= 0) {
+            cursor.pos.y = dy;
+        }
+    }
+
+    document.addEventListener('keydown', event => {
+        if (event.keyCode === 37) {
+            moveCursor(-1, 0);
+        } else if (event.keyCode === 38) {
+            moveCursor(0, -1);
+        } else if (event.keyCode === 39) {
+            moveCursor(1, 0);
+        } else if (event.keyCode === 40) {
+            moveCursor(0, 1);
+        } else if (event.keyCode === 32) {
+            swap(board, cursor);
+        } else if (event.keyCode === 90) {
+            // push up new blocks;
+        }
+    });
 
     // testing
     drawBoard(board);
