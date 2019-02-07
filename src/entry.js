@@ -77,4 +77,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let nextRow = createNextRow();
+
+    // swap blocks
+    function swap(board, posY, pos1X, pos2X) {
+        let a = board[posY][pos1X];
+        let b = board[posY][pos2X];
+        [a, b] = [b, a];
+        board[posY][pos1X] = a;
+        board[posY][pos2X] = b;
+    }
 });
