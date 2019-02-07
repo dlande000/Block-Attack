@@ -9,11 +9,11 @@ h1, h3, h4, h5, p, a {
 body {
     padding-top: 10px;
     width: 900px;
-    height: 800px;
+    height: auto;
     margin: 0 auto;
 }
 
 canvas {
-    height: 80vh;
+    height: 50vh;
     border: 1px solid black;
 }

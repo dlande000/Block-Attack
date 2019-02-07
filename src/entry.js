@@ -23,7 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // create cursor
     let cursor = {
-        pos: {x: 2, y: 8}
+        pos: {x: 1, y: 1},
+        score: 0
     };
 
     // checks a board for clusters of 3 colors
@@ -105,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function updateScore() {
-        document.getElementById('score').innerText = player.score;
+        document.getElementById('score').innerText = cursor.score;
     }
 
     // update at some point with better colors
@@ -122,27 +123,39 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.beginPath();
         ctx.lineWidth = ".04";
         ctx.strokeStyle = "black";
-        ctx.rect(x, y, x + 1, y + 1);
+        ctx.rect(x, y, 1, 1);
         ctx.stroke();
         ctx.fillStyle = COLORS[block];
         ctx.fillRect(x, y, 1, 1);
     }
 
-    // not working
-    function drawCursor(y, x) {
-        ctx.beginPath();
-        ctx.lineWidth = "0.1";
-        ctx.strokeStyle = "pink";
-        ctx.rect(x + 0.1, y + 0.1, x + 1.9, y + 0.9);
+    // need to fix margin issues with cursor;
+    function drawCursor(block, y, x) {
+        if (block !== 0) {
+            ctx.beginPath();
+            ctx.lineWidth = "0.2";
+            ctx.strokeStyle = "gold";
+            ctx.rect(x, y, 2, 1);
+            ctx.stroke();
+            ctx.fillStyle = COLORS[block];
+            ctx.fillRect(x, y, 1, 1);
+        } else {
+            ctx.beginPath();
+            ctx.lineWidth = "0.2";
+            ctx.strokeStyle = "gold";
+            ctx.rect(x, y, 2, 1);
+            ctx.stroke();
+        }
     }
 
     function drawBoard(board) {
         board.forEach((row, y) => {
             row.forEach((block, x) => {
-                if (block !== 0) {
-                    drawBlock(block, y, x);
-                }
-            });
+            if (x === cursor.pos.x && y === cursor.pos.y) {
+                drawCursor(block, y, x);
+            } else if (block !== 0) {
+                drawBlock(block, y, x);
+            }});
         });
     }
 
@@ -158,6 +171,20 @@ document.addEventListener("DOMContentLoaded", () => {
             cursor.pos.y = dy;
         }
     }
+
+    // function checkAndDeleteClusters(board) {
+    //     for (let row = 0; row < 12; row++) {
+    //         for (let col = 0; col < 6; col++) {
+    //             isFiveBelow();
+    //             isFourBelow();
+    //             isThreeBelow();
+    //             isFiveAcross();
+    //             isFourAcross();
+    //             isThreeAcross();
+    //             isNexus();
+    //         }
+    //     }
+    // }
 
     document.addEventListener('keydown', event => {
         if (event.keyCode === 37) {
@@ -175,6 +202,26 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // testing
-    drawBoard(board);
+    let increaseCounter = 0;
+    let increaseInterval = 7000;
+    let lastTime = 0;
+    function update(time = 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const deltaTime = time - lastTime;
+    
+        increaseCounter += deltaTime;
+        if (increaseCounter > increaseInterval) {
+            addRowToBoard(createNextRow(), board);
+            increaseCounter = 0;
+        }
+
+        lastTime = time;
+
+        // checkAndDeleteClusters(board);
+    
+        drawBoard(board);
+        requestAnimationFrame(update);
+    }
+
+    update();
 });
