@@ -76,8 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return nextRow;
     }
 
-    let nextRow = createNextRow();
-
     // swap blocks
     function swap(board, posY, pos1X, pos2X) {
         let a = board[posY][pos1X];
@@ -85,5 +83,11 @@ document.addEventListener("DOMContentLoaded", () => {
         [a, b] = [b, a];
         board[posY][pos1X] = a;
         board[posY][pos2X] = b;
+    }
+
+    // add next row to grid
+    function addRowToBoard(row, board) {
+        board.shift();
+        board.push(row);
     }
 });
