@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ctx.scale(10, 10);
 
-    // create starting grid
+    // create empty starting grid
     function createBoard() {
         const grid = [];
         for (let height = 0; height < 12; height++) {
@@ -15,11 +15,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const board = createBoard();
 
+    // returns a random block
     function randomBlock() {
         const blocks = "RYGBPS";
         return blocks[Math.floor(Math.random() * 6)];
     }
 
+    // checks a board for clusters of 3 colors
     function checkStartingClusters(board) {
         let checking = true;
         while (checking) {
@@ -38,6 +40,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function checkNextRow(row) {
+        let checking = true;
+        while (checking) {
+            checking = false;
+            row.forEach((value, i) => {
+                if (i < 4 && value == row[i + 1] && value == row[i + 2]) {
+                    checking = true;
+                    row[i] = randomBlock();
+                }
+            });
+        }
+    }
+
+    // updates board with random blocks;
     function createStartingBoard(board) {
         for (let row = 11; row > 6; row--) {
             for (let col = 0; col < 6; col++) {
@@ -49,4 +65,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const startingBoard = createStartingBoard(board);
+
+    // create upcoming row
+    function createNextRow() {
+        let nextRow = [];
+        for (let i = 0; i < 6; i++) {
+            nextRow.push(randomBlock());
+        }
+        checkNextRow(nextRow);
+        return nextRow;
+    }
+
+    let nextRow = createNextRow();
 });
