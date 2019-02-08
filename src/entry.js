@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // create cursor
     let cursor = {
         pos: {x: 1, y: 1},
-        score: 0
+        score: 100
     };
 
     // checks a board for clusters of 3 colors
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // updates board with random blocks;
     function createStartingBoard(board) {
-        for (let row = 11; row > 6; row--) {
+        for (let row = 11; row > 3; row--) {
             for (let col = 0; col < 6; col++) {
                 if (col !== 3) {board[row][col] = randomBlock();}
             }
@@ -111,9 +111,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // update at some point with better colors
     const COLORS = {
-        "R": 'red',
         "Y": 'yellow',
         "G": 'green',
+        "R": 'red',
         "B": 'blue',
         "P": 'purple',
         "S": 'silver'
@@ -269,12 +269,12 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (event.keyCode === 32) {
             swap(board, cursor);
         } else if (event.keyCode === 90) {
-            // push up new blocks;
+            addRowToBoard(createNextRow(), board);
         }
     });
 
     let increaseCounter = 0;
-    let increaseInterval = 7000;
+    let increaseInterval = 5000;
     let lastTime = 0;
     function update(time = 0) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -285,6 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
             addRowToBoard(createNextRow(), board);
             cursor.pos.y--;
             increaseCounter = 0;
+            increaseInterval -= 50;
         }
 
         lastTime = time;
@@ -293,8 +294,9 @@ document.addEventListener("DOMContentLoaded", () => {
         fall(board);
     
         drawBoard(board);
+        updateScore();
         requestAnimationFrame(update);
     }
 
-    update();
+    // update();
 });
