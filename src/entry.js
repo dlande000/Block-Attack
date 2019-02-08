@@ -4,6 +4,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ctx.scale(60, 60);
 
+    CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+        if (w < 2 * r) r = w / 2;
+        if (h < 2 * r) r = h / 2;
+        this.beginPath();
+        this.moveTo(x+r, y);
+        this.arcTo(x+w, y, x+w, y+h, r);
+        this.arcTo(x+w, y+h, x, y+h, r);
+        this.arcTo(x, y+h, x, y, r);
+        this.arcTo(x, y, x+w, y, r);
+        this.closePath();
+        return this;
+      };
+
+
+        // ctx.beginPath();
+        // ctx.lineWidth = ".15";
+        // ctx.strokeStyle = "black";
+        // ctx.rect(x, y, 1, 1);
+        // ctx.stroke();
+
+    CanvasRenderingContext2D.prototype.roundRectOutline = function (x, y, w, h, r, lw) {
+        if (w < 2 * r) r = w / 2;
+        if (h < 2 * r) r = h / 2;
+        this.beginPath();
+        this.lineWidth = lw;
+        this.strokeStyle("black");
+        this.moveTo(x+r, y);
+        this.arcTo(x+w, y, x+w, y+h, r);
+        this.arcTo(x+w, y+h, x, y+h, r);
+        this.arcTo(x, y+h, x, y, r);
+        this.arcTo(x, y, x+w, y, r);
+        this.closePath();
+        return this;
+      };
+
     // create empty starting grid
     function createBoard() {
         const grid = [];
@@ -17,14 +52,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // returns a random block
     function randomBlock() {
-        const blocks = "RYGBPS";
+        const blocks = "WBVPLS";
         return blocks[Math.floor(Math.random() * 6)];
     }
 
     // create cursor
     let cursor = {
         pos: {x: 1, y: 1},
-        score: 100
+        score: 0
     };
 
     // checks a board for clusters of 3 colors
@@ -60,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // updates board with random blocks;
     function createStartingBoard(board) {
-        for (let row = 11; row > 3; row--) {
+        for (let row = 11; row > 5; row--) {
             for (let col = 0; col < 6; col++) {
                 if (col !== 3) {board[row][col] = randomBlock();}
             }
@@ -111,22 +146,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // update at some point with better colors
     const COLORS = {
-        "Y": 'yellow',
-        "G": 'green',
-        "R": 'red',
-        "B": 'blue',
-        "P": 'purple',
-        "S": 'silver'
+        "W": '#fff',
+        "B": '#320092',
+        "V": '#5500c0',
+        "P": '#9600d0',
+        "L": '#4680b3',
+        "S": 'red'
     };
 
     function drawBlock(block, y, x) {
-        ctx.beginPath();
-        ctx.lineWidth = ".04";
-        ctx.strokeStyle = "black";
-        ctx.rect(x, y, 1, 1);
-        ctx.stroke();
         ctx.fillStyle = COLORS[block];
-        ctx.fillRect(x, y, 1, 1);
+        ctx.roundRect(x, y, 1, 1, 0);       
+        ctx.strokeStyle = "#08020D";
+        ctx.lineWidth = 0.1;
+        ctx.stroke();
+        ctx.fill();
+        // ctx.beginPath();
+        // ctx.lineWidth = ".15";
+        // ctx.rect(x, y, 1, 1);
+        // ctx.stroke();
     }
 
     // need to fix margin issues with cursor;
@@ -193,6 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         if (pivot === oneRight && pivot === twoRight && pivot === threeRight && pivot === fourRight) {
                             for (let i = 0; i < 5; i++) {
                                 board[row][col + i] = 0;
+                                cursor.score += 700;
                             }
                         }} if (col <= 2) {
                         oneRight = board[row][col + 1];
@@ -201,6 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         if (pivot === oneRight && pivot === twoRight && pivot === threeRight) {
                             for (let i = 0; i < 4; i++) {
                                 board[row][col + i] = 0;
+                                cursor.score += 300;
                             }
                         }
                         } if (col <= 3) {
@@ -209,6 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         if (pivot === oneRight && pivot === twoRight) {
                             for (let i = 0; i < 3; i++) {
                                 board[row][col + i] = 0;
+                                cursor.score += 100;
                             }
                         }}
 
@@ -220,6 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow && pivot === fourBelow) {
                                 for (let i = 0; i < 5; i++) {
                                     board[row + i][col] = 0;
+                                    cursor.score += 700;
                                 }
                             }
                         }
@@ -230,6 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow) {
                                 for (let i = 0; i < 4; i++) {
                                     board[row + i][col] = 0;
+                                    cursor.score += 300;
                                 }
                             }
                         }
@@ -239,6 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             if (pivot === oneBelow && pivot === twoBelow) {
                                 for (let i = 0; i < 3; i++) {
                                     board[row + i][col] = 0;
+                                    cursor.score += 100;
                                 }
                             }
                         }
@@ -278,6 +322,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let lastTime = 0;
     function update(time = 0) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#08020D";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         const deltaTime = time - lastTime;
     
         increaseCounter += deltaTime;
@@ -285,18 +331,19 @@ document.addEventListener("DOMContentLoaded", () => {
             addRowToBoard(createNextRow(), board);
             cursor.pos.y--;
             increaseCounter = 0;
-            increaseInterval -= 50;
         }
 
         lastTime = time;
 
         checkAndDeleteClusters(board);
         fall(board);
+
+        increaseInterval -= 0.25;
     
         drawBoard(board);
         updateScore();
         requestAnimationFrame(update);
     }
 
-    // update();
+    update();
 });
