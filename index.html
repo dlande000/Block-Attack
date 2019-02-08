@@ -10,14 +10,13 @@
         <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.js"></script>
         <script src="./bundle.js"></script>
         <script src="./src/entry.js"></script>
+        <link rel="shortcut icon" type="image/png" href="./assets/images/favicon.png"/>
     </head>
     <body class="body">
         <h1>Block Attack!</h1>
         <h3>by David Anderson</h3>
         <div class="box">
         <aside class="controls">
-            <h4 class="directions">Swap to align three or more blocks of the same color.</h4>
-            <br/>
             <h4>Score:</h4>
             <div id="score"></div>
             <br/>
@@ -38,6 +37,9 @@
         <div id="game">
             <canvas width=360 height=715 id="canvas"></canvas>
         </div>
+        <div class="right">
+            <h4 class="directions">Swap to align three or more blocks of the same color.</h4>
+            <br/><br/><br/>
         <nav class="contact-links">
             <a href="#">Github</a><br/>
             <br/>
@@ -48,8 +50,16 @@
             <a href="mailto:dlande000@gmail.com">Email</a>
         </nav>
     </div>
+    </div>
     </body>
     <footer>
-        <p>Block Attack! was inspired by Tetris Attack (developed by Intelligent Systems and published by Nintendo). Background image artist unknown.</p>
+        <p>Block Attack! was inspired by Tetris Attack (developed by Intelligent Systems and published by Nintendo). All sprites pulled from Tetris Attack JS; all sprites originally from Tetris Attack. Background image artist unknown. In memory of Evelyn Gundersen.</p>
+        <img hidden id="dark-blue-block" src="./assets/images/block_darkblue.png">
+        <img hidden id="blue-block" src="./assets/images/block_red.png">
+        <img hidden id="red-block" src="./assets/images/block_darkblue.png">
+        <img hidden id="yellow-block" src="./assets/images/block_yellow.png">
+        <img hidden id="green-block" src="./assets/images/block_green.png">
+        <img hidden id="purple-block" src="./assets/images/block_purple.png">
+        <img hidden id="cursor" src="./assets/images/cursor.png">
     </footer>
 </html>

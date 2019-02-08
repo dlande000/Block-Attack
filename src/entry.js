@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // returns a random block
     function randomBlock() {
-        const blocks = "WBVPLS";
+        const blocks = "RYGBDP";
         return blocks[Math.floor(Math.random() * 6)];
     }
 
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
             board.forEach((width, y) => {
                 width.forEach((value, x) => {
                     if (value !== 0) {
-                        if ((x < 4 && value == board[y][x + 1] && value == board[y][x + 2]) || (y < 10 && value == board[y + 1][x] && value == board[y + 2][x])) {
+                        if ((x < 4 && value === board[y][x + 1] && value === board[y][x + 2]) || (y < 10 && value === board[y + 1][x] && value === board[y + 2][x])) {
                             board[y][x] = randomBlock();
                             checking = true;
                         }
@@ -144,57 +144,62 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('score').innerText = cursor.score;
     }
 
+    const redBlock = document.getElementById("red-block");
+    const yellowBlock = document.getElementById("yellow-block");
+    const greenBlock = document.getElementById("green-block");
+    const blueBlock = document.getElementById("blue-block");
+    const darkBlueBlock = document.getElementById("dark-blue-block");
+    const purpleBlock = document.getElementById("purple-block");
+
     // update at some point with better colors
-    const COLORS = {
-        "W": '#fff',
-        "B": '#320092',
-        "V": '#5500c0',
-        "P": '#9600d0',
-        "L": '#4680b3',
-        "S": 'red'
+    const BLOCKS = {
+        "R": document.getElementById("red-block"),
+        "Y": document.getElementById("yellow-block"),
+        "G": document.getElementById("green-block"),
+        "B": document.getElementById("blue-block"),
+        "D": document.getElementById("dark-blue-block"),
+        "P": document.getElementById("purple-block")
     };
 
     function drawBlock(block, y, x) {
-        ctx.fillStyle = COLORS[block];
-        ctx.roundRect(x, y, 1, 1, 0);       
-        ctx.strokeStyle = "#08020D";
-        ctx.lineWidth = 0.1;
-        ctx.stroke();
-        ctx.fill();
-        // ctx.beginPath();
-        // ctx.lineWidth = ".15";
-        // ctx.rect(x, y, 1, 1);
+        // ctx.fillStyle = COLORS[block];
+        // ctx.roundRect(x, y, 1, 1, 0);       
+        // ctx.strokeStyle = "#08020D";
+        // ctx.lineWidth = 0.1;
         // ctx.stroke();
+        // ctx.fill();
+        ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y, 1, 1);
     }
 
     // need to fix margin issues with cursor;
-    function drawCursor(block, y, x) {
-        if (block !== 0) {
-            ctx.beginPath();
-            ctx.lineWidth = "0.2";
-            ctx.strokeStyle = "gold";
-            ctx.rect(x, y, 2, 1);
-            ctx.stroke();
-            ctx.fillStyle = COLORS[block];
-            ctx.fillRect(x, y, 1, 1);
-        } else {
-            ctx.beginPath();
-            ctx.lineWidth = "0.2";
-            ctx.strokeStyle = "gold";
-            ctx.rect(x, y, 2, 1);
-            ctx.stroke();
-        }
+    function drawCursor(x, y) {
+        // if (block !== 0) {
+        //     ctx.beginPath();
+        //     ctx.lineWidth = "0.2";
+        //     ctx.strokeStyle = "gold";
+        //     ctx.rect(x, y, 2, 1);
+        //     ctx.stroke();
+        //     ctx.fillStyle = COLORS[block];
+        //     ctx.fillRect(x, y, 1, 1);
+        // } else {
+        //     ctx.beginPath();
+        //     ctx.lineWidth = "0.2";
+        //     ctx.strokeStyle = "gold";
+        //     ctx.rect(x, y, 2, 1);
+        //     ctx.stroke();
+        // }
+        cursorImg = document.getElementById("cursor");
+        ctx.drawImage(cursorImg, 1, 1, 36, 20, x, y, 2, 1);
     }
 
     function drawBoard(board) {
         board.forEach((row, y) => {
             row.forEach((block, x) => {
-            if (x === cursor.pos.x && y === cursor.pos.y) {
-                drawCursor(block, y, x);
-            } else if (block !== 0) {
+            if (block !== 0) {
                 drawBlock(block, y, x);
             }});
         });
+        drawCursor(cursor.pos.x, cursor.pos.y);
     }
 
     // cursor.pos: {x: 2, y: 8}
@@ -322,14 +327,14 @@ document.addEventListener("DOMContentLoaded", () => {
     let lastTime = 0;
     function update(time = 0) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#08020D";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
         const deltaTime = time - lastTime;
     
         increaseCounter += deltaTime;
         if (increaseCounter > increaseInterval) {
             addRowToBoard(createNextRow(), board);
-            cursor.pos.y--;
+            if (cursor.pos.y !== 0) {
+                cursor.pos.y--;
+            }
             increaseCounter = 0;
         }
 

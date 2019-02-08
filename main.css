@@ -4,7 +4,7 @@ h1, h3, h4, h5, p, a, div {
     font-family: 'Press Start 2P', cursive;
     text-decoration: none;
     text-align: center;
-    color: white;
+    color: #F8F8FF;
     text-shadow: 5px 3px 0 #000;
 }
 
@@ -15,9 +15,9 @@ footer {
 }
 
 p {
-    font-size: 8px;
-    color: white;
-    text-shadow: 1px 1px 0 black;
+    font-size: 9px;
+    color: #F8F8FF;
+    text-shadow: none;
 }
 
 body {
@@ -48,7 +48,7 @@ html {
     display: flex;
     justify-content: space-between;
     margin-top: 40px;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .updownleftright-image {
@@ -68,6 +68,7 @@ html {
     width: 180px;
 }
 
-nav, .controls {
+.controls, .right {
     align-self: center;
+    margin-top: -100px;
 }
