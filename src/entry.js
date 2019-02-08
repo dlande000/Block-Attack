@@ -210,9 +210,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             for (let i = 0; i < 3; i++) {
                                 board[row][col + i] = 0;
                             }
-                        }
+                        }}
 
-                        if (row <= 7) {
+                        if (row <= 7 && col < 6) {
                             oneBelow = board[row + 1][col];
                             twoBelow = board[row + 2][col];
                             threeBelow = board[row + 3][col];
@@ -244,7 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                 }
             }
-        }}}
+        }}
 
     function fall(board) {
         board.forEach((row, y) => {
@@ -283,6 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
         increaseCounter += deltaTime;
         if (increaseCounter > increaseInterval) {
             addRowToBoard(createNextRow(), board);
+            cursor.pos.y--;
             increaseCounter = 0;
         }
 
