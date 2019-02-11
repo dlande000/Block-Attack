@@ -144,13 +144,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('score').innerText = cursor.score;
     }
 
-    const redBlock = document.getElementById("red-block");
-    const yellowBlock = document.getElementById("yellow-block");
-    const greenBlock = document.getElementById("green-block");
-    const blueBlock = document.getElementById("blue-block");
-    const darkBlueBlock = document.getElementById("dark-blue-block");
-    const purpleBlock = document.getElementById("purple-block");
-
     // update at some point with better colors
     const BLOCKS = {
         "R": document.getElementById("red-block"),
@@ -162,32 +155,11 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     function drawBlock(block, y, x) {
-        // ctx.fillStyle = COLORS[block];
-        // ctx.roundRect(x, y, 1, 1, 0);       
-        // ctx.strokeStyle = "#08020D";
-        // ctx.lineWidth = 0.1;
-        // ctx.stroke();
-        // ctx.fill();
         ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y, 1, 1);
     }
 
     // need to fix margin issues with cursor;
     function drawCursor(x, y) {
-        // if (block !== 0) {
-        //     ctx.beginPath();
-        //     ctx.lineWidth = "0.2";
-        //     ctx.strokeStyle = "gold";
-        //     ctx.rect(x, y, 2, 1);
-        //     ctx.stroke();
-        //     ctx.fillStyle = COLORS[block];
-        //     ctx.fillRect(x, y, 1, 1);
-        // } else {
-        //     ctx.beginPath();
-        //     ctx.lineWidth = "0.2";
-        //     ctx.strokeStyle = "gold";
-        //     ctx.rect(x, y, 2, 1);
-        //     ctx.stroke();
-        // }
         cursorImg = document.getElementById("cursor");
         ctx.drawImage(cursorImg, 1, 1, 36, 20, x, y, 2, 1);
     }
@@ -349,6 +321,6 @@ document.addEventListener("DOMContentLoaded", () => {
         updateScore();
         requestAnimationFrame(update);
     }
-
+    window.board = board;
     update();
 });
