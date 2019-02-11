@@ -4,41 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ctx.scale(60, 60);
 
-    CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
-        if (w < 2 * r) r = w / 2;
-        if (h < 2 * r) r = h / 2;
-        this.beginPath();
-        this.moveTo(x+r, y);
-        this.arcTo(x+w, y, x+w, y+h, r);
-        this.arcTo(x+w, y+h, x, y+h, r);
-        this.arcTo(x, y+h, x, y, r);
-        this.arcTo(x, y, x+w, y, r);
-        this.closePath();
-        return this;
-      };
-
-
-        // ctx.beginPath();
-        // ctx.lineWidth = ".15";
-        // ctx.strokeStyle = "black";
-        // ctx.rect(x, y, 1, 1);
-        // ctx.stroke();
-
-    CanvasRenderingContext2D.prototype.roundRectOutline = function (x, y, w, h, r, lw) {
-        if (w < 2 * r) r = w / 2;
-        if (h < 2 * r) r = h / 2;
-        this.beginPath();
-        this.lineWidth = lw;
-        this.strokeStyle("black");
-        this.moveTo(x+r, y);
-        this.arcTo(x+w, y, x+w, y+h, r);
-        this.arcTo(x+w, y+h, x, y+h, r);
-        this.arcTo(x, y+h, x, y, r);
-        this.arcTo(x, y, x+w, y, r);
-        this.closePath();
-        return this;
-      };
-
     // create empty starting grid
     function createBoard() {
         const grid = [];
@@ -155,13 +120,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     function drawBlock(block, y, x) {
-        ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y, 1, 1);
+        ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y + 1 - yIncrease, 1, 1);
     }
 
     // need to fix margin issues with cursor;
     function drawCursor(x, y) {
         cursorImg = document.getElementById("cursor");
-        ctx.drawImage(cursorImg, 1, 1, 36, 20, x, y, 2, 1);
+        ctx.drawImage(cursorImg, 1, 1, 36, 20, x, y + 1 - yIncrease, 2, 1);
     }
 
     function drawBoard(board) {
@@ -278,6 +243,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+
+
     document.addEventListener('keydown', event => {
         if (event.keyCode === 37) {
             moveCursor(-1, 0);
@@ -294,34 +261,50 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    let increaseCounter = 0;
-    let increaseInterval = 6000;
-    let lastTime = 0;
-    function update(time = 0) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const deltaTime = time - lastTime;
-    
-        increaseCounter += deltaTime;
-        if (increaseCounter > increaseInterval) {
+    let increaseInterval = 3000;
+    let yIncrease = 0;
+
+    function increaseY() {
+        yIncrease += (1/50);
+        if (yIncrease >= 1) {
             addRowToBoard(createNextRow(), board);
             if (cursor.pos.y !== 0) {
                 cursor.pos.y--;
             }
-            increaseCounter = 0;
+            yIncrease = 0;
         }
+    }
 
-        lastTime = time;
+    setInterval(increaseY, (increaseInterval/50));
+
+    
+
+    // let increaseCounter = 0;
+    // let lastTime = 0;
+    function update(time = 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // const deltaTime = time - lastTime;
+    
+        // increaseCounter += deltaTime;
+        // if (increaseCounter > increaseInterval) {
+        //     addRowToBoard(createNextRow(), board);
+        //     if (cursor.pos.y !== 0) {
+        //         cursor.pos.y--;
+        //     }
+        //     increaseCounter = 0;
+        // }
+
+        // lastTime = time;
 
         checkAndDeleteClusters(board);
         fall(board);
-
-        increaseInterval -= 0.25;
     
         drawBoard(board);
         updateScore();
         requestAnimationFrame(update);
     }
     window.board = board;
+    window.yIncrease = yIncrease;
 
     function game() {
 
