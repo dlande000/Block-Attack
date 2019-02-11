@@ -120,7 +120,11 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     function drawBlock(block, y, x) {
-        ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y + 1 - yIncrease, 1, 1);
+        if (y !== 11) {
+            ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y + 1 - yIncrease, 1, 1);
+        } else {
+            ctx.drawImage(BLOCKS[block], 15.5, 0.5, 15, 15, x, y + 1 - yIncrease, 1, 1);
+        }
     }
 
     // need to fix margin issues with cursor;
@@ -195,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             }
                         }}
 
-                        if (row <= 7 && col < 6) {
+                        if (row <= 6 && col < 6) {
                             oneBelow = board[row + 1][col];
                             twoBelow = board[row + 2][col];
                             threeBelow = board[row + 3][col];
@@ -207,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 }
                             }
                         }
-                        if (row <= 8) {
+                        if (row <= 7) {
                             oneBelow = board[row + 1][col];
                             twoBelow = board[row + 2][col];
                             threeBelow = board[row + 3][col];
@@ -218,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 }
                             }
                         }
-                            if (row <= 9) {
+                            if (row <= 8) {
                             oneBelow = board[row + 1][col];
                             twoBelow = board[row + 2][col];
                             if (pivot === oneBelow && pivot === twoBelow) {
