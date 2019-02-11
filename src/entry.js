@@ -295,7 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     let increaseCounter = 0;
-    let increaseInterval = 5000;
+    let increaseInterval = 6000;
     let lastTime = 0;
     function update(time = 0) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -322,5 +322,10 @@ document.addEventListener("DOMContentLoaded", () => {
         requestAnimationFrame(update);
     }
     window.board = board;
+
+    function game() {
+
+    }
+
     update();
 });

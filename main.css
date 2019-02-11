@@ -28,7 +28,7 @@ body {
 }
 
 canvas {
-    height: 75vh;
+    height: 70vh;
     border: 8px solid black;
     border-radius: 2px;
 }
@@ -70,5 +70,4 @@ html {
 
 .controls, .right {
     align-self: center;
-    margin-top: -100px;
 }
