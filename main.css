@@ -31,6 +31,7 @@ canvas {
     height: 70vh;
     border: 8px solid black;
     border-radius: 2px;
+    font-family: 'Press Start 2P', cursive;
 }
 
 html {

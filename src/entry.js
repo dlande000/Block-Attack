@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ctx.scale(60, 60);
 
+    let gameOver = false;
+    let startScreen = true;
+
     // create empty starting grid
     function createBoard() {
         const grid = [];
@@ -13,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return grid;
     }
 
-    const board = createBoard();
+    let board = createBoard();
 
     // returns a random block
     function randomBlock() {
@@ -100,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function checkGameOver(row) {
         for (let i = 0; i < 6; i++) {
             if (row[i] !== 0) {
-                // GAME OVER
+                gameOver = true;
             }
         }
     }
@@ -259,7 +262,15 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (event.keyCode === 40) {
             moveCursor(0, 1);
         } else if (event.keyCode === 32) {
-            swap(board, cursor);
+            if (startScreen || gameOver) {
+                startScreen = false;
+                gameOver = false;
+                cursor.score = 0;
+                board = createStartingBoard(createBoard());
+                yIncrease = 0;
+            } else {
+                swap(board, cursor);
+            }
         } else if (event.keyCode === 90) {
             addRowToBoard(createNextRow(), board);
         }
@@ -281,38 +292,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setInterval(increaseY, (increaseInterval/50));
 
-    
-
-    // let increaseCounter = 0;
-    // let lastTime = 0;
-    function update(time = 0) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // const deltaTime = time - lastTime;
-    
-        // increaseCounter += deltaTime;
-        // if (increaseCounter > increaseInterval) {
-        //     addRowToBoard(createNextRow(), board);
-        //     if (cursor.pos.y !== 0) {
-        //         cursor.pos.y--;
-        //     }
-        //     increaseCounter = 0;
-        // }
-
-        // lastTime = time;
-
-        checkAndDeleteClusters(board);
-        fall(board);
-    
-        drawBoard(board);
-        updateScore();
+    function update() {
+        if (startScreen) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#2c1960";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = ".5px 'Press Start 2P'";
+            ctx.fillStyle = "white";
+            ctx.fillText("Swap blocks", 0.3, 1);
+            ctx.fillText("to clear", 0.3, 2);
+            ctx.fillText("the board.", 0.3, 3);
+            ctx.fillText("Don't let", 0.3, 5);
+            ctx.fillText("the blocks", 0.3, 6);
+            ctx.fillText("reach the", 0.3, 7);
+            ctx.fillText("top.", 0.3, 8);
+            ctx.fillText("Press space", 0.3, 10);
+            ctx.fillText("to begin!", 0.3, 11);
+        }
+        else if (!gameOver) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            checkAndDeleteClusters(board);
+            fall(board);
+        
+            drawBoard(board);
+            updateScore();
+            checkGameOver(board[0]);
+        }
+        
+        else if (gameOver) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#2c1960";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = ".5px 'Press Start 2P'";
+            ctx.fillStyle = "white";
+            ctx.fillText("Great job!", 0.3, 3);
+            ctx.fillText("Your score:", 0.3, 5);
+            ctx.fillStyle = "gold";
+            ctx.textAlign = "center";
+            ctx.fillText(cursor.score, 3, 6);
+            ctx.fillStyle = "white";
+            ctx.textAlign = "left";
+            ctx.fillText("Press space", 0.3, 8);
+            ctx.fillText("to play", 0.3, 9);
+            ctx.fillText("again!", 0.3, 10);
+        }
         requestAnimationFrame(update);
     }
-    window.board = board;
-    window.yIncrease = yIncrease;
-
-    function game() {
-
-    }
-
+    
     update();
 });
