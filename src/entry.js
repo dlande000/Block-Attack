@@ -48,23 +48,28 @@ document.addEventListener("DOMContentLoaded", () => {
         score: 0
     };
 
-    function checkStartingClusters(board) {
+    function checkStartingClusters(grid) {
         let checking = true;
         while (checking) {
             checking = false;
-            if (board.length !== 13) {
-                board.forEach((value, i) => {
-                    if (i < 4 && value == board[i + 1] && value == board[i + 2]) {
+            if (grid.length !== 13) {
+                grid.forEach((value, i) => {
+                    if (i < 4 && value == grid[i + 1] && grid == board[i + 2]) {
                         checking = true;
-                        board[i] = randomBlock();
+                        grid[i] = randomBlock();
+                        for (let i = 0; i < 6; i++) {
+                            if (grid[i] === board[12][i]) {
+                                grid[i] = randomBlock;
+                            }
+                        }
                     }
                 });
             } else {
-                board.forEach((width, y) => {
+                grid.forEach((width, y) => {
                     width.forEach((value, x) => {
                         if (value !== 0) {
-                            if ((x < 4 && value === board[y][x + 1] && value === board[y][x + 2]) || (y < 10 && value === board[y + 1][x] && value === board[y + 2][x])) {
-                                board[y][x] = randomBlock();
+                            if ((x < 4 && value === grid[y][x + 1] && value === grid[y][x + 2]) || (y < 10 && value === grid[y + 1][x] && value === grid[y + 2][x])) {
+                                grid[y][x] = randomBlock();
                                 checking = true;
                         }
                     }
@@ -88,6 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
         [a, b] = [b, a];
         board[cursor.pos.y][cursor.pos.x] = a;
         board[cursor.pos.y][cursor.pos.x + 1] = b;
+        checkAndDeleteClusters(board);
     }
 
     function addRowToBoard(row, board) {
