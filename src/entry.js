@@ -7,10 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let gameOver = false;
     let startScreen = true;
 
-    // create empty starting grid
     function createBoard() {
         const grid = [];
-        for (let height = 0; height < 12; height++) {
+        for (let height = 0; height < 13; height++) {
             grid.push(new Array(6).fill(0));
         }
         return grid;
@@ -18,19 +17,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let board = createBoard();
 
-    // returns a random block
     function randomBlock() {
         const blocks = "RYGBDP";
         return blocks[Math.floor(Math.random() * 6)];
     }
 
-    // create cursor
     let cursor = {
-        pos: {x: 1, y: 1},
+        pos: {x: 2, y: 6},
         score: 0
     };
 
-    // checks a board for clusters of 3 colors
     function checkStartingClusters(board) {
         let checking = true;
         while (checking) {
@@ -61,20 +57,22 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // updates board with random blocks;
     function createStartingBoard(board) {
-        for (let row = 11; row > 5; row--) {
+        for (let row = 12; row > 5; row--) {
             for (let col = 0; col < 6; col++) {
                 if (col !== 3) {board[row][col] = randomBlock();}
             }
+        }
+
+        for (let x = 10; x < 13; x++) {
+            board[x][3] = randomBlock();
         }
         checkStartingClusters(board);
         return board;
     }
 
-    const startingBoard = createStartingBoard(board);
+    createStartingBoard(board);
 
-    // create upcoming row
     function createNextRow() {
         let nextRow = [];
         for (let i = 0; i < 6; i++) {
@@ -84,7 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return nextRow;
     }
 
-    // swap blocks
     function swap(board, cursor) {
         let a = board[cursor.pos.y][cursor.pos.x];
         let b = board[cursor.pos.y][cursor.pos.x + 1];
@@ -93,13 +90,11 @@ document.addEventListener("DOMContentLoaded", () => {
         board[cursor.pos.y][cursor.pos.x + 1] = b;
     }
 
-    // add next row to grid
     function addRowToBoard(row, board) {
         board.shift();
         board.push(row);
     }
 
-    // checks game over when given the pushed row from the grid
     function checkGameOver(row) {
         for (let i = 0; i < 6; i++) {
             if (row[i] !== 0) {
@@ -112,7 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('score').innerText = cursor.score;
     }
 
-    // update at some point with better colors
     const BLOCKS = {
         "R": document.getElementById("red-block"),
         "Y": document.getElementById("yellow-block"),
@@ -123,30 +117,42 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     function drawBlock(block, y, x) {
-        if (y !== 11) {
-            ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y + 1 - yIncrease, 1, 1);
+        if (y !== 12) {
+            ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
         } else {
-            ctx.drawImage(BLOCKS[block], 15.5, 0.5, 15, 15, x, y + 1 - yIncrease, 1, 1);
+            ctx.drawImage(BLOCKS[block], 15.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
         }
     }
 
-    // need to fix margin issues with cursor;
+    function drawGameOverBlock(block, y, x) {
+        if (y !== 12) {
+            ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+        } else {
+            ctx.drawImage(BLOCKS[block], 15.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+        }
+    }
+
     function drawCursor(x, y) {
         cursorImg = document.getElementById("cursor");
-        ctx.drawImage(cursorImg, 1, 1, 36, 20, x, y + 1 - yIncrease, 2, 1);
+        let yIncreaseCursor = yIncrease;
+        if (y === 0) {
+            yIncreaseCursor = 0;
+        }
+        ctx.drawImage(cursorImg, 1, 1, 36, 20, x, y - yIncreaseCursor, 2, 1);
     }
 
     function drawBoard(board) {
         board.forEach((row, y) => {
             row.forEach((block, x) => {
-            if (block !== 0) {
+            if (block !== 0 && !gameOver) {
                 drawBlock(block, y, x);
+            } else if (gameOver) {
+                drawGameOverBlock(block, y, x);
             }});
         });
         drawCursor(cursor.pos.x, cursor.pos.y);
     }
 
-    // cursor.pos: {x: 2, y: 8}
     function moveCursor(x, y) {
         let dy = cursor.pos.y + y;
         let dx = cursor.pos.x + x;
@@ -154,13 +160,13 @@ document.addEventListener("DOMContentLoaded", () => {
             cursor.pos.x = dx;
         }
         
-        if (dy <= 11 && dy >= 0) {
+        if (dy < 12 && dy >= 0) {
             cursor.pos.y = dy;
         }
     }
 
     function checkAndDeleteClusters(board) {
-        for (let row = 0; row < 12; row++) {
+        for (let row = 1; row < 12; row++) {
             for (let col = 0; col < 6; col++) {
                 let pivot = board[row][col];
                 let oneBelow;
@@ -171,6 +177,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 let twoRight;
                 let threeRight;
                 let fourRight;
+                let oneLeft;
+                let twoLeft;
                 if (pivot !== 0) {
                     if (col <= 1) {
                         oneRight = board[row][col + 1];
@@ -202,19 +210,20 @@ document.addEventListener("DOMContentLoaded", () => {
                             }
                         }}
 
-                        if (row <= 6 && col < 6) {
+                        if (row <= 7) {
                             oneBelow = board[row + 1][col];
                             twoBelow = board[row + 2][col];
                             threeBelow = board[row + 3][col];
                             fourBelow = board[row + 4][col];
                             if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow && pivot === fourBelow) {
+                                // ADD NEXUS POINTS HERE!
                                 for (let i = 0; i < 5; i++) {
                                     board[row + i][col] = 0;
                                     cursor.score += 700;
                                 }
                             }
                         }
-                        if (row <= 7) {
+                        if (row <= 8) {
                             oneBelow = board[row + 1][col];
                             twoBelow = board[row + 2][col];
                             threeBelow = board[row + 3][col];
@@ -225,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 }
                             }
                         }
-                            if (row <= 8) {
+                            if (row <= 9) {
                             oneBelow = board[row + 1][col];
                             twoBelow = board[row + 2][col];
                             if (pivot === oneBelow && pivot === twoBelow) {
@@ -276,7 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    let increaseInterval = 3000;
+    let increaseInterval = 4000;
     let yIncrease = 0;
 
     function increaseY() {
@@ -321,6 +330,8 @@ document.addEventListener("DOMContentLoaded", () => {
         
         else if (gameOver) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            setTimeout(drawBoard(board), 2500);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.font = ".5px 'Press Start 2P'";
@@ -338,6 +349,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         requestAnimationFrame(update);
     }
+
+    window.board = board;
     
     update();
 });
