@@ -117,18 +117,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     function drawBlock(block, y, x) {
+        if (!gameOver) {
         if (y !== 12) {
             ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
         } else {
             ctx.drawImage(BLOCKS[block], 15.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-        }
-    }
-
-    function drawGameOverBlock(block, y, x) {
-        if (y !== 12) {
-            ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-        } else {
-            ctx.drawImage(BLOCKS[block], 15.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+        }} else {
+            ctx.drawImage(BLOCKS[block], 50.5, 0.5, 15, 15, x, y, 1, 1);
         }
     }
 
@@ -144,13 +139,13 @@ document.addEventListener("DOMContentLoaded", () => {
     function drawBoard(board) {
         board.forEach((row, y) => {
             row.forEach((block, x) => {
-            if (block !== 0 && !gameOver) {
+            if (block !== 0) {
                 drawBlock(block, y, x);
-            } else if (gameOver) {
-                drawGameOverBlock(block, y, x);
             }});
         });
-        drawCursor(cursor.pos.x, cursor.pos.y);
+        if (!gameOver) {
+            drawCursor(cursor.pos.x, cursor.pos.y);
+        }
     }
 
     function moveCursor(x, y) {
@@ -181,29 +176,32 @@ document.addEventListener("DOMContentLoaded", () => {
                 let twoLeft;
                 if (pivot !== 0) {
                     if (col <= 1) {
+                        oneBelow = board[row + 1][col];
                         oneRight = board[row][col + 1];
                         twoRight = board[row][col + 2];
                         threeRight = board[row][col + 3];
                         fourRight = board[row][col + 4];
-                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight && pivot === fourRight) {
+                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight && pivot === fourRight && oneBelow !== 0) {
                             for (let i = 0; i < 5; i++) {
                                 board[row][col + i] = 0;
                                 cursor.score += 700;
                             }
                         }} if (col <= 2) {
+                        oneBelow = board[row + 1][col];
                         oneRight = board[row][col + 1];
                         twoRight = board[row][col + 2];
                         threeRight = board[row][col + 3];
-                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight) {
+                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight && oneBelow !== 0) {
                             for (let i = 0; i < 4; i++) {
                                 board[row][col + i] = 0;
                                 cursor.score += 300;
                             }
                         }
                         } if (col <= 3) {
+                        oneBelow = board[row + 1][col];
                         oneRight = board[row][col + 1];
                         twoRight = board[row][col + 2];
-                        if (pivot === oneRight && pivot === twoRight) {
+                        if (pivot === oneRight && pivot === twoRight && oneBelow !== 0) {
                             for (let i = 0; i < 3; i++) {
                                 board[row][col + i] = 0;
                                 cursor.score += 100;
@@ -215,8 +213,24 @@ document.addEventListener("DOMContentLoaded", () => {
                             twoBelow = board[row + 2][col];
                             threeBelow = board[row + 3][col];
                             fourBelow = board[row + 4][col];
+                            if (col >= 2) {
+                                oneLeft = board[row + 2][col - 1];
+                                twoLeft = board[row + 2][col - 2];
+                            }
+                            if (col <= 3) {
+                                oneRight = board[row + 2][col + 1];
+                                twoRight = board[row + 2][col + 2];
+                            }
                             if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow && pivot === fourBelow) {
-                                // ADD NEXUS POINTS HERE!
+                                if (board[row + 2][col] === oneLeft && board[row + 2][col] === twoLeft) {
+                                    board[row + 2][col - 1] = 0;
+                                    board[row + 2][col - 2] = 0;
+                                    cursor.score += 200;
+                                } else if (board[row + 2][col] === oneRight && board[row + 2][col] === twoRight) {
+                                    board[row + 2][col + 1] = 0;
+                                    board[row + 2][col + 2] = 0;
+                                    cursor.score += 200;
+                                }
                                 for (let i = 0; i < 5; i++) {
                                     board[row + i][col] = 0;
                                     cursor.score += 700;
@@ -227,6 +241,27 @@ document.addEventListener("DOMContentLoaded", () => {
                             oneBelow = board[row + 1][col];
                             twoBelow = board[row + 2][col];
                             threeBelow = board[row + 3][col];
+                            for (let i = 1; 1 < 3; i++) {
+                                if (col >= 2) {
+                                oneLeft = board[row + i][col - 1];
+                                twoLeft = board[row + i][col - 2];
+                                if (board[row + i][col] === oneLeft && board[row + i][col] === twoLeft) {
+                                    board[row + i][col - 1] = 0;
+                                    board[row + i][col - 2] = 0;
+                                    cursor.score += 200;
+                                }
+                            }
+                            if (col <= 3) {
+                                oneRight = board[row + i][col + 1];
+                                twoRight = board[row + i][col + 2];
+                                if (board[row + i][col] === oneRight && board[row + i][col] === twoRight) {
+                                    board[row + i][col + 1] = 0;
+                                    board[row + i][col + 2] = 0;
+                                    cursor.score += 200;
+                                }
+                            }
+                            }
+                            
                             if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow) {
                                 for (let i = 0; i < 4; i++) {
                                     board[row + i][col] = 0;
@@ -285,7 +320,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    let increaseInterval = 4000;
+    let increaseInterval = 3500;
     let yIncrease = 0;
 
     function increaseY() {
@@ -330,7 +365,6 @@ document.addEventListener("DOMContentLoaded", () => {
         
         else if (gameOver) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            setTimeout(drawBoard(board), 2500);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -347,6 +381,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.fillText("to play", 0.3, 9);
             ctx.fillText("again!", 0.3, 10);
         }
+        
         requestAnimationFrame(update);
     }
 
