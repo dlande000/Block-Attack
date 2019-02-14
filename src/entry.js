@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function checkAndDeleteClusters(board) {
-        for (let row = 1; row < 12; row++) {
+        for (let row = 0; row < 12; row++) {
             for (let col = 0; col < 6; col++) {
                 let pivot = board[row][col];
                 let oneBelow;
@@ -172,8 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 let twoRight;
                 let threeRight;
                 let fourRight;
-                let oneLeft;
-                let twoLeft;
                 if (pivot !== 0) {
                     if (col <= 1) {
                         oneBelow = board[row + 1][col];
@@ -184,8 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         if (pivot === oneRight && pivot === twoRight && pivot === threeRight && pivot === fourRight && oneBelow !== 0) {
                             for (let i = 0; i < 5; i++) {
                                 board[row][col + i] = 0;
-                                cursor.score += 700;
-                            }
+                            } cursor.score += 700;
                         }} if (col <= 2) {
                         oneBelow = board[row + 1][col];
                         oneRight = board[row][col + 1];
@@ -194,8 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         if (pivot === oneRight && pivot === twoRight && pivot === threeRight && oneBelow !== 0) {
                             for (let i = 0; i < 4; i++) {
                                 board[row][col + i] = 0;
-                                cursor.score += 300;
-                            }
+                            } cursor.score += 300;
                         }
                         } if (col <= 3) {
                         oneBelow = board[row + 1][col];
@@ -204,8 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         if (pivot === oneRight && pivot === twoRight && oneBelow !== 0) {
                             for (let i = 0; i < 3; i++) {
                                 board[row][col + i] = 0;
-                                cursor.score += 100;
-                            }
+                            } cursor.score += 100;
                         }}
 
                         if (row <= 7) {
@@ -213,60 +208,20 @@ document.addEventListener("DOMContentLoaded", () => {
                             twoBelow = board[row + 2][col];
                             threeBelow = board[row + 3][col];
                             fourBelow = board[row + 4][col];
-                            if (col >= 2) {
-                                oneLeft = board[row + 2][col - 1];
-                                twoLeft = board[row + 2][col - 2];
-                            }
-                            if (col <= 3) {
-                                oneRight = board[row + 2][col + 1];
-                                twoRight = board[row + 2][col + 2];
-                            }
                             if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow && pivot === fourBelow) {
-                                if (board[row + 2][col] === oneLeft && board[row + 2][col] === twoLeft) {
-                                    board[row + 2][col - 1] = 0;
-                                    board[row + 2][col - 2] = 0;
-                                    cursor.score += 200;
-                                } else if (board[row + 2][col] === oneRight && board[row + 2][col] === twoRight) {
-                                    board[row + 2][col + 1] = 0;
-                                    board[row + 2][col + 2] = 0;
-                                    cursor.score += 200;
-                                }
                                 for (let i = 0; i < 5; i++) {
                                     board[row + i][col] = 0;
-                                    cursor.score += 700;
-                                }
+                                } cursor.score += 700;
                             }
                         }
                         if (row <= 8) {
                             oneBelow = board[row + 1][col];
                             twoBelow = board[row + 2][col];
                             threeBelow = board[row + 3][col];
-                            for (let i = 1; 1 < 3; i++) {
-                                if (col >= 2) {
-                                oneLeft = board[row + i][col - 1];
-                                twoLeft = board[row + i][col - 2];
-                                if (board[row + i][col] === oneLeft && board[row + i][col] === twoLeft) {
-                                    board[row + i][col - 1] = 0;
-                                    board[row + i][col - 2] = 0;
-                                    cursor.score += 200;
-                                }
-                            }
-                            if (col <= 3) {
-                                oneRight = board[row + i][col + 1];
-                                twoRight = board[row + i][col + 2];
-                                if (board[row + i][col] === oneRight && board[row + i][col] === twoRight) {
-                                    board[row + i][col + 1] = 0;
-                                    board[row + i][col + 2] = 0;
-                                    cursor.score += 200;
-                                }
-                            }
-                            }
-                            
                             if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow) {
                                 for (let i = 0; i < 4; i++) {
                                     board[row + i][col] = 0;
-                                    cursor.score += 300;
-                                }
+                                } cursor.score += 300;
                             }
                         }
                             if (row <= 9) {
@@ -275,8 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             if (pivot === oneBelow && pivot === twoBelow) {
                                 for (let i = 0; i < 3; i++) {
                                     board[row + i][col] = 0;
-                                    cursor.score += 100;
-                                }
+                                } cursor.score += 100;
                             }
                         }
                 }
