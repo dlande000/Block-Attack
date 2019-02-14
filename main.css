@@ -8,14 +8,24 @@ h1, h3, h4, h5, p, a, div {
     text-shadow: 5px 3px 0 #000;
 }
 
+h4 {
+    font-size: 11px;
+}
+
+h5 {
+    font-size: 10px;
+}
+
 footer {
-    background: #2c1960;
-    border: 4px solid black;
+    background-color: rgba(44, 25, 96, .75);
+    /* background: #2c1960; */
+    border: 4px solid rgba(0, 0, 0, .6);
     border-radius: 2px;
+    width: auto;
 }
 
 p {
-    font-size: 9px;
+    font-size: 8px;
     color: #F8F8FF;
     text-shadow: none;
 }
@@ -49,26 +59,33 @@ html {
     display: flex;
     justify-content: space-between;
     margin-top: 40px;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
 }
 
 .updownleftright-image {
-    height: 80px;
+    height: 60px;
     width: auto;
 }
 
 .spacebar-image {
-    width: 150px;
+    width: 100px;
 }
 
-.z-image {
-    width: 45px;
-}
-
-.directions {
-    width: 180px;
+.z-image, .s-image {
+    width: 40px;
 }
 
 .controls, .right {
     align-self: center;
+    background-color: rgba(44, 25, 96, .75);
+    border: 7px solid rgba(0, 0, 0, .5);
+    border-radius: 2px;
+    padding: 10px;
+    width: 180px;
+    height: 440px;
+    padding-top: -3px;
+}
+
+.right > h4 {
+    font-size: 17px;
 }
