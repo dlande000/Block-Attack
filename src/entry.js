@@ -52,30 +52,25 @@ document.addEventListener("DOMContentLoaded", () => {
         let checking = true;
         while (checking) {
             checking = false;
-            board.forEach((width, y) => {
-                width.forEach((value, x) => {
-                    if (value !== 0) {
-                        if ((x < 4 && value === board[y][x + 1] && value === board[y][x + 2]) || (y < 10 && value === board[y + 1][x] && value === board[y + 2][x])) {
-                            board[y][x] = randomBlock();
-                            checking = true;
+            if (board.length !== 13) {
+                board.forEach((value, i) => {
+                    if (i < 4 && value == board[i + 1] && value == board[i + 2]) {
+                        checking = true;
+                        board[i] = randomBlock();
+                    }
+                });
+            } else {
+                board.forEach((width, y) => {
+                    width.forEach((value, x) => {
+                        if (value !== 0) {
+                            if ((x < 4 && value === board[y][x + 1] && value === board[y][x + 2]) || (y < 10 && value === board[y + 1][x] && value === board[y + 2][x])) {
+                                board[y][x] = randomBlock();
+                                checking = true;
                         }
                     }
                 });
             });
-        }
-    }
-
-    function checkNextRow(row) {
-        let checking = true;
-        while (checking) {
-            checking = false;
-            row.forEach((value, i) => {
-                if (i < 4 && value == row[i + 1] && value == row[i + 2]) {
-                    checking = true;
-                    row[i] = randomBlock();
-                }
-            });
-        }
+        }}
     }
 
     function createNextRow() {
@@ -83,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
         for (let i = 0; i < 6; i++) {
             nextRow.push(randomBlock());
         }
-        checkNextRow(nextRow);
+        checkStartingClusters(nextRow);
         return nextRow;
     }
 
