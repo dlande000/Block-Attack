@@ -242,17 +242,16 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-
-
     document.addEventListener('keydown', event => {
-        event.preventDefault();
         if (event.keyCode === 37) {
             moveCursor(-1, 0);
         } else if (event.keyCode === 38) {
+            event.preventDefault();
             moveCursor(0, -1);
         } else if (event.keyCode === 39) {
             moveCursor(1, 0);
         } else if (event.keyCode === 40) {
+            event.preventDefault();
             moveCursor(0, 1);
         } else if (event.keyCode === 32) {
             if (startScreen || gameOver) {
@@ -304,17 +303,14 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.fillText("top.", 0.3, 8);
             ctx.fillText("Press space", 0.3, 10);
             ctx.fillText("to begin!", 0.3, 11);
-        }
-        else if (!gameOver) {
+        } else if (!gameOver) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             checkAndDeleteClusters(board);
             fall(board);
             drawBoard(board);
             updateScore();
             checkGameOver(board[0]);
-        }
-        
-        else if (gameOver) {
+        } else if (gameOver) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
@@ -332,7 +328,6 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.fillText("to play", 0.3, 9);
             ctx.fillText("again!", 0.3, 10);
         }
-        
         requestAnimationFrame(update);
     }
 
