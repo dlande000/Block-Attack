@@ -1,29 +1,50 @@
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-
     ctx.scale(60, 60);
 
     let gameOver = false;
     let startScreen = true;
+    let isPlaying = false;
 
-    function createBoard() {
-        const grid = [];
-        for (let height = 0; height < 13; height++) {
-            grid.push(new Array(6).fill(0));
+    const myAudio = document.getElementById("music");
+
+    function playMusic() {
+        if (!isPlaying) {
+            myAudio.pause();
+        } else {
+            myAudio.play();
         }
-        return grid;
     }
-
-    let board = createBoard();
 
     function randomBlock() {
         const blocks = "RYGBDP";
         return blocks[Math.floor(Math.random() * 6)];
     }
 
+    function createBoard() {
+        const grid = [];
+        for (let height = 0; height < 13; height++) {
+            grid.push(new Array(6).fill(0));
+        }
+        for (let row = 12; row > 5; row--) {
+            for (let col = 0; col < 6; col++) {
+                if (col !== 3) {
+                    grid[row][col] = randomBlock();
+                }
+            }
+        }
+        for (let x = 10; x < 13; x++) {
+            grid[x][3] = randomBlock();
+        }
+        checkStartingClusters(grid);
+        return grid;
+    }
+
+    let board = createBoard();
+
     let cursor = {
-        pos: {x: 2, y: 6},
+        pos: {x: 2, y: 7},
         score: 0
     };
 
@@ -56,22 +77,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
     }
-
-    function createStartingBoard(board) {
-        for (let row = 12; row > 5; row--) {
-            for (let col = 0; col < 6; col++) {
-                if (col !== 3) {board[row][col] = randomBlock();}
-            }
-        }
-
-        for (let x = 10; x < 13; x++) {
-            board[x][3] = randomBlock();
-        }
-        checkStartingClusters(board);
-        return board;
-    }
-
-    createStartingBoard(board);
 
     function createNextRow() {
         let nextRow = [];
@@ -117,13 +122,10 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     function drawBlock(block, y, x) {
-        if (!gameOver) {
         if (y !== 12) {
             ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
         } else {
             ctx.drawImage(BLOCKS[block], 15.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-        }} else {
-            ctx.drawImage(BLOCKS[block], 50.5, 0.5, 15, 15, x, y, 1, 1);
         }
     }
 
@@ -143,9 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 drawBlock(block, y, x);
             }});
         });
-        if (!gameOver) {
-            drawCursor(cursor.pos.x, cursor.pos.y);
-        }
+        drawCursor(cursor.pos.x, cursor.pos.y);
     }
 
     function moveCursor(x, y) {
@@ -154,7 +154,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (dx <= 4 && dx >= 0) {
             cursor.pos.x = dx;
         }
-        
         if (dy < 12 && dy >= 0) {
             cursor.pos.y = dy;
         }
@@ -202,7 +201,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                 board[row][col + i] = 0;
                             } cursor.score += 100;
                         }}
-
                         if (row <= 7) {
                             oneBelow = board[row + 1][col];
                             twoBelow = board[row + 2][col];
@@ -224,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 } cursor.score += 300;
                             }
                         }
-                            if (row <= 9) {
+                        if (row <= 9) {
                             oneBelow = board[row + 1][col];
                             twoBelow = board[row + 2][col];
                             if (pivot === oneBelow && pivot === twoBelow) {
@@ -235,7 +233,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                 }
             }
-        }}
+        }
+    }
 
     function fall(board) {
         board.forEach((row, y) => {
@@ -251,6 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     document.addEventListener('keydown', event => {
+        event.preventDefault();
         if (event.keyCode === 37) {
             moveCursor(-1, 0);
         } else if (event.keyCode === 38) {
@@ -264,7 +264,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 startScreen = false;
                 gameOver = false;
                 cursor.score = 0;
-                board = createStartingBoard(createBoard());
+                board = createBoard();
                 yIncrease = 0;
             } else {
                 swap(board, cursor);
@@ -314,7 +314,6 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             checkAndDeleteClusters(board);
             fall(board);
-        
             drawBoard(board);
             updateScore();
             checkGameOver(board[0]);
@@ -342,17 +341,6 @@ document.addEventListener("DOMContentLoaded", () => {
         requestAnimationFrame(update);
     }
 
-    const myAudio = document.getElementById("music");
-    let isPlaying = false;
-
-    function playMusic() {
-    if (!isPlaying) {
-        myAudio.pause();
-    } else {
-        myAudio.play();
-    }}
-
     playMusic();
-
     update();
 });
