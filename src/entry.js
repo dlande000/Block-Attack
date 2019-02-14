@@ -271,6 +271,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         } else if (event.keyCode === 90) {
             addRowToBoard(createNextRow(), board);
+        } else if (event.keyCode === 83) {
+            isPlaying = !isPlaying;
+            playMusic();
         }
     });
 
@@ -340,6 +343,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     window.board = board;
-    
+
+    // function music() {
+    //     audio = new Audio();
+    //     audio.src = "./assets/music/blockattack.mp3";
+    //     audio.volume = 0.3;
+    //     audio.play();
+    // }
+
+    // const media = document.getElementById("audio");
+    // media.volume = 0.3;
+    // const playPromise = media.play();
+    // if (playPromise !== null){
+    //     playPromise.catch(() => { media.play(); });
+    // }
+
+    const myAudio = document.getElementById("music");
+    let isPlaying = false;
+
+    function playMusic() {
+    if (!isPlaying) {
+        myAudio.pause();
+    } else {
+        myAudio.play();
+    }}
+
+    playMusic();
+
     update();
 });
