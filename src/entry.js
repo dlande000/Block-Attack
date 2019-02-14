@@ -154,6 +154,37 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function checkAndDeleteNexusClusters(position, increment) {
+        let oneLeft;
+        let twoLeft;
+        let oneRight;
+        let twoRight;
+
+        for (let i = 0; i < increment; i++) {
+            let y = position[0] + i;
+            let x = position[1];
+            let pivot = board[y][x];
+            if (x >= 2) {
+                oneLeft = board[y][x - 1];
+                twoLeft = board[y][x - 2];
+                if (pivot === oneLeft && pivot === twoLeft) {
+                    board[y][x - 1] = 0;
+                    board[y][x - 2] = 0;
+                    cursor.score += 200;
+                }
+            }
+            if (x <= 3) {
+                oneRight = board[y][x + 1];
+                twoRight = board[y][x + 2];
+                if (pivot === oneRight && pivot === twoRight) {
+                    board[y][x + 1] = 0;
+                    board[y][x + 2] = 0;
+                    cursor.score += 200;
+                }
+            }
+        }
+    }
+
     function checkAndDeleteClusters(board) {
         for (let row = 0; row < 12; row++) {
             for (let col = 0; col < 6; col++) {
@@ -167,6 +198,39 @@ document.addEventListener("DOMContentLoaded", () => {
                 let threeRight;
                 let fourRight;
                 if (pivot !== 0) {
+                    if (row <= 7) {
+                        oneBelow = board[row + 1][col];
+                        twoBelow = board[row + 2][col];
+                        threeBelow = board[row + 3][col];
+                        fourBelow = board[row + 4][col];
+                        if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow && pivot === fourBelow) {
+                            checkAndDeleteNexusClusters([row + 2, col], 1);
+                            for (let i = 0; i < 5; i++) {
+                                board[row + i][col] = 0;
+                            } cursor.score += 700;
+                        }
+                    }
+                    if (row <= 8) {
+                        oneBelow = board[row + 1][col];
+                        twoBelow = board[row + 2][col];
+                        threeBelow = board[row + 3][col];
+                        if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow) {
+                            checkAndDeleteNexusClusters([row + 1, col], 2);
+                            for (let i = 0; i < 4; i++) {
+                                board[row + i][col] = 0;
+                            } cursor.score += 300;
+                        }
+                    }
+                    if (row <= 9) {
+                        oneBelow = board[row + 1][col];
+                        twoBelow = board[row + 2][col];
+                        if (pivot === oneBelow && pivot === twoBelow) {
+                            checkAndDeleteNexusClusters([row, col], 3);
+                            for (let i = 0; i < 3; i++) {
+                                board[row + i][col] = 0;
+                            } cursor.score += 100;
+                        }
+                    }
                     if (col <= 1) {
                         oneBelow = board[row + 1][col];
                         oneRight = board[row][col + 1];
@@ -195,37 +259,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             for (let i = 0; i < 3; i++) {
                                 board[row][col + i] = 0;
                             } cursor.score += 100;
-                        }}
-                        if (row <= 7) {
-                            oneBelow = board[row + 1][col];
-                            twoBelow = board[row + 2][col];
-                            threeBelow = board[row + 3][col];
-                            fourBelow = board[row + 4][col];
-                            if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow && pivot === fourBelow) {
-                                for (let i = 0; i < 5; i++) {
-                                    board[row + i][col] = 0;
-                                } cursor.score += 700;
-                            }
                         }
-                        if (row <= 8) {
-                            oneBelow = board[row + 1][col];
-                            twoBelow = board[row + 2][col];
-                            threeBelow = board[row + 3][col];
-                            if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow) {
-                                for (let i = 0; i < 4; i++) {
-                                    board[row + i][col] = 0;
-                                } cursor.score += 300;
-                            }
-                        }
-                        if (row <= 9) {
-                            oneBelow = board[row + 1][col];
-                            twoBelow = board[row + 2][col];
-                            if (pivot === oneBelow && pivot === twoBelow) {
-                                for (let i = 0; i < 3; i++) {
-                                    board[row + i][col] = 0;
-                                } cursor.score += 100;
-                            }
-                        }
+                    }
                 }
             }
         }
