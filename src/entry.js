@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function checkAndDeleteClusters(board) {
-        for (let row = 0; row < 12; row++) {
+        for (let row = 1; row < 12; row++) {
             for (let col = 0; col < 6; col++) {
                 let pivot = board[row][col];
                 let oneBelow;
@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 let twoRight;
                 let threeRight;
                 let fourRight;
-                if (pivot !== 0) {
+                if (pivot !== 0 && board[row + 1][col] !== 0) {
                     if (row <= 7) {
                         oneBelow = board[row + 1][col];
                         twoBelow = board[row + 2][col];
@@ -232,30 +232,27 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                     }
                     if (col <= 1) {
-                        oneBelow = board[row + 1][col];
                         oneRight = board[row][col + 1];
                         twoRight = board[row][col + 2];
                         threeRight = board[row][col + 3];
                         fourRight = board[row][col + 4];
-                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight && pivot === fourRight && oneBelow !== 0) {
+                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight && pivot === fourRight) {
                             for (let i = 0; i < 5; i++) {
                                 board[row][col + i] = 0;
                             } cursor.score += 700;
                         }} if (col <= 2) {
-                        oneBelow = board[row + 1][col];
                         oneRight = board[row][col + 1];
                         twoRight = board[row][col + 2];
                         threeRight = board[row][col + 3];
-                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight && oneBelow !== 0) {
+                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight) {
                             for (let i = 0; i < 4; i++) {
                                 board[row][col + i] = 0;
                             } cursor.score += 300;
                         }
                         } if (col <= 3) {
-                        oneBelow = board[row + 1][col];
                         oneRight = board[row][col + 1];
                         twoRight = board[row][col + 2];
-                        if (pivot === oneRight && pivot === twoRight && oneBelow !== 0) {
+                        if (pivot === oneRight && pivot === twoRight) {
                             for (let i = 0; i < 3; i++) {
                                 board[row][col + i] = 0;
                             } cursor.score += 100;
