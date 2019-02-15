@@ -53,17 +53,12 @@ document.addEventListener("DOMContentLoaded", () => {
         while (checking) {
             checking = false;
             if (grid.length !== 13) {
-                grid.forEach((value, i) => {
-                    if (i < 4 && value == grid[i + 1] && grid == board[i + 2]) {
+                for (let i = 0; i < 6; i++) {
+                    if ((i < 4 && grid[i] === grid[i + 1] && grid[i] === grid[i + 2]) || (grid[i] === board[12][i])) {
                         checking = true;
                         grid[i] = randomBlock();
-                        for (let i = 0; i < 6; i++) {
-                            if (grid[i] === board[12][i]) {
-                                grid[i] = randomBlock;
-                            }
-                        }
-                    }
-                });
+                    } 
+                }
             } else {
                 grid.forEach((width, y) => {
                     width.forEach((value, x) => {
@@ -165,64 +160,64 @@ document.addEventListener("DOMContentLoaded", () => {
         let twoLeft;
         let oneRight;
         let twoRight;
-        debugger
+        
 
         for (let i = 0; i < increment; i++) {
             let y = position[0] + i;
             let x = position[1];
             let pivot = board[y][x];
-            debugger
+            
             if (x >= 2) {
                 oneLeft = board[y][x - 1];
                 twoLeft = board[y][x - 2];
-                debugger
+                
                 if (x <= 3) {
                     oneRight = board[y][x + 1];
                     twoRight = board[y][x + 2];
-                    debugger
+                    
                     if (pivot === oneLeft && pivot === twoLeft && pivot === oneRight && pivot === twoRight) {
                         board[y][x - 1] = 0;
                         board[y][x - 2] = 0;
                         board[y][x + 1] = 0;
                         board[y][x + 2] = 0;
                         cursor.score += 700;
-                        debugger
+                        
                     }
                 } if (x <= 4) {
                     oneRight = board[y][x + 1];
-                    debugger
+                    
                     if (pivot === oneLeft && pivot === twoLeft && pivot === oneRight) {
                         board[y][x - 1] = 0;
                         board[y][x - 2] = 0;
                         board[y][x + 1] = 0;
                         cursor.score += 500;
-                        debugger
+                        
                     }
                 } if (pivot === oneLeft && pivot === twoLeft) {
                     board[y][x - 1] = 0;
                     board[y][x - 2] = 0;
                     cursor.score += 200;
-                    debugger
+                    
                 }
             } if (x <= 3) {
                 oneRight = board[y][x + 1];
                 twoRight = board[y][x + 2];
-                debugger
+                
                 if (x >= 1) {
                     oneLeft = board[y][x - 1];
-                    debugger
+                    
                     if (pivot === oneRight && pivot === twoRight && pivot === oneLeft) {
                         board[y][x + 1] = 0;
                         board[y][x + 1] = 0;
                         board[y][x + 2] = 0;
                         cursor.score += 500;
-                        debugger
+                        
                     }
                 } if (pivot === oneRight && pivot === twoRight) {
                     board[y][x + 1] = 0;
                     board[y][x + 2] = 0;
                     cursor.score += 200;
-                    debugger
+                    
                 }
             }
         }
@@ -267,10 +262,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (row <= 9) {
                         oneBelow = board[row + 1][col];
                         twoBelow = board[row + 2][col];
+                        
                         if (pivot === oneBelow && pivot === twoBelow) {
+                            
                             checkAndDeleteNexusClusters([row, col], 3);
                             for (let i = 0; i < 3; i++) {
                                 board[row + i][col] = 0;
+                                
                             } cursor.score += 100;
                         }
                     }
