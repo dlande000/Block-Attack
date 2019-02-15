@@ -165,52 +165,64 @@ document.addEventListener("DOMContentLoaded", () => {
         let twoLeft;
         let oneRight;
         let twoRight;
+        debugger
 
         for (let i = 0; i < increment; i++) {
             let y = position[0] + i;
             let x = position[1];
             let pivot = board[y][x];
+            debugger
             if (x >= 2) {
                 oneLeft = board[y][x - 1];
                 twoLeft = board[y][x - 2];
+                debugger
                 if (x <= 3) {
                     oneRight = board[y][x + 1];
                     twoRight = board[y][x + 2];
+                    debugger
                     if (pivot === oneLeft && pivot === twoLeft && pivot === oneRight && pivot === twoRight) {
                         board[y][x - 1] = 0;
                         board[y][x - 2] = 0;
                         board[y][x + 1] = 0;
                         board[y][x + 2] = 0;
                         cursor.score += 700;
+                        debugger
                     }
                 } if (x <= 4) {
                     oneRight = board[y][x + 1];
+                    debugger
                     if (pivot === oneLeft && pivot === twoLeft && pivot === oneRight) {
                         board[y][x - 1] = 0;
                         board[y][x - 2] = 0;
                         board[y][x + 1] = 0;
                         cursor.score += 500;
+                        debugger
                     }
                 } if (pivot === oneLeft && pivot === twoLeft) {
                     board[y][x - 1] = 0;
                     board[y][x - 2] = 0;
                     cursor.score += 200;
+                    debugger
                 }
             } if (x <= 3) {
                 oneRight = board[y][x + 1];
                 twoRight = board[y][x + 2];
+                debugger
                 if (x >= 1) {
                     oneLeft = board[y][x - 1];
+                    debugger
                     if (pivot === oneRight && pivot === twoRight && pivot === oneLeft) {
                         board[y][x + 1] = 0;
                         board[y][x + 1] = 0;
                         board[y][x + 2] = 0;
                         cursor.score += 500;
+                        debugger
                     }
                 } if (pivot === oneRight && pivot === twoRight) {
                     board[y][x + 1] = 0;
                     board[y][x + 2] = 0;
                     cursor.score += 200;
+                    debugger
                 }
             }
         }
@@ -303,6 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
         });
+        checkAndDeleteClusters(board);
     }
 
     document.addEventListener('keydown', event => {
@@ -345,6 +358,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 cursor.pos.y--;
             }
             yIncrease = 0;
+            checkAndDeleteClusters(board);
         }
     }
 
@@ -368,7 +382,6 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.fillText("to begin!", 0.3, 11);
         } else if (!gameOver) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            checkAndDeleteClusters(board);
             fall(board);
             drawBoard(board);
             updateScore();
@@ -393,6 +406,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         requestAnimationFrame(update);
     }
+
+    window.board = board;
 
     playMusic();
     update();
