@@ -173,16 +173,41 @@ document.addEventListener("DOMContentLoaded", () => {
             if (x >= 2) {
                 oneLeft = board[y][x - 1];
                 twoLeft = board[y][x - 2];
-                if (pivot === oneLeft && pivot === twoLeft) {
+                if (x <= 3) {
+                    oneRight = board[y][x + 1];
+                    twoRight = board[y][x + 2];
+                    if (pivot === oneLeft && pivot === twoLeft && pivot === oneRight && pivot === twoRight) {
+                        board[y][x - 1] = 0;
+                        board[y][x - 2] = 0;
+                        board[y][x + 1] = 0;
+                        board[y][x + 2] = 0;
+                        cursor.score += 700;
+                    }
+                } if (x <= 4) {
+                    oneRight = board[y][x + 1];
+                    if (pivot === oneLeft && pivot === twoLeft && pivot === oneRight) {
+                        board[y][x - 1] = 0;
+                        board[y][x - 2] = 0;
+                        board[y][x + 1] = 0;
+                        cursor.score += 500;
+                    }
+                } if (pivot === oneLeft && pivot === twoLeft) {
                     board[y][x - 1] = 0;
                     board[y][x - 2] = 0;
                     cursor.score += 200;
                 }
-            }
-            if (x <= 3) {
+            } if (x <= 3) {
                 oneRight = board[y][x + 1];
                 twoRight = board[y][x + 2];
-                if (pivot === oneRight && pivot === twoRight) {
+                if (x >= 1) {
+                    oneLeft = board[y][x - 1];
+                    if (pivot === oneRight && pivot === twoRight && pivot === oneLeft) {
+                        board[y][x + 1] = 0;
+                        board[y][x + 1] = 0;
+                        board[y][x + 2] = 0;
+                        cursor.score += 500;
+                    }
+                } if (pivot === oneRight && pivot === twoRight) {
                     board[y][x + 1] = 0;
                     board[y][x + 2] = 0;
                     cursor.score += 200;
