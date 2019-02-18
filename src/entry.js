@@ -223,9 +223,35 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function checkStartingPoint(row, col) {
+        if (board[row][col] !== 0) {
+            let start = board[row][col];
+            for (let i = 0; i < 4; i++) {
+                if (row < 11 && row > 0) {
+                let check = board[row - 1][col];
+                if (start === check && start !== 0) {
+                    row -= 1;
+                    start = board[row][col];
+                } else {
+                    break;
+                }
+            }}
+            if (start === board[row]) {
+                if (col > 0 && col < 5) {
+                checkStartingPoint(row, col + 1); 
+            } else {
+                return [row, col];
+            }
+        }
+        }
+        return [row, col];
+    }
+
     function checkAndDeleteClusters(board) {
-        for (let row = 1; row < 12; row++) {
-            for (let col = 0; col < 6; col++) {
+        for (let rowY = 1; rowY < 12; rowY++) {
+            for (let colX = 0; colX < 6; colX++) {
+                let row = checkStartingPoint(rowY, colX)[0];
+                let col = checkStartingPoint(rowY, colX)[1];
                 let pivot = board[row][col];
                 let oneBelow;
                 let twoBelow;
@@ -265,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         
                         if (pivot === oneBelow && pivot === twoBelow) {
                             
-                            checkAndDeleteNexusClusters([row, col], 3);
+                            // checkAndDeleteNexusClusters([row, col], 3);
                             for (let i = 0; i < 3; i++) {
                                 board[row + i][col] = 0;
                                 
@@ -277,7 +303,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         twoRight = board[row][col + 2];
                         threeRight = board[row][col + 3];
                         fourRight = board[row][col + 4];
-                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight && pivot === fourRight) {
+                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight && pivot === fourRight && board[row + 1][col + 1] !== 0 && board[row + 1][col + 2] !== 0 && board[row + 1][col + 3] !== 0 && board[row + 1][col + 4] !== 0) {
                             for (let i = 0; i < 5; i++) {
                                 board[row][col + i] = 0;
                             } cursor.score += 700;
@@ -285,7 +311,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         oneRight = board[row][col + 1];
                         twoRight = board[row][col + 2];
                         threeRight = board[row][col + 3];
-                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight) {
+                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight && board[row + 1][col + 1] !== 0 && board[row + 1][col + 2] !== 0 && board[row + 1][col + 3] !== 0) {
                             for (let i = 0; i < 4; i++) {
                                 board[row][col + i] = 0;
                             } cursor.score += 300;
@@ -293,7 +319,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         } if (col <= 3) {
                         oneRight = board[row][col + 1];
                         twoRight = board[row][col + 2];
-                        if (pivot === oneRight && pivot === twoRight) {
+                        if (pivot === oneRight && pivot === twoRight && board[row + 1][col + 1] !== 0 && board[row + 1][col + 2] !== 0) {
                             for (let i = 0; i < 3; i++) {
                                 board[row][col + i] = 0;
                             } cursor.score += 100;
@@ -345,7 +371,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    let increaseInterval = 3500;
+    let increaseInterval = 4500;
     let yIncrease = 0;
 
     function increaseY() {
