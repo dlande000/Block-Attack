@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let isPlaying = false;
 
     const myAudio = document.getElementById("music");
+    const mySoundEffect = document.getElementById("sound-effect");
 
     function playMusic() {
         if (!isPlaying) {
@@ -15,6 +16,14 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             myAudio.play();
         }
+    }
+
+    function playSoundEffect() {
+        mySoundEffect.play();
+        setTimeout(function() {
+            mySoundEffect.pause();
+            mySoundEffect.currentTime = 0;
+        }, 450);
     }
 
     function randomBlock() {
@@ -181,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         board[y][x + 1] = 0;
                         board[y][x + 2] = 0;
                         cursor.score += 700;
-                        
+                        playSoundEffect();
                     }
                 } if (x <= 4) {
                     oneRight = board[y][x + 1];
@@ -191,13 +200,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         board[y][x - 2] = 0;
                         board[y][x + 1] = 0;
                         cursor.score += 500;
-                        
+                        playSoundEffect();
                     }
                 } if (pivot === oneLeft && pivot === twoLeft) {
                     board[y][x - 1] = 0;
                     board[y][x - 2] = 0;
                     cursor.score += 200;
-                    
+                    playSoundEffect();
                 }
             } if (x <= 3) {
                 oneRight = board[y][x + 1];
@@ -211,13 +220,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         board[y][x + 1] = 0;
                         board[y][x + 2] = 0;
                         cursor.score += 500;
-                        
+                        playSoundEffect();
                     }
                 } if (pivot === oneRight && pivot === twoRight) {
                     board[y][x + 1] = 0;
                     board[y][x + 2] = 0;
                     cursor.score += 200;
-                    
+                    playSoundEffect();
                 }
             }
         }
@@ -227,8 +236,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (board[row][col] !== 0) {
             let start = board[row][col];
             for (let i = 0; i < 4; i++) {
-                if (row < 11 && row > 0) {
-                let check = board[row - 1][col];
+                if (row < 11 && row > 1) {
+                    let check = board[row - 1][col];
                 if (start === check && start !== 0) {
                     row -= 1;
                     start = board[row][col];
@@ -236,16 +245,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     break;
                 }
             }}
-            if (start === board[row]) {
+            if (start === board[row][col - 1]) {
                 if (col > 0 && col < 5) {
-                checkStartingPoint(row, col + 1); 
-            } else {
-                return [row, col];
+                checkStartingPoint(row, col - 1);
+                }
             }
-        }
         }
         return [row, col];
     }
+
+    // apply checking to specifc starting point
+    // see if there are larger clusters
+    // delete all connected clusters
 
     function checkAndDeleteClusters(board) {
         for (let rowY = 1; rowY < 12; rowY++) {
@@ -272,6 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             for (let i = 0; i < 5; i++) {
                                 board[row + i][col] = 0;
                             } cursor.score += 700;
+                            playSoundEffect();
                         }
                     }
                     if (row <= 8) {
@@ -283,6 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             for (let i = 0; i < 4; i++) {
                                 board[row + i][col] = 0;
                             } cursor.score += 300;
+                            playSoundEffect();
                         }
                     }
                     if (row <= 9) {
@@ -291,11 +304,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         
                         if (pivot === oneBelow && pivot === twoBelow) {
                             
-                            // checkAndDeleteNexusClusters([row, col], 3);
+                            checkAndDeleteNexusClusters([row, col], 3);
                             for (let i = 0; i < 3; i++) {
                                 board[row + i][col] = 0;
                                 
                             } cursor.score += 100;
+                            playSoundEffect();
                         }
                     }
                     if (col <= 1) {
@@ -307,6 +321,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             for (let i = 0; i < 5; i++) {
                                 board[row][col + i] = 0;
                             } cursor.score += 700;
+                            playSoundEffect();
                         }} if (col <= 2) {
                         oneRight = board[row][col + 1];
                         twoRight = board[row][col + 2];
@@ -315,6 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             for (let i = 0; i < 4; i++) {
                                 board[row][col + i] = 0;
                             } cursor.score += 300;
+                            playSoundEffect();
                         }
                         } if (col <= 3) {
                         oneRight = board[row][col + 1];
@@ -323,6 +339,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             for (let i = 0; i < 3; i++) {
                                 board[row][col + i] = 0;
                             } cursor.score += 100;
+                            playSoundEffect();
                         }
                     }
                 }
@@ -371,7 +388,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    let increaseInterval = 4500;
+    let increaseInterval = 4000;
     let yIncrease = 0;
 
     function increaseY() {
@@ -407,6 +424,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (!gameOver) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             fall(board);
+            checkAndDeleteClusters(board);
             drawBoard(board);
             updateScore();
             checkGameOver(board[0]);
@@ -432,6 +450,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     window.board = board;
+    window.checkStartingPoint = checkStartingPoint;
 
     playMusic();
     update();
