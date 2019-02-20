@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function playMusic() {
         if (!isPlaying) {
             myAudio.pause();
+            myAudio.currentTime = 0;
         } else {
             myAudio.play();
         }
@@ -34,22 +35,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function createBoard() {
-        const grid = [];
+        const board = [];
         for (let height = 0; height < 13; height++) {
-            grid.push(new Array(6).fill(0));
+            board.push(new Array(6).fill(0));
         }
         for (let row = 12; row > 5; row--) {
             for (let col = 0; col < 6; col++) {
                 if (col !== 3) {
-                    grid[row][col] = randomBlock();
+                    board[row][col] = randomBlock();
                 }
             }
         }
         for (let x = 10; x < 13; x++) {
-            grid[x][3] = randomBlock();
+            board[x][3] = randomBlock();
         }
-        checkStartingClusters(grid);
-        return grid;
+        checkStartingClusters(board);
+        return board;
     }
 
     let board = createBoard();
@@ -192,7 +193,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         board[y][x + 1] = 0;
                         board[y][x + 2] = 0;
                         cursor.score += 700;
-                        playSoundEffect();
                     }
                 } if (x <= 4) {
                     oneRight = board[y][x + 1];
@@ -202,13 +202,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         board[y][x - 2] = 0;
                         board[y][x + 1] = 0;
                         cursor.score += 500;
-                        playSoundEffect();
                     }
                 } if (pivot === oneLeft && pivot === twoLeft) {
                     board[y][x - 1] = 0;
                     board[y][x - 2] = 0;
                     cursor.score += 200;
-                    playSoundEffect();
                 }
             } if (x <= 3) {
                 oneRight = board[y][x + 1];
@@ -222,38 +220,26 @@ document.addEventListener("DOMContentLoaded", () => {
                         board[y][x + 1] = 0;
                         board[y][x + 2] = 0;
                         cursor.score += 500;
-                        playSoundEffect();
                     }
                 } if (pivot === oneRight && pivot === twoRight) {
                     board[y][x + 1] = 0;
                     board[y][x + 2] = 0;
                     cursor.score += 200;
-                    playSoundEffect();
                 }
             }
         }
     }
 
     function checkStartingPoint(row, col) {
-        if (board[row][col] !== 0) {
-            let start = board[row][col];
-            for (let i = 0; i < 4; i++) {
-                if (row < 11 && row > 1) {
-                    let check = board[row - 1][col];
-                if (start === check && start !== 0) {
-                    row -= 1;
-                    start = board[row][col];
-                } else {
-                    break;
-                }
-            }}
-            if (start === board[row][col - 1]) {
-                if (col > 0 && col < 5) {
-                checkStartingPoint(row, col - 1);
-                }
-            }
+        if (board[row][col] === board[row][col - 1]) {
+            let col2 = col - 1;
+            return checkStartingPoint(row, col2);
+        } else if (board[row][col] === board[row - 1][col]) {
+            let row2 = row - 1;
+            return checkStartingPoint(row2, col);
+        } else {
+            return [row, col];
         }
-        return [row, col];
     }
 
     // apply checking to specifc starting point
@@ -263,8 +249,10 @@ document.addEventListener("DOMContentLoaded", () => {
     function checkAndDeleteClusters(board) {
         for (let rowY = 1; rowY < 12; rowY++) {
             for (let colX = 0; colX < 6; colX++) {
-                let row = checkStartingPoint(rowY, colX)[0];
-                let col = checkStartingPoint(rowY, colX)[1];
+                if (board[rowY][colX] !== 0 && board[rowY + 1][colX] !== 0) {
+                let start = checkStartingPoint(rowY, colX);
+                let row = start[0];
+                let col = start[1];
                 let pivot = board[row][col];
                 let oneBelow;
                 let twoBelow;
@@ -274,7 +262,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 let twoRight;
                 let threeRight;
                 let fourRight;
-                if (pivot !== 0 && board[row + 1][col] !== 0) {
                     if (row <= 7) {
                         oneBelow = board[row + 1][col];
                         twoBelow = board[row + 2][col];
