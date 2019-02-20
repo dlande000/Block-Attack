@@ -379,6 +379,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 cursor.score = 0;
                 board = createBoard();
                 yIncrease = 0;
+                isPlaying = true;
+                playMusic();
             } else {
                 swap(board, cursor);
             }
