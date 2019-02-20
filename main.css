@@ -24,9 +24,10 @@ footer {
 }
 
 p {
-    font-size: 8px;
+    font-size: 11px;
     color: #F8F8FF;
     text-shadow: none;
+    font-family: 'Courier New', Courier, monospace
 }
 
 body {

@@ -19,11 +19,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function playSoundEffect() {
-        mySoundEffect.play();
-        setTimeout(function() {
-            mySoundEffect.pause();
-            mySoundEffect.currentTime = 0;
-        }, 450);
+        if (isPlaying) {
+            mySoundEffect.play();
+            setTimeout(function() {
+                mySoundEffect.pause();
+                mySoundEffect.currentTime = 0;
+            }, 450);
+        }
     }
 
     function randomBlock() {
