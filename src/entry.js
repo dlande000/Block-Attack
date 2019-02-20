@@ -433,6 +433,9 @@ document.addEventListener("DOMContentLoaded", () => {
             updateScore();
             checkGameOver(board[0]);
         } else if (gameOver) {
+            isPlaying = false;
+            playMusic();
+            myAudio.currentTime = 0;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
