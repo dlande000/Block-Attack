@@ -106,6 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function addRowToBoard(row, board) {
         board.shift();
         board.push(row);
+        checkAndDeleteClusters(board);
     }
 
     function checkGameOver(row) {
@@ -230,29 +231,31 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function checkStartingPoint(row, col) {
+
+    function checkStartingPointHorizontal(row, col) {
         if (board[row][col] === board[row][col - 1]) {
             let col2 = col - 1;
-            return checkStartingPoint(row, col2);
-        } else if (board[row][col] === board[row - 1][col]) {
+            return checkStartingPointHorizontal(row, col2);
+        } else {
+            return [row, col];
+        }
+
+    }
+    function checkStartingPointVertical(row, col) {
+        if ((board[row][col] === board[row - 1][col] && board[row][col] === board[row + 1][col]) || (board[row][col] === board[row - 1][col] && board[row][col] === board[row - 2][col]))  {
             let row2 = row - 1;
-            return checkStartingPoint(row2, col);
+            return checkStartingPointVertical(row2, col);
         } else {
             return [row, col];
         }
     }
 
-    // apply checking to specifc starting point
-    // see if there are larger clusters
-    // delete all connected clusters
-
     function checkAndDeleteClusters(board) {
-        for (let rowY = 1; rowY < 12; rowY++) {
+        for (let rowY = 0; rowY < 12; rowY++) {
             for (let colX = 0; colX < 6; colX++) {
                 if (board[rowY][colX] !== 0 && board[rowY + 1][colX] !== 0) {
-                let start = checkStartingPoint(rowY, colX);
-                let row = start[0];
-                let col = start[1];
+                let col = checkStartingPointHorizontal(rowY, colX)[1];
+                let row = checkStartingPointVertical(rowY, col)[0];
                 let pivot = board[row][col];
                 let oneBelow;
                 let twoBelow;
@@ -262,38 +265,38 @@ document.addEventListener("DOMContentLoaded", () => {
                 let twoRight;
                 let threeRight;
                 let fourRight;
-                    if (row <= 7) {
+                    if (row < 8) {
                         oneBelow = board[row + 1][col];
                         twoBelow = board[row + 2][col];
                         threeBelow = board[row + 3][col];
                         fourBelow = board[row + 4][col];
                         if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow && pivot === fourBelow) {
-                            checkAndDeleteNexusClusters([row + 2, col], 1);
+                            // checkAndDeleteNexusClusters([row + 2, col], 1);
                             for (let i = 0; i < 5; i++) {
                                 board[row + i][col] = 0;
                             } cursor.score += 700;
                             playSoundEffect();
                         }
                     }
-                    if (row <= 8) {
+                    if (row < 9) {
                         oneBelow = board[row + 1][col];
                         twoBelow = board[row + 2][col];
                         threeBelow = board[row + 3][col];
                         if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow) {
-                            checkAndDeleteNexusClusters([row + 1, col], 2);
+                            // checkAndDeleteNexusClusters([row + 1, col], 2);
                             for (let i = 0; i < 4; i++) {
                                 board[row + i][col] = 0;
                             } cursor.score += 300;
                             playSoundEffect();
                         }
                     }
-                    if (row <= 9) {
+                    if (row < 10) {
                         oneBelow = board[row + 1][col];
                         twoBelow = board[row + 2][col];
                         
                         if (pivot === oneBelow && pivot === twoBelow) {
                             
-                            checkAndDeleteNexusClusters([row, col], 3);
+                            // checkAndDeleteNexusClusters([row, col], 3);
                             for (let i = 0; i < 3; i++) {
                                 board[row + i][col] = 0;
                                 
@@ -301,7 +304,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             playSoundEffect();
                         }
                     }
-                    if (col <= 1) {
+                    if (col < 2) {
                         oneRight = board[row][col + 1];
                         twoRight = board[row][col + 2];
                         threeRight = board[row][col + 3];
@@ -311,7 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 board[row][col + i] = 0;
                             } cursor.score += 700;
                             playSoundEffect();
-                        }} if (col <= 2) {
+                        }} if (col < 3) {
                         oneRight = board[row][col + 1];
                         twoRight = board[row][col + 2];
                         threeRight = board[row][col + 3];
@@ -321,7 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             } cursor.score += 300;
                             playSoundEffect();
                         }
-                        } if (col <= 3) {
+                        } if (col < 4) {
                         oneRight = board[row][col + 1];
                         twoRight = board[row][col + 2];
                         if (pivot === oneRight && pivot === twoRight && board[row + 1][col + 1] !== 0 && board[row + 1][col + 2] !== 0) {
@@ -390,7 +393,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 cursor.pos.y--;
             }
             yIncrease = 0;
-            checkAndDeleteClusters(board);
         }
     }
 
@@ -415,7 +417,6 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (!gameOver) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             fall(board);
-            checkAndDeleteClusters(board);
             drawBoard(board);
             updateScore();
             checkGameOver(board[0]);
@@ -444,7 +445,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     window.board = board;
-    window.checkStartingPoint = checkStartingPoint;
 
     playMusic();
     update();
