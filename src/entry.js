@@ -272,7 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         threeBelow = board[row + 3][col];
                         fourBelow = board[row + 4][col];
                         if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow && pivot === fourBelow) {
-                            // checkAndDeleteNexusClusters([row + 2, col], 1);
+                            checkAndDeleteNexusClusters([row + 2, col], 1);
                             for (let i = 0; i < 5; i++) {
                                 board[row + i][col] = 0;
                             } cursor.score += 700;
@@ -284,7 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         twoBelow = board[row + 2][col];
                         threeBelow = board[row + 3][col];
                         if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow) {
-                            // checkAndDeleteNexusClusters([row + 1, col], 2);
+                            checkAndDeleteNexusClusters([row + 1, col], 2);
                             for (let i = 0; i < 4; i++) {
                                 board[row + i][col] = 0;
                             } cursor.score += 300;
@@ -297,7 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         
                         if (pivot === oneBelow && pivot === twoBelow) {
                             
-                            // checkAndDeleteNexusClusters([row, col], 3);
+                            checkAndDeleteNexusClusters([row, col], 3);
                             for (let i = 0; i < 3; i++) {
                                 board[row + i][col] = 0;
                                 
