@@ -106,6 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function addRowToBoard(row, board) {
         board.shift();
         board.push(row);
+        checkGameOver(board[0]);
         checkAndDeleteClusters(board);
     }
 
