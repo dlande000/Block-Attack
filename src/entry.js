@@ -383,7 +383,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    let increaseInterval = 4000;
+    let increaseInterval = 5000;
     let yIncrease = 0;
 
     function increaseY() {
