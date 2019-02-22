@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
         for (let height = 0; height < 13; height++) {
             board.push(new Array(6).fill(0));
         }
-        for (let row = 12; row > 5; row--) {
+        for (let row = 12; row > 6; row--) {
             for (let col = 0; col < 6; col++) {
                 if (col !== 3) {
                     board[row][col] = randomBlock();
@@ -383,7 +383,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    let increaseInterval = 5000;
+    let increaseInterval = 6000;
     let yIncrease = 0;
 
     function increaseY() {
