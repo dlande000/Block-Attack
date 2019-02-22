@@ -1,54 +1,70 @@
-# BlockAttack
+# Block Attack!
 
 ### Background
 
-BlockAttack is a JavaScript game inspired by [Tetris Attack](https://www.youtube.com/watch?v=c8FtDgDPTbY&t=136s). Using a cursor, a player navigates a 6x12 grid and flips the position of two blocks. If three or more blocks of the same color form a horizontal or verticle line, the blocks disappear, and the player is awarded points. As the time increases, the speed at which new blocks are added increases. Once the player's blocks hit the top of the grid, they lose. 
+[Block Attack! Live](https://www.davidanderson.nyc/Block-Attack)
 
-### Functionality & MVP  
+![screenshot](./assets/images/screenshot.png)
 
-With Block Attack, users will be able to:
+Block Attack! is a JavaScript puzzle game inspired by [Tetris Attack](https://www.youtube.com/watch?v=c8FtDgDPTbY&t=136s). Using a cursor, a player navigates a grid and flips the horizontal position of two blocks. If three or more blocks of the same color form a horizontal or verticle line, the blocks disappear, and the player is awarded points. Once the player's blocks hit the top of the grid, the game is over. 
 
-- [ ] Start, pause, and reset the game
-- [ ] Choose a difficulty and speed at the beginning
+### Technologies and Architecture
 
-In addition, this project will include:
-
-- [ ] A modal that allows users to set the difficulty/speed of the game and that describes the rules
-- [ ] A production README
-
-### Wireframes
-
-This app will consist of a single screen with game board, game controls, and nav links to the Github and my LinkedIn; additionally, the screen will have an instructions modal that also allows the player to set the speed and difficulty at the start.  Game controls will include start, pause, and reset, the direction arrows to navigate the grid, and an input which switches the blocks highlighted by the grid. (Additionally, if there is music, there will be a button to toggle on and off the music.) These controlls will be displayed on the left; my personal links will be displayed on the right. 
-
-![wireframe](./assets/images/wireframe.png)
-
-### Architecture and Technologies
-
-This project will be implemented with the following technologies:
+Block Attack! implements with the following technologies:
 
 - `JavaScript`
 - `HTML Canvas`
 
-In addition to the entry file, the following scripts will be involved with the project:
+Block Attack! is built on a 6x13 grid; the bottom-most row rises from off-canvas until it is in the penultimate position. Before fully entering the visible grid, the bottom row is not available for player manipulation or puzzle solutions. 
 
-`board.js`: this script will populate the board with the `block.js` elements, and will determine if a player has scored.
+The grid is populated with randomly generated blocks; once the grid is populated, a second function checks to remove any groupings of blocks that would provide immediate solutions upon game start. 
 
-`block.js`: this script will hold the information about a block's attributes. 
+`function randomBlock() {`
+`        const blocks = "RYGBDP";`
+`        return blocks[Math.floor(Math.random() * 6)];`
+`    }`
 
-`cursor.js`: this script will allow the player to navigate around the board and flip blocks. 
+`function createBoard() {`
+`    const board = [];`
+`    for (let height = 0; height < 13; height++) {`
+`        board.push(new Array(6).fill(0));`
+`    }`
+`    for (let row = 12; row > 6; row--) {`
+`        for (let col = 0; col < 6; col++) {`
+`            if (col !== 3) {`
+`                board[row][col] = randomBlock();`
+`            }`
+`        }`
+`    }`
+`    for (let x = 10; x < 13; x++) {`
+`        board[x][3] = randomBlock();`
+`    }`
+`    checkStartingClusters(board);`
+`    return board;`
+`}`
 
-### Implementation Timeline
+New rows are added to the grid every six seconds. Like the start board, rows are randomly generated and then checked for starting clusters. 
 
-**Day 1**: Setup all necessary Node modules and write a basic entry file and the bare bones of all 3 scripts outlined above. 
+`function createNextRow() {`
+`    let nextRow = [];`
+`    for (let i = 0; i < 6; i++) {`
+`        nextRow.push(randomBlock());`
+`    }`
+`    checkStartingClusters(nextRow);`
+`    return nextRow;`
+`}`
 
-**Day 2**: Create `block.js`, and use it to populate a randomized starting grid for `board.js`. 
+Block Attack! is constantly combing through the grid to look for solutions that may have arisen from swapped, added, or falling blocks. Because of the number of solutions available, the main checking function, `checkAndDeleteClusters`, relies on many helper functions. First, the grid is provided a specific starting point via `checkStartingPointHorizontal` and `checkStartingPointVertical`; this is to ensure that a puzzle is always assessed by blocks below and to the right of a starting block, thus decreasing the complexity of checking for solutions. Then, while checking if a solution is found by testing the values of blocks below and to the right, the function `checkAndDeleteNexusClusters` looks for complex solutions—ones in which vertical solutions also provide horizontal solutions. Finally, the function `checkAndDeleteNexusClustersLeftAndDown` tests for one outlier solution. 
 
-**Day 3**: In `board.js`, write the logic to determine if three or more blocks of the same color are aligned, and write the logic that determines the number of points based on combos. Write the `cursor.js` logic to allow the player to interact witht he game. 
+Players are awarded more points for more complex solutions (solutions that clear more blocks). The game is over once the top row of the grid has any non-zero values. 
 
-**Day 4**: Install the controls for the user to interact with the game.  Style the frontend, making it polished and professional. 
+### Future features
 
+- Increase decrease the time between the addition of new rows to the grid. 
+- Create difficulty settings that players can choose before starting a game. 
+- Add falling blocks at incremented intervals and with random heights and widths that can be broken apart by solutions elsewhere on the grid. 
+- Add a computer opponent or multiplayer option. 
 
-### Bonus features
+### Artistic credits
 
-- [ ] Add falling blocks at incremented intervals and with random heights and widths that can be broken apart by combos
-- [ ] Add a computer opponent or multiplayer option# Block-Attack
+Block Attack! was inspired by Tetris Attack (developed by Intelligent Systems and published by Nintendo in 1995). Game sprites were taken from [Tetris Attack JS](https://github.com/tzwaan/tetris-attack-js). "Blaze Stage" (background music) was taken from [Zophar's Music Domain](https://www.zophar.net/music/nintendo-snes-spc/tetris-attack). Sprites and music originally appeared in Tetris Attack. "Coin" sound effect was taken from [The Mushroom Kingdom](https://themushroomkingdom.net/media/smw/wav) and originally apeared in Super Mario World (developed and published in 1990 by Nintendo). Background image artist unknown. 
