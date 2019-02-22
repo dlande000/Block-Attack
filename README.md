@@ -19,40 +19,44 @@ Block Attack! is built on a 6x13 grid; the bottom-most row rises from off-canvas
 
 The grid is populated with randomly generated blocks; once the grid is populated, a second function checks to remove any groupings of blocks that would provide immediate solutions upon game start. 
 
-`function randomBlock() {`
-`        const blocks = "RYGBDP";`
-`        return blocks[Math.floor(Math.random() * 6)];`
-`    }`
+```
+function randomBlock() {
+        const blocks = "RYGBDP";
+        return blocks[Math.floor(Math.random() * 6)];
+    }
 
-`function createBoard() {`
-`    const board = [];`
-`    for (let height = 0; height < 13; height++) {`
-`        board.push(new Array(6).fill(0));`
-`    }`
-`    for (let row = 12; row > 6; row--) {`
-`        for (let col = 0; col < 6; col++) {`
-`            if (col !== 3) {`
-`                board[row][col] = randomBlock();`
-`            }`
-`        }`
-`    }`
-`    for (let x = 10; x < 13; x++) {`
-`        board[x][3] = randomBlock();`
-`    }`
-`    checkStartingClusters(board);`
-`    return board;`
-`}`
+function createBoard() {
+    const board = [];
+    for (let height = 0; height < 13; height++) {
+        board.push(new Array(6).fill(0));
+    }
+    for (let row = 12; row > 6; row--) {
+        for (let col = 0; col < 6; col++) {
+            if (col !== 3) {
+                board[row][col] = randomBlock();
+            }
+        }
+    }
+    for (let x = 10; x < 13; x++) {
+        board[x][3] = randomBlock();
+    }
+    checkStartingClusters(board);
+    return board;
+}
+```
 
 New rows are added to the grid every six seconds. Like the start board, rows are randomly generated and then checked for starting clusters. 
 
-`function createNextRow() {`
-`    let nextRow = [];`
-`    for (let i = 0; i < 6; i++) {`
-`        nextRow.push(randomBlock());`
-`    }`
-`    checkStartingClusters(nextRow);`
-`    return nextRow;`
-`}`
+```
+function createNextRow() {
+    let nextRow = [];
+    for (let i = 0; i < 6; i++) {
+        nextRow.push(randomBlock());
+    }
+    checkStartingClusters(nextRow);
+    return nextRow;
+}
+```
 
 Block Attack! is constantly combing through the grid to look for solutions that may have arisen from swapped, added, or falling blocks. Because of the number of solutions available, the main checking function, `checkAndDeleteClusters`, relies on many helper functions. First, the grid is provided a specific starting point via `checkStartingPointHorizontal` and `checkStartingPointVertical`; this is to ensure that a puzzle is always assessed by blocks below and to the right of a starting block, thus decreasing the complexity of checking for solutions. Then, while checking if a solution is found by testing the values of blocks below and to the right, the function `checkAndDeleteNexusClusters` looks for complex solutions—ones in which vertical solutions also provide horizontal solutions. Finally, the function `checkAndDeleteNexusClustersLeftAndDown` tests for one outlier solution. 
 
