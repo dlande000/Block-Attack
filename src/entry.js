@@ -254,7 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function checkAndDeleteClusters(board) {
         for (let rowY = 0; rowY < 12; rowY++) {
             for (let colX = 0; colX < 6; colX++) {
-                if (board[rowY][colX] !== 0 && board[rowY + 1][colX] !== 0) {
+                if (board[rowY][colX] !== 0 && board[rowY + 1][colX] !== 0 && !gameOver) {
                 let col = checkStartingPointHorizontal(rowY, colX)[1];
                 let row = checkStartingPointVertical(rowY, col)[0];
                 let pivot = board[row][col];
