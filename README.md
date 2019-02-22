@@ -2,7 +2,7 @@
 
 ### Background
 
-[Block Attack! Live](https://www.davidanderson.nyc/Block-Attack)
+[Block Attack! Live](http://www.davidanderson.nyc/Block-Attack)
 
 ![screenshot](./assets/images/screenshot.png)
 
