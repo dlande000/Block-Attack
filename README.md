@@ -19,12 +19,14 @@ Block Attack! is built on a 6x13 grid; the bottom-most row rises from off-canvas
 
 The grid is populated with randomly generated blocks; once the grid is populated, a second function checks to remove any groupings of blocks that would provide immediate solutions upon game start. 
 
-```
+```javascript
 function randomBlock() {
         const blocks = "RYGBDP";
         return blocks[Math.floor(Math.random() * 6)];
     }
+```
 
+```javascript
 function createBoard() {
     const board = [];
     for (let height = 0; height < 13; height++) {
@@ -47,7 +49,7 @@ function createBoard() {
 
 New rows are added to the grid every six seconds. Like the start board, rows are randomly generated and then checked for starting clusters. 
 
-```
+```javascript
 function createNextRow() {
     let nextRow = [];
     for (let i = 0; i < 6; i++) {
