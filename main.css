@@ -44,7 +44,7 @@ canvas {
 }
 
 html {
-    background-image: url('https://i1.creativecow.net/u/311822/skyline.png');
+    background-image: url('./assets/images/skyline.png');
     background-repeat: no-repeat;
     background-position: left center;
     -webkit-background-size: cover;

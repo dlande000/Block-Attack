@@ -66,7 +66,7 @@ Players are awarded more points for more complex solutions (solutions that clear
 
 ### Future features
 
-- Increase decrease the time between the addition of new rows to the grid. 
+- Increase difficulty by decreasing the time between the addition of new rows to the grid. 
 - Create difficulty settings that players can choose before starting a game. 
 - Add falling blocks at incremented intervals and with random heights and widths that can be broken apart by solutions elsewhere on the grid. 
 - Add a computer opponent or multiplayer option. 
