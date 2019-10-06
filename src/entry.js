@@ -1,3 +1,5 @@
+import Audio from './audio';
+
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
@@ -5,29 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let gameOver = false;
     let startScreen = true;
-    let isPlaying = false;
 
-    const myAudio = document.getElementById("music");
-    const mySoundEffect = document.getElementById("sound-effect");
-
-    function playMusic() {
-        if (!isPlaying) {
-            myAudio.pause();
-            myAudio.currentTime = 0;
-        } else {
-            myAudio.play();
-        }
-    }
-
-    function playSoundEffect() {
-        if (isPlaying) {
-            mySoundEffect.play();
-            setTimeout(function() {
-                mySoundEffect.pause();
-                mySoundEffect.currentTime = 0;
-            }, 450);
-        }
-    }
+    let audio = new Audio();
 
     function randomBlock() {
         const blocks = "RYGBDP";
@@ -286,7 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 for (let i = 0; i < 5; i++) {
                                     board[row + i][col] = 0;
                                 } cursor.score += 700;
-                                playSoundEffect();
+                                audio.playSoundEffect();
                             }
                         }
                         if (row < 9) {
@@ -298,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 for (let i = 0; i < 4; i++) {
                                     board[row + i][col] = 0;
                                 } cursor.score += 300;
-                                playSoundEffect();
+                                audio.playSoundEffect();
                             }
                         }
                         if (row < 10) {
@@ -312,7 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                     board[row + i][col] = 0;
                                     
                                 } cursor.score += 100;
-                                playSoundEffect();
+                                audio.playSoundEffect();
                             }
                         }
                         if (col < 2) {
@@ -324,7 +305,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 for (let i = 0; i < 5; i++) {
                                     board[row][col + i] = 0;
                                 } cursor.score += 700;
-                                playSoundEffect();
+                                audio.playSoundEffect();
                             }} if (col < 3) {
                             oneRight = board[row][col + 1];
                             twoRight = board[row][col + 2];
@@ -333,7 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 for (let i = 0; i < 4; i++) {
                                     board[row][col + i] = 0;
                                 } cursor.score += 300;
-                                playSoundEffect();
+                                audio.playSoundEffect();
                             }
                             } if (col < 4) {
                             oneRight = board[row][col + 1];
@@ -343,7 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 for (let i = 0; i < 3; i++) {
                                     board[row][col + i] = 0;
                                 } cursor.score += 100;
-                                playSoundEffect();
+                                audio.playSoundEffect();
                             }
                         }
                     }
@@ -381,16 +362,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 cursor.score = 0;
                 board = createBoard();
                 yIncrease = 0;
-                isPlaying = true;
-                playMusic();
+                audio.musicPlaying = true;
+                audio.playMusic();
             } else {
                 swap(board, cursor);
             }
         } else if (event.keyCode === 90) {
             addRowToBoard(createNextRow(), board);
         } else if (event.keyCode === 83) {
-            isPlaying = !isPlaying;
-            playMusic();
+            audio.musicPlaying = !audio.musicPlaying;
+            audio.playMusic();
         }
     });
 
@@ -433,8 +414,8 @@ document.addEventListener("DOMContentLoaded", () => {
             updateScore();
             checkGameOver(board[0]);
         } else if (gameOver) {
-            isPlaying = false;
-            playMusic();
+            audio.musicPlaying = false;
+            audio.playMusic();
             myAudio.currentTime = 0;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -458,6 +439,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.board = board;
 
-    playMusic();
+    audio.playMusic();
     update();
 });
