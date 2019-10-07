@@ -33,11 +33,11 @@ class Board {
         for (let i = 0; i < 6; i++) {
             nextRow.push(new Block());
         }
-        nextRow = clearSolutionsFromNewRow(nextRow);
+        nextRow = clearSolutionsFromNewRow(nextRow, this.grid);
         this.grid.shift();
         this.grid.push(nextRow);
         this.checkGameOver();
-        this.grid = clearSolutions(this.grid);
+        // this.grid = clearSolutions(this.grid);
     }
 
     swap(y, x) {
@@ -46,7 +46,7 @@ class Board {
         [a, b] = [b, a];
         this.grid[y][x] = a;
         this.grid[y][x + 1] = b;
-        this.grid = clearSolutions(this.grid);
+        // this.grid = clearSolutions(this.grid);
     }
 
     fall() {
@@ -58,12 +58,12 @@ class Board {
                 }
             });
         });
-        this.grid = clearSolutions(this.grid);
+        // this.grid = clearSolutions(this.grid);
     }
 
     checkGameOver() {
         for (let i = 0; i < 6; i++) {
-            if (row[i].value) {
+            if (this.grid[0][i].value) {
                 this.gameOver = true;
             }
         }

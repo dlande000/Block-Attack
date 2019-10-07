@@ -1,4 +1,6 @@
-import Game from './game';
+import Audio from './audio';
+import Cursor from './cursor';
+import Board from './board';
 
 // webpack --watch --mode=development
 
@@ -7,11 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const ctx = canvas.getContext('2d');
     ctx.scale(60, 60);
 
-    let startScreen = true;
-
-    let audio = new Audio();
     let cursor = new Cursor();
     let board = new Board();
+    let audio = new Audio();
+
+    let startScreen = true;
 
     const updateScore = () => document.getElementById('score').innerText = cursor.score;
 
@@ -70,8 +72,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (startScreen || board.gameOver) {
                 startScreen = false;
                 board.gameOver = false;
-                cursor.score = 0;
-                board = createBoard();
+                cursor = new Cursor();
+                board = new Board();
                 yIncrease = 0;
                 audio.musicPlaying = true;
                 audio.playMusic();
@@ -147,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         requestAnimationFrame(update);
     };
-
+    // what is this line??
     window.board = board;
 
     audio.playMusic();
