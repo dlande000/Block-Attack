@@ -1,4 +1,5 @@
 import Audio from './audio';
+import Cursor from './cursor';
 
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('canvas');
@@ -9,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let startScreen = true;
 
     let audio = new Audio();
+    let cursor = new Cursor();
 
     function randomBlock() {
         const blocks = "RYGBDP";
@@ -35,11 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let board = createBoard();
-
-    let cursor = {
-        pos: {x: 2, y: 7},
-        score: 0
-    };
 
     function checkStartingClusters(grid) {
         let checking = true;
@@ -76,11 +73,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function swap(board, cursor) {
-        let a = board[cursor.pos.y][cursor.pos.x];
-        let b = board[cursor.pos.y][cursor.pos.x + 1];
+        let a = board[cursor.y][cursor.x];
+        let b = board[cursor.y][cursor.x + 1];
         [a, b] = [b, a];
-        board[cursor.pos.y][cursor.pos.x] = a;
-        board[cursor.pos.y][cursor.pos.x + 1] = b;
+        board[cursor.y][cursor.x] = a;
+        board[cursor.y][cursor.x + 1] = b;
         checkAndDeleteClusters(board);
     }
 
@@ -120,8 +117,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function drawCursor(x, y) {
-        cursorImg = document.getElementById("cursor");
+    function drawCursor(y, x) {
+        const cursorImg = document.getElementById("cursor");
         let yIncreaseCursor = yIncrease;
         if (y === 0) {
             yIncreaseCursor = 0;
@@ -136,18 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 drawBlock(block, y, x);
             }});
         });
-        drawCursor(cursor.pos.x, cursor.pos.y);
-    }
-
-    function moveCursor(x, y) {
-        let dy = cursor.pos.y + y;
-        let dx = cursor.pos.x + x;
-        if (dx <= 4 && dx >= 0) {
-            cursor.pos.x = dx;
-        }
-        if (dy < 12 && dy >= 0) {
-            cursor.pos.y = dy;
-        }
+        drawCursor(cursor.y, cursor.x);
     }
 
     function checkAndDeleteNexusClustersLeftAndDown(position) {
@@ -346,15 +332,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.addEventListener('keydown', event => {
         if (event.keyCode === 37) {
-            moveCursor(-1, 0);
+            cursor.move(0, -1);
         } else if (event.keyCode === 38) {
             event.preventDefault();
-            moveCursor(0, -1);
+            cursor.move(-1, 0);
         } else if (event.keyCode === 39) {
-            moveCursor(1, 0);
+            cursor.move(0, 1);
         } else if (event.keyCode === 40) {
             event.preventDefault();
-            moveCursor(0, 1);
+            cursor.move(1, 0);
         } else if (event.keyCode === 32) {
             if (startScreen || gameOver) {
                 startScreen = false;
@@ -382,8 +368,8 @@ document.addEventListener("DOMContentLoaded", () => {
         yIncrease += (1/50);
         if (yIncrease >= 1) {
             addRowToBoard(createNextRow(), board);
-            if (cursor.pos.y !== 0) {
-                cursor.pos.y--;
+            if (cursor.y !== 0) {
+                cursor.y--;
             }
             yIncrease = 0;
         }
@@ -416,7 +402,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (gameOver) {
             audio.musicPlaying = false;
             audio.playMusic();
-            myAudio.currentTime = 0;
+            audio.music.currentTime = 0;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";

@@ -86,12 +86,92 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/audio.js":
+/*!**********************!*\
+  !*** ./src/audio.js ***!
+  \**********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+class Audio {
+    constructor() {
+        this.music = document.getElementById("music");
+        this.soundEffect = document.getElementById("sound-effect");
+        this.musicPlaying = false;
+        this.soundEffectPlaying = false;
+    }
+
+    playMusic() {
+        if (!this.musicPlaying) {
+            this.music.pause();
+            this.music.currentTime = 0;
+        } else {
+            this.music.play();
+        }
+    }
+
+    playSoundEffect() {
+        if (this.soundEffectPlaying) {
+            this.soundEffect.play();
+            setTimeout(() => {
+                this.soundEffect.pause();
+                this.soundEffect.currentTime = 0;
+            }, 450);
+        }
+    }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Audio);
+
+/***/ }),
+
+/***/ "./src/cursor.js":
+/*!***********************!*\
+  !*** ./src/cursor.js ***!
+  \***********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+class Cursor {
+    constructor() {
+        this.y = 7;
+        this.x = 2;
+        this.score = 0;
+    }
+
+    move(y, x) {
+        let dy = this.y + y;
+        let dx = this.x + x;
+        if (dx <= 4 && dx >= 0) {
+            this.x = dx;
+        }
+        if (dy < 12 && dy >= 0) {
+            this.y = dy;
+        }
+    }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Cursor);
+
+/***/ }),
+
 /***/ "./src/entry.js":
 /*!**********************!*\
   !*** ./src/entry.js ***!
   \**********************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _audio__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./audio */ "./src/audio.js");
+/* harmony import */ var _cursor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./cursor */ "./src/cursor.js");
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('canvas');
@@ -100,29 +180,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let gameOver = false;
     let startScreen = true;
-    let isPlaying = false;
 
-    const myAudio = document.getElementById("music");
-    const mySoundEffect = document.getElementById("sound-effect");
-
-    function playMusic() {
-        if (!isPlaying) {
-            myAudio.pause();
-            myAudio.currentTime = 0;
-        } else {
-            myAudio.play();
-        }
-    }
-
-    function playSoundEffect() {
-        if (isPlaying) {
-            mySoundEffect.play();
-            setTimeout(function() {
-                mySoundEffect.pause();
-                mySoundEffect.currentTime = 0;
-            }, 450);
-        }
-    }
+    let audio = new _audio__WEBPACK_IMPORTED_MODULE_0__["default"]();
+    let cursor = new _cursor__WEBPACK_IMPORTED_MODULE_1__["default"]();
 
     function randomBlock() {
         const blocks = "RYGBDP";
@@ -149,11 +209,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let board = createBoard();
-
-    let cursor = {
-        pos: {x: 2, y: 7},
-        score: 0
-    };
 
     function checkStartingClusters(grid) {
         let checking = true;
@@ -190,11 +245,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function swap(board, cursor) {
-        let a = board[cursor.pos.y][cursor.pos.x];
-        let b = board[cursor.pos.y][cursor.pos.x + 1];
+        let a = board[cursor.y][cursor.x];
+        let b = board[cursor.y][cursor.x + 1];
         [a, b] = [b, a];
-        board[cursor.pos.y][cursor.pos.x] = a;
-        board[cursor.pos.y][cursor.pos.x + 1] = b;
+        board[cursor.y][cursor.x] = a;
+        board[cursor.y][cursor.x + 1] = b;
         checkAndDeleteClusters(board);
     }
 
@@ -234,8 +289,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function drawCursor(x, y) {
-        cursorImg = document.getElementById("cursor");
+    function drawCursor(y, x) {
+        const cursorImg = document.getElementById("cursor");
         let yIncreaseCursor = yIncrease;
         if (y === 0) {
             yIncreaseCursor = 0;
@@ -250,18 +305,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 drawBlock(block, y, x);
             }});
         });
-        drawCursor(cursor.pos.x, cursor.pos.y);
-    }
-
-    function moveCursor(x, y) {
-        let dy = cursor.pos.y + y;
-        let dx = cursor.pos.x + x;
-        if (dx <= 4 && dx >= 0) {
-            cursor.pos.x = dx;
-        }
-        if (dy < 12 && dy >= 0) {
-            cursor.pos.y = dy;
-        }
+        drawCursor(cursor.y, cursor.x);
     }
 
     function checkAndDeleteNexusClustersLeftAndDown(position) {
@@ -381,7 +425,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 for (let i = 0; i < 5; i++) {
                                     board[row + i][col] = 0;
                                 } cursor.score += 700;
-                                playSoundEffect();
+                                audio.playSoundEffect();
                             }
                         }
                         if (row < 9) {
@@ -393,7 +437,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 for (let i = 0; i < 4; i++) {
                                     board[row + i][col] = 0;
                                 } cursor.score += 300;
-                                playSoundEffect();
+                                audio.playSoundEffect();
                             }
                         }
                         if (row < 10) {
@@ -407,7 +451,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                     board[row + i][col] = 0;
                                     
                                 } cursor.score += 100;
-                                playSoundEffect();
+                                audio.playSoundEffect();
                             }
                         }
                         if (col < 2) {
@@ -419,7 +463,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 for (let i = 0; i < 5; i++) {
                                     board[row][col + i] = 0;
                                 } cursor.score += 700;
-                                playSoundEffect();
+                                audio.playSoundEffect();
                             }} if (col < 3) {
                             oneRight = board[row][col + 1];
                             twoRight = board[row][col + 2];
@@ -428,7 +472,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 for (let i = 0; i < 4; i++) {
                                     board[row][col + i] = 0;
                                 } cursor.score += 300;
-                                playSoundEffect();
+                                audio.playSoundEffect();
                             }
                             } if (col < 4) {
                             oneRight = board[row][col + 1];
@@ -438,7 +482,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 for (let i = 0; i < 3; i++) {
                                     board[row][col + i] = 0;
                                 } cursor.score += 100;
-                                playSoundEffect();
+                                audio.playSoundEffect();
                             }
                         }
                     }
@@ -460,15 +504,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.addEventListener('keydown', event => {
         if (event.keyCode === 37) {
-            moveCursor(-1, 0);
+            cursor.move(0, -1);
         } else if (event.keyCode === 38) {
             event.preventDefault();
-            moveCursor(0, -1);
+            cursor.move(-1, 0);
         } else if (event.keyCode === 39) {
-            moveCursor(1, 0);
+            cursor.move(0, 1);
         } else if (event.keyCode === 40) {
             event.preventDefault();
-            moveCursor(0, 1);
+            cursor.move(1, 0);
         } else if (event.keyCode === 32) {
             if (startScreen || gameOver) {
                 startScreen = false;
@@ -476,16 +520,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 cursor.score = 0;
                 board = createBoard();
                 yIncrease = 0;
-                isPlaying = true;
-                playMusic();
+                audio.musicPlaying = true;
+                audio.playMusic();
             } else {
                 swap(board, cursor);
             }
         } else if (event.keyCode === 90) {
             addRowToBoard(createNextRow(), board);
         } else if (event.keyCode === 83) {
-            isPlaying = !isPlaying;
-            playMusic();
+            audio.musicPlaying = !audio.musicPlaying;
+            audio.playMusic();
         }
     });
 
@@ -496,8 +540,8 @@ document.addEventListener("DOMContentLoaded", () => {
         yIncrease += (1/50);
         if (yIncrease >= 1) {
             addRowToBoard(createNextRow(), board);
-            if (cursor.pos.y !== 0) {
-                cursor.pos.y--;
+            if (cursor.y !== 0) {
+                cursor.y--;
             }
             yIncrease = 0;
         }
@@ -528,9 +572,9 @@ document.addEventListener("DOMContentLoaded", () => {
             updateScore();
             checkGameOver(board[0]);
         } else if (gameOver) {
-            isPlaying = false;
-            playMusic();
-            myAudio.currentTime = 0;
+            audio.musicPlaying = false;
+            audio.playMusic();
+            audio.music.currentTime = 0;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
@@ -553,7 +597,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.board = board;
 
-    playMusic();
+    audio.playMusic();
     update();
 });
 
