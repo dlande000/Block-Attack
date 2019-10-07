@@ -405,19 +405,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // fixing this!
+
     function checkStartingPointHorizontal(row, col) {
-        return [row, col];
-        // console.log(row);
-        // console.log(col);
-        // console.log(board);
-        // console.log(board[row]);
-        // if (board[row][col].value === board[row][col - 1].value && board[row - 1][col].value !== board[row][col].value) {
-        //     let col2 = col - 1;
-        //     return checkStartingPointHorizontal(row, col2);
-        // } else {
-        //     return [row, col];
-        // }
+        console.log(row, col);
+        console.log(board);
+        console.log(board[row]);
+        debugger
+        if (board[row][col].value === board[row][col - 1].value && board[row - 1][col].value !== board[row][col].value) {
+            let col2 = col - 1;
+            return checkStartingPointHorizontal(row, col2);
+        } else {
+            return [row, col];
+        }
     }
 
     function checkStartingPointVertical(row, col) {
@@ -428,7 +427,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return [row, col];
         }
     }
-// FIX THIS
+
     function checkAndDeleteClusters(board) {
         for (let rowY = 0; rowY < 12; rowY++) {
             for (let colX = 0; colX < 6; colX++) {

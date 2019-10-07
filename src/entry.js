@@ -2,6 +2,7 @@ import Audio from './audio';
 import Cursor from './cursor';
 import Block from './block';
 import instance from './singleton';
+import Board from './board';
 
 // webpack --watch --mode=development
 
@@ -15,77 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let audio = new Audio();
     let cursor = new Cursor();
-
-    function createBoard() {
-        const board = [];
-        for (let height = 0; height < 13; height++) {
-            board.push(new Array(6).fill(instance));
-        }
-        for (let row = 12; row > 6; row--) {
-            for (let col = 0; col < 6; col++) {
-                if (col !== 3) {
-                    board[row][col] = new Block();
-                }
-            }
-        }
-        for (let x = 10; x < 13; x++) {
-            board[x][3] = new Block();
-        }
-        checkStartingClusters(board);
-        return board;
-    }
-
-    let board = createBoard();
-
-    function checkStartingClusters(grid) {
-        let checking = true;
-        while (checking) {
-            checking = false;
-            if (grid.length !== 13) {
-                for (let i = 0; i < 6; i++) {
-                    if ((i < 4 && grid[i].value === grid[i + 1].value && grid[i].value === grid[i + 2].value) || (grid[i].value === board[12][i].value)) {
-                        checking = true;
-                        grid[i] = new Block();
-                    } 
-                }
-            } else {
-                grid.forEach((width, y) => {
-                    width.forEach((block, x) => {
-                        if (block.value) {
-                            if ((x < 4 && block.value === grid[y][x + 1].value && block.value === grid[y][x + 2].value) || (y < 10 && block.value === grid[y + 1][x].value && block.value === grid[y + 2][x].value)) {
-                                grid[y][x] = new Block();
-                                checking = true;
-                        }
-                    }
-                });
-            });
-        }}
-    }
-
-    function createNextRow() {
-        let nextRow = [];
-        for (let i = 0; i < 6; i++) {
-            nextRow.push(new Block());
-        }
-        checkStartingClusters(nextRow);
-        return nextRow;
-    }
-
-    function swap(board, cursor) {
-        let a = board[cursor.y][cursor.x];
-        let b = board[cursor.y][cursor.x + 1];
-        [a, b] = [b, a];
-        board[cursor.y][cursor.x] = a;
-        board[cursor.y][cursor.x + 1] = b;
-        checkAndDeleteClusters(board);
-    }
-
-    function addRowToBoard(row, board) {
-        board.shift();
-        board.push(row);
-        checkGameOver(board[0]);
-        checkAndDeleteClusters(board);
-    }
+    let board = new Board();
 
     function checkGameOver(row) {
         for (let i = 0; i < 6; i++) {
@@ -208,19 +139,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // fixing this!
+
     function checkStartingPointHorizontal(row, col) {
-        return [row, col];
-        // console.log(row);
-        // console.log(col);
-        // console.log(board);
-        // console.log(board[row]);
-        // if (board[row][col].value === board[row][col - 1].value && board[row - 1][col].value !== board[row][col].value) {
-        //     let col2 = col - 1;
-        //     return checkStartingPointHorizontal(row, col2);
-        // } else {
-        //     return [row, col];
-        // }
+        console.log(row, col);
+        console.log(board);
+        console.log(board[row]);
+        debugger
+        if (board[row][col].value === board[row][col - 1].value && board[row - 1][col].value !== board[row][col].value) {
+            let col2 = col - 1;
+            return checkStartingPointHorizontal(row, col2);
+        } else {
+            return [row, col];
+        }
     }
 
     function checkStartingPointVertical(row, col) {
@@ -231,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return [row, col];
         }
     }
-// FIX THIS
+
     function checkAndDeleteClusters(board) {
         for (let rowY = 0; rowY < 12; rowY++) {
             for (let colX = 0; colX < 6; colX++) {
@@ -355,7 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 audio.musicPlaying = true;
                 audio.playMusic();
             } else {
-                swap(board, cursor);
+                board.swap(cursor.y, cursor.x);
             }
         } else if (event.keyCode === 90) {
             addRowToBoard(createNextRow(), board);
