@@ -1,5 +1,9 @@
 import Audio from './audio';
 import Cursor from './cursor';
+import Block from './block';
+import instance from './singleton';
+
+// webpack --watch --mode=development
 
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('canvas');
@@ -12,25 +16,20 @@ document.addEventListener("DOMContentLoaded", () => {
     let audio = new Audio();
     let cursor = new Cursor();
 
-    function randomBlock() {
-        const blocks = "RYGBDP";
-        return blocks[Math.floor(Math.random() * 6)];
-    }
-
     function createBoard() {
         const board = [];
         for (let height = 0; height < 13; height++) {
-            board.push(new Array(6).fill(0));
+            board.push(new Array(6).fill(instance));
         }
         for (let row = 12; row > 6; row--) {
             for (let col = 0; col < 6; col++) {
                 if (col !== 3) {
-                    board[row][col] = randomBlock();
+                    board[row][col] = new Block();
                 }
             }
         }
         for (let x = 10; x < 13; x++) {
-            board[x][3] = randomBlock();
+            board[x][3] = new Block();
         }
         checkStartingClusters(board);
         return board;
@@ -44,17 +43,17 @@ document.addEventListener("DOMContentLoaded", () => {
             checking = false;
             if (grid.length !== 13) {
                 for (let i = 0; i < 6; i++) {
-                    if ((i < 4 && grid[i] === grid[i + 1] && grid[i] === grid[i + 2]) || (grid[i] === board[12][i])) {
+                    if ((i < 4 && grid[i].value === grid[i + 1].value && grid[i].value === grid[i + 2].value) || (grid[i].value === board[12][i].value)) {
                         checking = true;
-                        grid[i] = randomBlock();
+                        grid[i] = new Block();
                     } 
                 }
             } else {
                 grid.forEach((width, y) => {
-                    width.forEach((value, x) => {
-                        if (value !== 0) {
-                            if ((x < 4 && value === grid[y][x + 1] && value === grid[y][x + 2]) || (y < 10 && value === grid[y + 1][x] && value === grid[y + 2][x])) {
-                                grid[y][x] = randomBlock();
+                    width.forEach((block, x) => {
+                        if (block.value !== null) {
+                            if ((x < 4 && block.value === grid[y][x + 1].value && block.value === grid[y][x + 2].value) || (y < 10 && block.value === grid[y + 1][x].value && block.value === grid[y + 2][x].value)) {
+                                grid[y][x] = new Block();
                                 checking = true;
                         }
                     }
@@ -66,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function createNextRow() {
         let nextRow = [];
         for (let i = 0; i < 6; i++) {
-            nextRow.push(randomBlock());
+            nextRow.push(new Block());
         }
         checkStartingClusters(nextRow);
         return nextRow;
@@ -90,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function checkGameOver(row) {
         for (let i = 0; i < 6; i++) {
-            if (row[i] !== 0) {
+            if (row[i].value !== null) {
                 gameOver = true;
             }
         }
@@ -129,8 +128,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function drawBoard(board) {
         board.forEach((row, y) => {
             row.forEach((block, x) => {
-            if (block !== 0) {
-                drawBlock(block, y, x);
+            if (block.value !== null) {
+                drawBlock(block.value, y, x);
             }});
         });
         drawCursor(cursor.y, cursor.x);
@@ -139,9 +138,9 @@ document.addEventListener("DOMContentLoaded", () => {
     function checkAndDeleteNexusClustersLeftAndDown(position) {
         let y = position[0];
         let x = position[1];
-        if (y < 10 && board[y][x] === board[y + 1][x] && board[y + 2][x]) {
-            board[y + 1][x] = 0;
-            board[y + 2][x] = 0;
+        if (y < 10 && board[y][x].value === board[y + 1][x].value && board[y + 2][x].value) {
+            board[y + 1][x] = instance;
+            board[y + 2][x] = instance;
             cursor.score += 200;
         }
     }
@@ -154,87 +153,92 @@ document.addEventListener("DOMContentLoaded", () => {
         for (let i = 0; i < increment; i++) {
             let y = position[0] + i;
             let x = position[1];
-            let pivot = board[y][x];
+            let pivot = board[y][x].value;
             if (x >= 2) {
-                oneLeft = board[y][x - 1];
-                twoLeft = board[y][x - 2];
+                oneLeft = board[y][x - 1].value;
+                twoLeft = board[y][x - 2].value;
                 if (x <= 3) {
-                    oneRight = board[y][x + 1];
-                    twoRight = board[y][x + 2];
+                    oneRight = board[y][x + 1].value;
+                    twoRight = board[y][x + 2].value;
                     if (pivot === oneLeft && pivot === twoLeft && pivot === oneRight && pivot === twoRight) {
-                        board[y][x - 1] = 0;
-                        board[y][x - 2] = 0;
-                        board[y][x + 1] = 0;
-                        board[y][x + 2] = 0;
+                        board[y][x - 1] = instance;
+                        board[y][x - 2] = instance;
+                        board[y][x + 1] = instance;
+                        board[y][x + 2] = instance;
                         cursor.score += 700;
                     }
                 } if (x <= 4) {
-                    oneRight = board[y][x + 1];
+                    oneRight = board[y][x + 1].value;
                     if (pivot === oneLeft && pivot === twoLeft && pivot === oneRight) {
-                        board[y][x - 1] = 0;
-                        board[y][x - 2] = 0;
-                        board[y][x + 1] = 0;
+                        board[y][x - 1] = instance;
+                        board[y][x - 2] = instance;
+                        board[y][x + 1] = instance;
                         cursor.score += 500;
                     }
                 } if (pivot === oneLeft && pivot === twoLeft) {
-                    board[y][x - 1] = 0;
-                    board[y][x - 2] = 0;
+                    board[y][x - 1] = instance;
+                    board[y][x - 2] = instance;
                     cursor.score += 200;
                 }
             } if (x <= 3) {
-                oneRight = board[y][x + 1];
-                twoRight = board[y][x + 2];
+                oneRight = board[y][x + 1].value;
+                twoRight = board[y][x + 2].value;
                 if (x >= 1) {
-                    oneLeft = board[y][x - 1];
+                    oneLeft = board[y][x - 1].value;
                     if (pivot === oneRight && pivot === twoRight && pivot === oneLeft) {
-                        board[y][x + 1] = 0;
-                        board[y][x + 1] = 0;
-                        board[y][x + 2] = 0;
+                        board[y][x + 1] = instance;
+                        board[y][x + 1] = instance;
+                        board[y][x + 2] = instance;
                         cursor.score += 500;
                     }
                 } if (pivot === oneRight && pivot === twoRight) {
-                    board[y][x + 1] = 0;
-                    board[y][x + 2] = 0;
+                    board[y][x + 1] = instance;
+                    board[y][x + 2] = instance;
                     cursor.score += 200;
                 }
             } if (x >= 1 && x <= 4 && increment === 3) {
-                oneRight = board[y][x + 1];
-                oneLeft = board[y][x - 1];
+                oneRight = board[y][x + 1].value;
+                oneLeft = board[y][x - 1].value;
                 if (pivot === oneRight && pivot === oneLeft) {
-                    board[y][x + 1] = 0;
-                    board[y][x - 1] = 0;
+                    board[y][x + 1] = instance;
+                    board[y][x - 1] = instance;
                     cursor.score += 200;
                 }
             }
         }
     }
 
+    // fixing this!
     function checkStartingPointHorizontal(row, col) {
-        if (board[row][col] === board[row][col - 1] && board[row - 1][col] !== board[row][col]) {
-            let col2 = col - 1;
-            return checkStartingPointHorizontal(row, col2);
-        } else {
-            return [row, col];
-        }
-
+        return [row, col];
+        // console.log(row);
+        // console.log(col);
+        // console.log(board);
+        // console.log(board[row]);
+        // if (board[row][col].value === board[row][col - 1].value && board[row - 1][col].value !== board[row][col].value) {
+        //     let col2 = col - 1;
+        //     return checkStartingPointHorizontal(row, col2);
+        // } else {
+        //     return [row, col];
+        // }
     }
 
     function checkStartingPointVertical(row, col) {
-        if ((board[row][col] === board[row - 1][col] && board[row][col] === board[row + 1][col]) || (board[row][col] === board[row - 1][col] && board[row][col] === board[row - 2][col]))  {
+        if ((board[row][col].value === board[row - 1][col].value && board[row][col].value === board[row + 1][col].value) || (board[row][col].value === board[row - 1][col].value && board[row][col].value === board[row - 2][col].value))  {
             let row2 = row - 1;
             return checkStartingPointVertical(row2, col);
         } else {
             return [row, col];
         }
     }
-
+// FIX THIS
     function checkAndDeleteClusters(board) {
         for (let rowY = 0; rowY < 12; rowY++) {
             for (let colX = 0; colX < 6; colX++) {
-                if (board[rowY][colX] !== 0 && board[rowY + 1][colX] !== 0 && !gameOver) {
+                if (board[rowY][colX].value !== null && board[rowY + 1][colX].value !== null && !gameOver) {
                     let col = checkStartingPointHorizontal(rowY, colX)[1];
                     let row = checkStartingPointVertical(rowY, col)[0];
-                    let pivot = board[row][col];
+                    let pivot = board[row][col].value;
                     let oneBelow;
                     let twoBelow;
                     let threeBelow;
@@ -244,71 +248,71 @@ document.addEventListener("DOMContentLoaded", () => {
                     let threeRight;
                     let fourRight;
                         if (row < 8) {
-                            oneBelow = board[row + 1][col];
-                            twoBelow = board[row + 2][col];
-                            threeBelow = board[row + 3][col];
-                            fourBelow = board[row + 4][col];
+                            oneBelow = board[row + 1][col].value;
+                            twoBelow = board[row + 2][col].value;
+                            threeBelow = board[row + 3][col].value;
+                            fourBelow = board[row + 4][col].value;
                             if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow && pivot === fourBelow) {
                                 checkAndDeleteNexusClusters([row + 2, col], 1);
                                 for (let i = 0; i < 5; i++) {
-                                    board[row + i][col] = 0;
+                                    board[row + i][col] = instance;
                                 } cursor.score += 700;
                                 audio.playSoundEffect();
                             }
                         }
                         if (row < 9) {
-                            oneBelow = board[row + 1][col];
-                            twoBelow = board[row + 2][col];
-                            threeBelow = board[row + 3][col];
+                            oneBelow = board[row + 1][col].value;
+                            twoBelow = board[row + 2][col].value;
+                            threeBelow = board[row + 3][col].value;
                             if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow) {
                                 checkAndDeleteNexusClusters([row + 1, col], 2);
                                 for (let i = 0; i < 4; i++) {
-                                    board[row + i][col] = 0;
+                                    board[row + i][col] = instance;
                                 } cursor.score += 300;
                                 audio.playSoundEffect();
                             }
                         }
                         if (row < 10) {
-                            oneBelow = board[row + 1][col];
-                            twoBelow = board[row + 2][col];
+                            oneBelow = board[row + 1][col].value;
+                            twoBelow = board[row + 2][col].value;
                             
                             if (pivot === oneBelow && pivot === twoBelow) {
                                 
                                 checkAndDeleteNexusClusters([row, col], 3);
                                 for (let i = 0; i < 3; i++) {
-                                    board[row + i][col] = 0;
+                                    board[row + i][col] = instance;
                                     
                                 } cursor.score += 100;
                                 audio.playSoundEffect();
                             }
                         }
                         if (col < 2) {
-                            oneRight = board[row][col + 1];
-                            twoRight = board[row][col + 2];
-                            threeRight = board[row][col + 3];
-                            fourRight = board[row][col + 4];
-                            if (pivot === oneRight && pivot === twoRight && pivot === threeRight && pivot === fourRight && board[row + 1][col + 1] !== 0 && board[row + 1][col + 2] !== 0 && board[row + 1][col + 3] !== 0 && board[row + 1][col + 4] !== 0) {
+                            oneRight = board[row][col + 1].value;
+                            twoRight = board[row][col + 2].value;
+                            threeRight = board[row][col + 3].value;
+                            fourRight = board[row][col + 4].value;
+                            if (pivot === oneRight && pivot === twoRight && pivot === threeRight && pivot === fourRight && board[row + 1][col + 1].value !== null && board[row + 1][col + 2].value !== null && board[row + 1][col + 3].value !== null && board[row + 1][col + 4].value !== null) {
                                 for (let i = 0; i < 5; i++) {
-                                    board[row][col + i] = 0;
+                                    board[row][col + i] = instance;
                                 } cursor.score += 700;
                                 audio.playSoundEffect();
                             }} if (col < 3) {
-                            oneRight = board[row][col + 1];
-                            twoRight = board[row][col + 2];
-                            threeRight = board[row][col + 3];
-                            if (pivot === oneRight && pivot === twoRight && pivot === threeRight && board[row + 1][col + 1] !== 0 && board[row + 1][col + 2] !== 0 && board[row + 1][col + 3] !== 0) {
+                            oneRight = board[row][col + 1].value;
+                            twoRight = board[row][col + 2].value;
+                            threeRight = board[row][col + 3].value;
+                            if (pivot === oneRight && pivot === twoRight && pivot === threeRight && board[row + 1][col + 1].value !== null && board[row + 1][col + 2].value !== null && board[row + 1][col + 3].value !== null) {
                                 for (let i = 0; i < 4; i++) {
-                                    board[row][col + i] = 0;
+                                    board[row][col + i] = instance;
                                 } cursor.score += 300;
                                 audio.playSoundEffect();
                             }
                             } if (col < 4) {
-                            oneRight = board[row][col + 1];
-                            twoRight = board[row][col + 2];
-                            if (pivot === oneRight && pivot === twoRight && board[row + 1][col + 1] !== 0 && board[row + 1][col + 2] !== 0) {
+                            oneRight = board[row][col + 1].value;
+                            twoRight = board[row][col + 2].value;
+                            if (pivot === oneRight && pivot === twoRight && board[row + 1][col + 1].value !== null && board[row + 1][col + 2].value !== null) {
                                 checkAndDeleteNexusClustersLeftAndDown([row, col + 2]);
                                 for (let i = 0; i < 3; i++) {
-                                    board[row][col + i] = 0;
+                                    board[row][col + i] = instance;
                                 } cursor.score += 100;
                                 audio.playSoundEffect();
                             }
@@ -320,10 +324,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function fall(board) {
         board.forEach((row, y) => {
-            row.forEach((val, x) => {
-                if (y < 11 && board[y + 1][x] === 0 && val !== 0) {
-                    board[y + 1][x] = val;
-                    board[y][x] = 0;
+            row.forEach((block, x) => {
+                if (y < 11 && !board[y + 1][x].value && block.value) {
+                    board[y + 1][x] = block;
+                    board[y][x] = instance;
                 }
             });
         });
