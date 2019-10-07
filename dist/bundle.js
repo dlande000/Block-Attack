@@ -100,7 +100,6 @@ class Audio {
         this.music = document.getElementById("music");
         this.soundEffect = document.getElementById("sound-effect");
         this.musicPlaying = false;
-        this.soundEffectPlaying = false;
     }
 
     playMusic() {
@@ -113,7 +112,7 @@ class Audio {
     }
 
     playSoundEffect() {
-        if (this.soundEffectPlaying) {
+        if (this.musicPlaying) {
             this.soundEffect.play();
             setTimeout(() => {
                 this.soundEffect.pause();
