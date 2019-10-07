@@ -1,6 +1,8 @@
 import Block from './block';
 import instance from './singleton';
-import { clearSolutionsBeforeStart, clearSolutionsFromNewRow } from './solutions';
+import { clearSolutionsBeforeStart,
+    clearSolutionsFromNewRow,
+    clearSolutions } from './solutions';
 
 class Board {
     constructor() {
@@ -23,8 +25,7 @@ class Board {
         for (let x = 10; x < 13; x++) {
             grid[x][3] = new Block();
         }
-        grid = clearSolutionsBeforeStart(grid);
-        return grid;
+        return clearSolutionsBeforeStart(grid);
     }
 
     createNextRow() {
@@ -35,9 +36,8 @@ class Board {
         nextRow = clearSolutionsFromNewRow(nextRow);
         this.grid.shift();
         this.grid.push(nextRow);
-        // fix
-        // checkGameOver()
-        // checkanddeleteclusters
+        this.checkGameOver();
+        this.grid = clearSolutions(this.grid);
     }
 
     swap(y, x) {
@@ -46,8 +46,7 @@ class Board {
         [a, b] = [b, a];
         this.grid[y][x] = a;
         this.grid[y][x + 1] = b;
-        // fix
-        // checkAndDeleteClusters(board);
+        this.grid = clearSolutions(this.grid);
     }
 
     fall() {
@@ -59,7 +58,7 @@ class Board {
                 }
             });
         });
-        checkAndDeleteClusters(this.grid);
+        this.grid = clearSolutions(this.grid);
     }
 
     checkGameOver() {

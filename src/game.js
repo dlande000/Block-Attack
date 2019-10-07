@@ -1,6 +1,16 @@
-import Game from './game';
+import Audio from './audio';
+import Cursor from './cursor';
+import Board from './board';
 
-// webpack --watch --mode=development
+class Game {
+    constructor() {
+        this.audio = new Audio();
+        this.cursor = new Cursor();
+        this.board = new Board();
+    }
+}
+
+export default Game;
 
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('canvas');
@@ -9,11 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let startScreen = true;
 
-    let audio = new Audio();
-    let cursor = new Cursor();
-    let board = new Board();
-
-    const updateScore = () => document.getElementById('score').innerText = cursor.score;
+    const updateScore = () => document.getElementById('score').innerText = this.cursor.score;
 
     const BLOCKS = {
         "R": document.getElementById("red-block"),
@@ -51,38 +57,38 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const draw = () => {
-        drawBoard(board.grid);
-        drawCursor(cursor.y, cursor.x);
+        drawBoard(this.board.grid);
+        drawCursor(this.cursor.y, this.cursor.x);
     };
 
     document.addEventListener('keydown', event => {
         if (event.keyCode === 37) {
-            cursor.move(0, -1);
+            this.cursor.move(0, -1);
         } else if (event.keyCode === 38) {
             event.preventDefault();
-            cursor.move(-1, 0);
+            this.cursor.move(-1, 0);
         } else if (event.keyCode === 39) {
-            cursor.move(0, 1);
+            this.cursor.move(0, 1);
         } else if (event.keyCode === 40) {
             event.preventDefault();
-            cursor.move(1, 0);
+            this.cursor.move(1, 0);
         } else if (event.keyCode === 32) {
-            if (startScreen || board.gameOver) {
+            if (startScreen || this.board.gameOver) {
                 startScreen = false;
-                board.gameOver = false;
-                cursor.score = 0;
-                board = createBoard();
+                this.board.gameOver = false;
+                this.cursor.score = new Cursor();
+                this.board = new Board();
                 yIncrease = 0;
-                audio.musicPlaying = true;
-                audio.playMusic();
+                this.audio.musicPlaying = true;
+                this.audio.playMusic();
             } else {
-                board.swap(cursor.y, cursor.x);
+                this.board.swap(this.cursor.y, this.cursor.x);
             }
         } else if (event.keyCode === 90) {
-            board.createNextRow();
+            this.board.createNextRow();
         } else if (event.keyCode === 83) {
-            audio.musicPlaying = !audio.musicPlaying;
-            audio.playMusic();
+            this.audio.musicPlaying = !this.audio.musicPlaying;
+            this.audio.playMusic();
         }
     });
 
@@ -92,9 +98,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const increaseY = () => {
         yIncrease += (1/50);
         if (yIncrease >= 1) {
-            board.createNextRow();
-            if (cursor.y !== 0) {
-                cursor.y--;
+            this.board.createNextRow();
+            if (this.cursor.y !== 0) {
+                this.cursor.y--;
             }
             yIncrease = 0;
         }
@@ -118,16 +124,16 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.fillText("top.", 0.3, 8);
             ctx.fillText("Press space", 0.3, 10);
             ctx.fillText("to begin!", 0.3, 11);
-        } else if (!board.gameOver) {
+        } else if (!this.board.gameOver) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            board.fall();
+            this.board.fall();
             draw();
             updateScore();
-            board.checkGameOver();
-        } else if (board.gameOver) {
-            audio.musicPlaying = false;
-            audio.playMusic();
-            audio.music.currentTime = 0;
+            this.board.checkGameOver();
+        } else if (this.board.gameOver) {
+            this.audio.musicPlaying = false;
+            this.audio.playMusic();
+            this.audio.music.currentTime = 0;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
@@ -138,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.fillText("Your score:", 0.3, 5);
             ctx.fillStyle = "gold";
             ctx.textAlign = "center";
-            ctx.fillText(cursor.score, 3, 6);
+            ctx.fillText(this.cursor.score, 3, 6);
             ctx.fillStyle = "white";
             ctx.textAlign = "left";
             ctx.fillText("Press space", 0.3, 8);
@@ -147,9 +153,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         requestAnimationFrame(update);
     };
+    // what is this line??
+    // window.board = board;
 
-    window.board = board;
-
-    audio.playMusic();
+    this.audio.playMusic();
     update();
 });

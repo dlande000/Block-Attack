@@ -36,13 +36,106 @@ export function clearSolutionsFromNewRow(row) {
     return _row;
 }
 
+export function clearSolutions(grid) {
+    // Clear any solutions on grid after swap, fall, or new row, return new grid.
+    let _grid = grid;
+    for (let y = 0; y < 12; y++) {
+        for (let x = 0; x < 6; x++) {
+            if (_grid[y][x].value && _grid[y + 1][x].value) {
+                let col = checkStartingPointHorizontal(y, x)[1];
+                let row = checkStartingPointVertical(y, col)[0];
+                let pivot = _grid[row][col].value;
+                let oneBelow;
+                let twoBelow;
+                let threeBelow;
+                let fourBelow;
+                let oneRight;
+                let twoRight;
+                let threeRight;
+                let fourRight;
+                    if (row < 8) {
+                        oneBelow = _grid[row + 1][col].value;
+                        twoBelow = _grid[row + 2][col].value;
+                        threeBelow = _grid[row + 3][col].value;
+                        fourBelow = _grid[row + 4][col].value;
+                        if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow && pivot === fourBelow) {
+                            checkAndDeleteNexusClusters([row + 2, col], 1);
+                            for (let i = 0; i < 5; i++) {
+                                _grid[row + i][col] = instance;
+                            } cursor.score += 700;
+                            audio.playSoundEffect();
+                        }
+                    }
+                    if (row < 9) {
+                        oneBelow = _grid[row + 1][col].value;
+                        twoBelow = _grid[row + 2][col].value;
+                        threeBelow = _grid[row + 3][col].value;
+                        if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow) {
+                            checkAndDeleteNexusClusters([row + 1, col], 2);
+                            for (let i = 0; i < 4; i++) {
+                                _grid[row + i][col] = instance;
+                            } cursor.score += 300;
+                            audio.playSoundEffect();
+                        }
+                    }
+                    if (row < 10) {
+                        oneBelow = _grid[row + 1][col].value;
+                        twoBelow = _grid[row + 2][col].value;
+                        
+                        if (pivot === oneBelow && pivot === twoBelow) {
+                            
+                            checkAndDeleteNexusClusters([row, col], 3);
+                            for (let i = 0; i < 3; i++) {
+                                _grid[row + i][col] = instance;
+                                
+                            } cursor.score += 100;
+                            audio.playSoundEffect();
+                        }
+                    }
+                    if (col < 2) {
+                        oneRight = _grid[row][col + 1].value;
+                        twoRight = _grid[row][col + 2].value;
+                        threeRight = _grid[row][col + 3].value;
+                        fourRight = _grid[row][col + 4].value;
+                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight && pivot === fourRight && _grid[row + 1][col + 1].value && _grid[row + 1][col + 2].value && _grid[row + 1][col + 3].value && _grid[row + 1][col + 4].value) {
+                            for (let i = 0; i < 5; i++) {
+                                _grid[row][col + i] = instance;
+                            } cursor.score += 700;
+                            audio.playSoundEffect();
+                        }} if (col < 3) {
+                        oneRight = _grid[row][col + 1].value;
+                        twoRight = _grid[row][col + 2].value;
+                        threeRight = _grid[row][col + 3].value;
+                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight && _grid[row + 1][col + 1].value && _grid[row + 1][col + 2].value && _grid[row + 1][col + 3].value) {
+                            for (let i = 0; i < 4; i++) {
+                                _grid[row][col + i] = instance;
+                            } cursor.score += 300;
+                            audio.playSoundEffect();
+                        }
+                        } if (col < 4) {
+                        oneRight = _grid[row][col + 1].value;
+                        twoRight = _grid[row][col + 2].value;
+                        if (pivot === oneRight && pivot === twoRight && _grid[row + 1][col + 1].value && _grid[row + 1][col + 2].value) {
+                            checkAndDeleteNexusClustersLeftAndDown([row, col + 2]);
+                            for (let i = 0; i < 3; i++) {
+                                _grid[row][col + i] = instance;
+                            } cursor.score += 100;
+                            audio.playSoundEffect();
+                        }
+                    }
+                }
+        }
+    }
+    return _grid;
+}
+
 
 // FIX THIS
 
 function checkAndDeleteNexusClustersLeftAndDown(position) {
     let y = position[0];
     let x = position[1];
-    if (y < 10 && board[y][x].value === board[y + 1][x].value && board[y + 2][x].value) {
+    if (y < 10 && grid[y][x].value === grid[y + 1][x].value && grid[y + 2][x].value) {
         board[y + 1][x] = instance;
         board[y + 2][x] = instance;
         cursor.score += 200;
@@ -114,10 +207,6 @@ function checkAndDeleteNexusClusters(position, increment) {
 
 
 function checkStartingPointHorizontal(row, col) {
-    console.log(row, col);
-    console.log(board);
-    console.log(board[row]);
-    debugger
     if (board[row][col].value === board[row][col - 1].value && board[row - 1][col].value !== board[row][col].value) {
         let col2 = col - 1;
         return checkStartingPointHorizontal(row, col2);
@@ -132,95 +221,5 @@ function checkStartingPointVertical(row, col) {
         return checkStartingPointVertical(row2, col);
     } else {
         return [row, col];
-    }
-}
-
-function checkAndDeleteClusters(board) {
-    for (let rowY = 0; rowY < 12; rowY++) {
-        for (let colX = 0; colX < 6; colX++) {
-            if (board[rowY][colX].value && board[rowY + 1][colX].value && !board.gameOver) {
-                let col = checkStartingPointHorizontal(rowY, colX)[1];
-                let row = checkStartingPointVertical(rowY, col)[0];
-                let pivot = board[row][col].value;
-                let oneBelow;
-                let twoBelow;
-                let threeBelow;
-                let fourBelow;
-                let oneRight;
-                let twoRight;
-                let threeRight;
-                let fourRight;
-                    if (row < 8) {
-                        oneBelow = board[row + 1][col].value;
-                        twoBelow = board[row + 2][col].value;
-                        threeBelow = board[row + 3][col].value;
-                        fourBelow = board[row + 4][col].value;
-                        if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow && pivot === fourBelow) {
-                            checkAndDeleteNexusClusters([row + 2, col], 1);
-                            for (let i = 0; i < 5; i++) {
-                                board[row + i][col] = instance;
-                            } cursor.score += 700;
-                            audio.playSoundEffect();
-                        }
-                    }
-                    if (row < 9) {
-                        oneBelow = board[row + 1][col].value;
-                        twoBelow = board[row + 2][col].value;
-                        threeBelow = board[row + 3][col].value;
-                        if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow) {
-                            checkAndDeleteNexusClusters([row + 1, col], 2);
-                            for (let i = 0; i < 4; i++) {
-                                board[row + i][col] = instance;
-                            } cursor.score += 300;
-                            audio.playSoundEffect();
-                        }
-                    }
-                    if (row < 10) {
-                        oneBelow = board[row + 1][col].value;
-                        twoBelow = board[row + 2][col].value;
-                        
-                        if (pivot === oneBelow && pivot === twoBelow) {
-                            
-                            checkAndDeleteNexusClusters([row, col], 3);
-                            for (let i = 0; i < 3; i++) {
-                                board[row + i][col] = instance;
-                                
-                            } cursor.score += 100;
-                            audio.playSoundEffect();
-                        }
-                    }
-                    if (col < 2) {
-                        oneRight = board[row][col + 1].value;
-                        twoRight = board[row][col + 2].value;
-                        threeRight = board[row][col + 3].value;
-                        fourRight = board[row][col + 4].value;
-                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight && pivot === fourRight && board[row + 1][col + 1].value && board[row + 1][col + 2].value && board[row + 1][col + 3].value && board[row + 1][col + 4].value) {
-                            for (let i = 0; i < 5; i++) {
-                                board[row][col + i] = instance;
-                            } cursor.score += 700;
-                            audio.playSoundEffect();
-                        }} if (col < 3) {
-                        oneRight = board[row][col + 1].value;
-                        twoRight = board[row][col + 2].value;
-                        threeRight = board[row][col + 3].value;
-                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight && board[row + 1][col + 1].value && board[row + 1][col + 2].value && board[row + 1][col + 3].value) {
-                            for (let i = 0; i < 4; i++) {
-                                board[row][col + i] = instance;
-                            } cursor.score += 300;
-                            audio.playSoundEffect();
-                        }
-                        } if (col < 4) {
-                        oneRight = board[row][col + 1].value;
-                        twoRight = board[row][col + 2].value;
-                        if (pivot === oneRight && pivot === twoRight && board[row + 1][col + 1].value && board[row + 1][col + 2].value) {
-                            checkAndDeleteNexusClustersLeftAndDown([row, col + 2]);
-                            for (let i = 0; i < 3; i++) {
-                                board[row][col + i] = instance;
-                            } cursor.score += 100;
-                            audio.playSoundEffect();
-                        }
-                    }
-                }
-            }
     }
 }

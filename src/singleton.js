@@ -1,7 +1,7 @@
 class Singleton {
     constructor() {
         this.value = null;
-        if(!Singleton.instance){
+        if (!Singleton.instance) {
             Singleton.instance = this;
         }
         return Singleton.instance;
