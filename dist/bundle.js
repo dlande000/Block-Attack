@@ -200,6 +200,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+// webpack --watch --mode=development
+
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
@@ -246,7 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 grid.forEach((width, y) => {
                     width.forEach((block, x) => {
-                        if (block.value !== null) {
+                        if (block.value) {
                             if ((x < 4 && block.value === grid[y][x + 1].value && block.value === grid[y][x + 2].value) || (y < 10 && block.value === grid[y + 1][x].value && block.value === grid[y + 2][x].value)) {
                                 grid[y][x] = new _block__WEBPACK_IMPORTED_MODULE_2__["default"]();
                                 checking = true;
@@ -284,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function checkGameOver(row) {
         for (let i = 0; i < 6; i++) {
-            if (row[i].value !== null) {
+            if (row[i].value) {
                 gameOver = true;
             }
         }
@@ -323,7 +325,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function drawBoard(board) {
         board.forEach((row, y) => {
             row.forEach((block, x) => {
-            if (block.value !== null) {
+            if (block.value) {
                 drawBlock(block.value, y, x);
             }});
         });
@@ -430,7 +432,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function checkAndDeleteClusters(board) {
         for (let rowY = 0; rowY < 12; rowY++) {
             for (let colX = 0; colX < 6; colX++) {
-                if (board[rowY][colX].value !== null && board[rowY + 1][colX].value !== null && !gameOver) {
+                if (board[rowY][colX].value && board[rowY + 1][colX].value && !gameOver) {
                     let col = checkStartingPointHorizontal(rowY, colX)[1];
                     let row = checkStartingPointVertical(rowY, col)[0];
                     let pivot = board[row][col].value;
@@ -486,7 +488,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             twoRight = board[row][col + 2].value;
                             threeRight = board[row][col + 3].value;
                             fourRight = board[row][col + 4].value;
-                            if (pivot === oneRight && pivot === twoRight && pivot === threeRight && pivot === fourRight && board[row + 1][col + 1].value !== null && board[row + 1][col + 2].value !== null && board[row + 1][col + 3].value !== null && board[row + 1][col + 4].value !== null) {
+                            if (pivot === oneRight && pivot === twoRight && pivot === threeRight && pivot === fourRight && board[row + 1][col + 1].value && board[row + 1][col + 2].value && board[row + 1][col + 3].value && board[row + 1][col + 4].value) {
                                 for (let i = 0; i < 5; i++) {
                                     board[row][col + i] = _singleton__WEBPACK_IMPORTED_MODULE_3__["default"];
                                 } cursor.score += 700;
@@ -495,7 +497,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             oneRight = board[row][col + 1].value;
                             twoRight = board[row][col + 2].value;
                             threeRight = board[row][col + 3].value;
-                            if (pivot === oneRight && pivot === twoRight && pivot === threeRight && board[row + 1][col + 1].value !== null && board[row + 1][col + 2].value !== null && board[row + 1][col + 3].value !== null) {
+                            if (pivot === oneRight && pivot === twoRight && pivot === threeRight && board[row + 1][col + 1].value && board[row + 1][col + 2].value && board[row + 1][col + 3].value) {
                                 for (let i = 0; i < 4; i++) {
                                     board[row][col + i] = _singleton__WEBPACK_IMPORTED_MODULE_3__["default"];
                                 } cursor.score += 300;
@@ -504,7 +506,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             } if (col < 4) {
                             oneRight = board[row][col + 1].value;
                             twoRight = board[row][col + 2].value;
-                            if (pivot === oneRight && pivot === twoRight && board[row + 1][col + 1].value !== null && board[row + 1][col + 2].value !== null) {
+                            if (pivot === oneRight && pivot === twoRight && board[row + 1][col + 1].value && board[row + 1][col + 2].value) {
                                 checkAndDeleteNexusClustersLeftAndDown([row, col + 2]);
                                 for (let i = 0; i < 3; i++) {
                                     board[row][col + i] = _singleton__WEBPACK_IMPORTED_MODULE_3__["default"];
