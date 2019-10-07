@@ -5,6 +5,7 @@ import { clearSolutionsBeforeStart, clearSolutionsFromNewRow } from './solutions
 class Board {
     constructor() {
         this.grid = this.createGrid();
+        this.gameOver = false;
     }
 
     createGrid() {
@@ -46,7 +47,27 @@ class Board {
         this.grid[y][x] = a;
         this.grid[y][x + 1] = b;
         // fix
-        checkAndDeleteClusters(board);
+        // checkAndDeleteClusters(board);
+    }
+
+    fall() {
+        this.grid.forEach((row, y) => {
+            row.forEach((block, x) => {
+                if (y < 11 && !this.grid[y + 1][x].value && block.value) {
+                    this.grid[y + 1][x] = block;
+                    this.grid[y][x] = instance;
+                }
+            });
+        });
+        checkAndDeleteClusters(this.grid);
+    }
+
+    checkGameOver() {
+        for (let i = 0; i < 6; i++) {
+            if (row[i].value) {
+                this.gameOver = true;
+            }
+        }
     }
 }
 
