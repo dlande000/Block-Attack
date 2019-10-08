@@ -60,85 +60,57 @@ export function checkSolutions(grid) {
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 4][x].value]) && 
                     isMatching([_grid[y][x + 1].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value, _grid[y + 3][x + 1].value, _grid[y + 4][x + 1].value])) {
                         // Solution 1: 2 sets of 5 matching vertical blocks. 
-                }
-                if (y < 9 &&
+                } else if (y < 9 &&
                     x < 5 && 
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value]) && 
                     isMatching([_grid[y][x + 1].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value, _grid[y + 3][x + 1].value])) {
                         // Solution 2: 2 sets of 4 matching vertical blocks. 
-                }
-                if (y < 8 && 
+                } else if (y < 8 && 
                     x > 1 &&
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 4][x].value, _grid[y + 2][x - 1].value, _grid[y + 2][x - 2].value])) {
                         // Solution 3: 7 matching blocks 1. 
-                }
-                if (y < 8 && 
+                } else if (y < 8 && 
                     x < 4 &&
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 4][x].value, _grid[y + 2][x + 1].value, _grid[y + 2][x + 2].value])) {
                         // Solution 4: 7 matching blocks 2. 
-                }
-                if (y < 10 &&
+                } else if (y < 10 &&
                     x < 5 &&
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value]) && 
                     isMatching([_grid[y][x + 1].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value])) {
                         // Solution 5: 2 sets of 3 matching blocks. 
-                }
-                if (y < 9 &&
-                    x > 1 &&
-                    isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x], _grid[y + 1][x - 1].value, _grid[y + 1][x - 2].value])) {
-                        // Solution 6: 6 matching blocks 1. 
-                }
-                if (y < 9 &&
-                    x > 1 &&
-                    isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x], _grid[y + 2][x - 1].value, _grid[y + 2][x - 2].value])) {
+                } else if (y < 9 && x > 1) {
+                    if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x], _grid[y + 1][x - 1].value, _grid[y + 1][x - 2].value])) {
+                        // Solution 6: 6 matching blocks 1.
+                    } else if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x], _grid[y + 2][x - 1].value, _grid[y + 2][x - 2].value])) {
                         // Solution 7: 6 matching blocks 2. 
-                }
-                if (y < 10 &&
-                    x < 3 &&
-                    isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y][x + 3].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value])) {
+                    }
+                } else if (y < 10 && x < 3) {
+                    if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y][x + 3].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value])) {
                         // Solution 8: 6 matching blocks 3. 
-                }
-                if (y < 10 &&
-                    x < 3 &&
-                    isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y][x + 3].value, _grid[y + 1][x + 2].value, _grid[y + 2][x + 2].value])) {
+                    } else if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y][x + 3].value, _grid[y + 1][x + 2].value, _grid[y + 2][x + 2].value])) {
                         // Solution 9: 6 matching blocks 4. 
-                }
-                if (y < 9 &&
-                    x < 4 &&
-                    isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 1][x + 1].value, _grid[y + 1][x + 2].value])) {
+                    }
+                } else if (y < 9 && x < 4) {
+                    if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 1][x + 1].value, _grid[y + 1][x + 2].value])) {
                         // Solution 10: 6 matching blocks 5. 
-                }
-                if (y < 9 &&
-                    x < 4 &&
-                    isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 2][x + 1].value, _grid[y + 2][x + 2].value])) {
+                    } else if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 2][x + 1].value, _grid[y + 2][x + 2].value])) {
                         // Solution 11: 6 matching blocks 6. 
-                }
-                if (y < 10 &&
-                    x < 4 &&
-                    isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y][x + 1].value, _grid[y][x + 2].value])) {
+                    }
+                } else if (y < 10 && x < 4) {
+                    if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y][x + 1].value, _grid[y][x + 2].value])) {
                         // Solution 12: 5 matching blocks 1. 
-                }
-                if (y < 10 &&
-                    x < 4 &&
-                    isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value])) {
-                        // Solution 13: 5 matching blocks 2. 
-                }
-                if (y < 10 &&
-                    x < 4 &&
-                    isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y + 1][x + 2].value, _grid[y + 2][x + 2].value])) {
+                    } else if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value])) {
+                        // Solution 13: 5 matching blocks 2.
+                    } else if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y + 1][x + 2].value, _grid[y + 2][x + 2].value])) {
                         // Solution 14: 5 matching blocks 3. 
-                }
-                if (y < 10 &&
+                    } else if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 2][x + 1].value, _grid[y + 2][x + 2].value])) {
+                        // Solution 15: 5 matching blocks 5. 
+                    }
+                } else if (y < 10 &&
                     x > 1 &&
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 2][x - 1].value, _grid[y + 2][x - 2].value])) {
-                        // Solution 15: 5 matching blocks 4. 
-                }
-                if (y < 10 &&
-                    x < 4 &&
-                    isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 2][x + 1].value, _grid[y + 2][x + 2].value])) {
-                        // Solution 16: 5 matching blocks 5. 
-                }
-                if (x < 4 && isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value])) {
+                        // Solution 16: 5 matching blocks 4. 
+                } else if (x < 4 && isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value])) {
                     // Solution 17: 3 matching horizontal. 
                     if (x < 3 && isMatching([block.value, _grid[y][x + 3].value])) {
                         // Solution 18: 4 matching horizontal. 
@@ -146,8 +118,7 @@ export function checkSolutions(grid) {
                             // Solution 19: 5 matching horizontal. 
                         }
                     }
-                }
-                if (y < 10 && isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value])) {
+                } else if (y < 10 && isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value])) {
                     // Solution 20: 3 matching vertical. 
                     if (y < 9 && isMatching([block.value, _grid[y + 3][x].value])) {
                         // Solution 21: 4 matching vertical. 
