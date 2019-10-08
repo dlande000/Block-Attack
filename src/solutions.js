@@ -40,13 +40,11 @@ export function clearSolutionsFromNewRow(row, grid) {
     return _row;
 }
 
-export function checkSolutions(grid) {
+export function clearSolutions(grid) {
     // Check for any solutions after a swap, a fall, or a clear. 
     let _grid = grid;
 
-    // an array of arrays of y,x coordinates. 
-    let toClear = []; 
-
+    // add scores
     _grid.forEach((row, y) => {
         row.forEach((block, x) => {
             // Check if block has color value, and that the new row isn't checked for solutions.  
@@ -60,71 +58,205 @@ export function checkSolutions(grid) {
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 4][x].value]) && 
                     isMatching([_grid[y][x + 1].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value, _grid[y + 3][x + 1].value, _grid[y + 4][x + 1].value])) {
                         // Solution 1: 2 sets of 5 matching vertical blocks. 
+                        for (let i = 0; i <= 4; i++) {
+                            _grid[y + i][x] = instance;
+                            _grid[y + i][x + 1] = instance;
+                        }
+                        return _grid;
                 } else if (y < 9 &&
                     x < 5 && 
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value]) && 
                     isMatching([_grid[y][x + 1].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value, _grid[y + 3][x + 1].value])) {
                         // Solution 2: 2 sets of 4 matching vertical blocks. 
+                        for (let i = 0; i <= 3; i++) {
+                            _grid[y + i][x] = instance;
+                            _grid[y + i][x + 1] = instance;
+                        }
+                        return _grid;
                 } else if (y < 8 && 
                     x > 1 &&
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 4][x].value, _grid[y + 2][x - 1].value, _grid[y + 2][x - 2].value])) {
                         // Solution 3: 7 matching blocks 1. 
+                        for (let i = 0; i <= 4; i++) {
+                            _grid[y + i][x] = instance;
+                        }
+                        for (let j = 1; j <= 2; j++) {
+                            _grid[y + 2][x - j] = instance;
+                        }
+                        return _grid;
                 } else if (y < 8 && 
                     x < 4 &&
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 4][x].value, _grid[y + 2][x + 1].value, _grid[y + 2][x + 2].value])) {
                         // Solution 4: 7 matching blocks 2. 
+                        for (let i = 0; i <= 4; i++) {
+                            _grid[y + i][x] = instance;
+                        }
+                        for (let j = 1; j <= 2; j++) {
+                            _grid[y + 2][x + j] = instance;
+                        }
+                        return _grid;
                 } else if (y < 10 &&
                     x < 5 &&
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value]) && 
                     isMatching([_grid[y][x + 1].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value])) {
                         // Solution 5: 2 sets of 3 matching blocks. 
+                        for (let i = 0; i <= 2; i++) {
+                            _grid[y + i][x] = instance;
+                            _grid[y + i][x + 1] = instance;
+                        }
+                        return _grid;
                 } else if (y < 9 && x > 1) {
                     if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x], _grid[y + 1][x - 1].value, _grid[y + 1][x - 2].value])) {
                         // Solution 6: 6 matching blocks 1.
+                        for (let i = 0; i <= 3; i++) {
+                            _grid[y + i][x] = instance;
+                        }
+                        for (let j = 1; j <= 2; j++) {
+                            _grid[y + 1][x - j] = instance;
+                        }
+                        return _grid;
                     } else if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x], _grid[y + 2][x - 1].value, _grid[y + 2][x - 2].value])) {
                         // Solution 7: 6 matching blocks 2. 
+                        for (let i = 0; i <= 3; i++) {
+                            _grid[y + i][x] = instance;
+                        }
+                        for (let j = 1; j <= 2; j++) {
+                            _grid[y + 2][x - j] = instance;
+                        }
+                        return _grid;
                     }
                 } else if (y < 10 && x < 3) {
                     if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y][x + 3].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value])) {
                         // Solution 8: 6 matching blocks 3. 
+                        for (let i = 0; i <= 3; i++) {
+                            _grid[y][x + i] = instance;
+                        }
+                        for (let j = 1; j <= 2; j++) {
+                            _grid[y + j][x + 1] = instance;
+                        }
+                        return _grid;
                     } else if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y][x + 3].value, _grid[y + 1][x + 2].value, _grid[y + 2][x + 2].value])) {
                         // Solution 9: 6 matching blocks 4. 
+                        for (let i = 0; i <= 3; i++) {
+                            _grid[y][x + i] = instance;
+                        }
+                        for (let j = 1; j <= 2; j++) {
+                            _grid[y + j][x + 2] = instance;
+                        }
+                        return _grid;
                     }
                 } else if (y < 9 && x < 4) {
                     if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 1][x + 1].value, _grid[y + 1][x + 2].value])) {
                         // Solution 10: 6 matching blocks 5. 
+                        for (let i = 0; i <= 3; i++) {
+                            _grid[y + i][x] = instance;
+                        }
+                        for (let j = 1; j <= 2; j++) {
+                            _grid[y + 1][x + j] = instance;
+                        }
+                        return _grid;
                     } else if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 2][x + 1].value, _grid[y + 2][x + 2].value])) {
                         // Solution 11: 6 matching blocks 6. 
+                        for (let i = 0; i <= 3; i++) {
+                            _grid[y + i][x] = instance;
+                        }
+                        for (let j = 1; j <= 2; j++) {
+                            _grid[y + 2][x + j] = instance;
+                        }
+                        return _grid;
                     }
                 } else if (y < 10 && x < 4) {
                     if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y][x + 1].value, _grid[y][x + 2].value])) {
                         // Solution 12: 5 matching blocks 1. 
+                        for (let i = 0; i <= 2; i++) {
+                            _grid[y + i][x] = instance;
+                            if (i > 0) {
+                                _grid[y][x + i] = instance;
+                            }
+                        }
+                        return _grid;
                     } else if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value])) {
                         // Solution 13: 5 matching blocks 2.
+                        for (let i = 0; i <= 2; i++) {
+                            _grid[y][x + i] = instance;
+                            if (i > 0) {
+                                _grid[y + i][x + 1] = instance;
+                            }
+                        }
+                        return _grid;
                     } else if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y + 1][x + 2].value, _grid[y + 2][x + 2].value])) {
                         // Solution 14: 5 matching blocks 3. 
+                        for (let i = 0; i <= 2; i++) {
+                            _grid[y][x + i] = instance;
+                            if (i > 0) {
+                                _grid[y + i][x + 2] = instance;
+                            }
+                        }
+                        return _grid;
                     } else if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 2][x + 1].value, _grid[y + 2][x + 2].value])) {
                         // Solution 15: 5 matching blocks 5. 
+                        for (let i = 0; i <= 2; i++) {
+                            _grid[y + i][x] = instance;
+                            if (i > 0) {
+                                _grid[y + 2][x + i] = instance;
+                            }
+                        }
+                        return _grid;
                     }
                 } else if (y < 10 &&
                     x > 1 &&
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 2][x - 1].value, _grid[y + 2][x - 2].value])) {
                         // Solution 16: 5 matching blocks 4. 
+                        for (let i = 0; i <= 2; i++) {
+                            _grid[y + i][x] = instance;
+                            if (i > 0) {
+                                _grid[y + 2][x - i] = instance;
+                            }
+                        }
+                        return _grid;
                 } else if (x < 4 && isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value])) {
                     // Solution 17: 3 matching horizontal. 
                     if (x < 3 && isMatching([block.value, _grid[y][x + 3].value])) {
                         // Solution 18: 4 matching horizontal. 
                         if (x < 2 && isMatching([block.value, _grid[y][x + 4].value])) {
                             // Solution 19: 5 matching horizontal. 
+                            for (let i = 0; i <= 4; i++) {
+                                _grid[y][x + i] = instance;   
+                            }
+                            return _grid;
+                        } else {
+                            for (let i = 0; i <= 3; i++) {
+                                _grid[y][x + i] = instance;   
+                            }
+                            return _grid;
                         }
+                    } else {
+                        for (let i = 0; i <= 2; i++) {
+                            _grid[y][x + i] = instance;   
+                        }
+                        return _grid;
                     }
                 } else if (y < 10 && isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value])) {
                     // Solution 20: 3 matching vertical. 
-                    if (y < 9 && isMatching([block.value, _grid[y + 3][x].value])) {
+                    if (y < 9 && block.value === _grid[y + 3][x].value) {
                         // Solution 21: 4 matching vertical. 
-                        if (y < 8 && isMatching([block.value, _grid[y + 4][x].value])) {
+                        if (y < 8 && block.value === _grid[y + 4][x].value) {
                             // Solution 22: 4 matching vertical. 
+                            for (let i = 0; i <= 4; i++) {
+                                _grid[y + i][x] = instance;   
+                            }
+                            return _grid;
+                        } else {
+                            for (let i = 0; i <= 3; i++) {
+                                _grid[y + i][x] = instance;   
+                            }
+                            return _grid;
                         }
+                    } else {
+                        for (let i = 0; i <= 2; i++) {
+                            _grid[y + i][x] = instance;   
+                        }
+                        return _grid;
                     }
                 }
             }
