@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
             board.fall();
             draw();
             updateScore();
-            board.checkGameOver();
+            // board.checkGameOver();
         } else if (board.gameOver) {
             audio.musicPlaying = false;
             audio.playMusic();

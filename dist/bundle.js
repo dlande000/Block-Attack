@@ -196,9 +196,8 @@ class Board {
             nextRow.push(new _block__WEBPACK_IMPORTED_MODULE_0__["default"]());
         }
         nextRow = Object(_solutions__WEBPACK_IMPORTED_MODULE_2__["clearSolutionsFromNewRow"])(nextRow, this.grid);
-        this.grid.shift();
+        this.checkGameOver(this.grid.shift());
         this.grid.push(nextRow);
-        this.checkGameOver();
         this.grid = Object(_solutions__WEBPACK_IMPORTED_MODULE_2__["clearSolutions"])(this.grid);
     }
 
@@ -223,9 +222,9 @@ class Board {
         this.grid = Object(_solutions__WEBPACK_IMPORTED_MODULE_2__["clearSolutions"])(this.grid);
     }
 
-    checkGameOver() {
+    checkGameOver(row) {
         for (let i = 0; i < 6; i++) {
-            if (this.grid[0][i].value) {
+            if (row[i].value) {
                 this.gameOver = true;
             }
         }
@@ -407,7 +406,7 @@ document.addEventListener("DOMContentLoaded", () => {
             board.fall();
             draw();
             updateScore();
-            board.checkGameOver();
+            // board.checkGameOver();
         } else if (board.gameOver) {
             audio.musicPlaying = false;
             audio.playMusic();
@@ -479,6 +478,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "clearSolutions", function() { return clearSolutions; });
 /* harmony import */ var _block__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./block */ "./src/block.js");
 /* harmony import */ var _singleton__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./singleton */ "./src/singleton.js");
+/* harmony import */ var _audio__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./audio */ "./src/audio.js");
+
 
 
 
@@ -521,192 +522,257 @@ function clearSolutionsFromNewRow(row, grid) {
 }
 
 function clearSolutions(grid) {
-    // Clear any solutions on grid after swap, fall, or new row, return new grid.
+    // Check for any solutions after a swap, a fall, or a clear. 
     let _grid = grid;
-    for (let y = 0; y < 12; y++) {
-        for (let x = 0; x < 6; x++) {
-            if (_grid[y][x].value && _grid[y + 1][x].value) {
-                let col = checkStartingPointHorizontal(y, x)[1];
-                let row = checkStartingPointVertical(y, col)[0];
-                let pivot = _grid[row][col].value;
-                let oneBelow;
-                let twoBelow;
-                let threeBelow;
-                let fourBelow;
-                let oneRight;
-                let twoRight;
-                let threeRight;
-                let fourRight;
-                    if (row < 8) {
-                        oneBelow = _grid[row + 1][col].value;
-                        twoBelow = _grid[row + 2][col].value;
-                        threeBelow = _grid[row + 3][col].value;
-                        fourBelow = _grid[row + 4][col].value;
-                        if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow && pivot === fourBelow) {
-                            checkAndDeleteNexusClusters([row + 2, col], 1);
-                            for (let i = 0; i < 5; i++) {
-                                _grid[row + i][col] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            } cursor.score += 700;
-                            audio.playSoundEffect();
+
+    // add scores
+    _grid.forEach((row, y) => {
+        row.forEach((block, x) => {
+            // Check if block has color value, and that the new row isn't checked for solutions.  
+            if (block.value && y < 12) {
+                // Block Attack! has 22 unique solutions; 
+                // the below funtions check each possible solution
+                // based first on the position of the checked block. 
+                // Some solutions cannot be accessed in certain parts of the grid.
+                if (y < 8 && 
+                    x < 5 && 
+                    isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 4][x].value]) && 
+                    isMatching([_grid[y][x + 1].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value, _grid[y + 3][x + 1].value, _grid[y + 4][x + 1].value])) {
+                        // Solution 1: 2 sets of 5 matching vertical blocks. 
+                        for (let i = 0; i <= 4; i++) {
+                            _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            _grid[y + i][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         }
+                        return _grid;
+                }
+                if (y < 9 &&
+                    x < 5 && 
+                    isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value]) && 
+                    isMatching([_grid[y][x + 1].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value, _grid[y + 3][x + 1].value])) {
+                        // Solution 2: 2 sets of 4 matching vertical blocks. 
+                        for (let i = 0; i <= 3; i++) {
+                            _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            _grid[y + i][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        }
+                        return _grid;
+                }
+                if (y < 8 && 
+                    x > 1 &&
+                    isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 4][x].value, _grid[y + 2][x - 1].value, _grid[y + 2][x - 2].value])) {
+                        // Solution 3: 7 matching blocks 1. 
+                        for (let i = 0; i <= 4; i++) {
+                            _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        }
+                        for (let j = 1; j <= 2; j++) {
+                            _grid[y + 2][x - j] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        }
+                        return _grid;
+                } 
+                if (y < 8 && 
+                    x < 4 &&
+                    isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 4][x].value, _grid[y + 2][x + 1].value, _grid[y + 2][x + 2].value])) {
+                        // Solution 4: 7 matching blocks 2. 
+                        for (let i = 0; i <= 4; i++) {
+                            _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        }
+                        for (let j = 1; j <= 2; j++) {
+                            _grid[y + 2][x + j] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        }
+                        return _grid;
+                } 
+                if (y < 10 &&
+                    x < 5 &&
+                    isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value]) && 
+                    isMatching([_grid[y][x + 1].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value])) {
+                        // Solution 5: 2 sets of 3 matching blocks. 
+                        for (let i = 0; i <= 2; i++) {
+                            _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            _grid[y + i][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        }
+                        return _grid;
+                } 
+                if (y < 9 && x > 1) {
+                    if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x], _grid[y + 1][x - 1].value, _grid[y + 1][x - 2].value])) {
+                        // Solution 6: 6 matching blocks 1.
+                        for (let i = 0; i <= 3; i++) {
+                            _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        }
+                        for (let j = 1; j <= 2; j++) {
+                            _grid[y + 1][x - j] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        }
+                        return _grid;
+                    } 
+                    if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x], _grid[y + 2][x - 1].value, _grid[y + 2][x - 2].value])) {
+                        // Solution 7: 6 matching blocks 2. 
+                        for (let i = 0; i <= 3; i++) {
+                            _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        }
+                        for (let j = 1; j <= 2; j++) {
+                            _grid[y + 2][x - j] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        }
+                        return _grid;
                     }
-                    if (row < 9) {
-                        oneBelow = _grid[row + 1][col].value;
-                        twoBelow = _grid[row + 2][col].value;
-                        threeBelow = _grid[row + 3][col].value;
-                        if (pivot === oneBelow && pivot === twoBelow && pivot === threeBelow) {
-                            checkAndDeleteNexusClusters([row + 1, col], 2);
-                            for (let i = 0; i < 4; i++) {
-                                _grid[row + i][col] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            } cursor.score += 300;
-                            audio.playSoundEffect();
+                } 
+                if (y < 10 && x < 3) {
+                    if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y][x + 3].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value])) {
+                        // Solution 8: 6 matching blocks 3. 
+                        for (let i = 0; i <= 3; i++) {
+                            _grid[y][x + i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         }
+                        for (let j = 1; j <= 2; j++) {
+                            _grid[y + j][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        }
+                        return _grid;
+                    } 
+                    if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y][x + 3].value, _grid[y + 1][x + 2].value, _grid[y + 2][x + 2].value])) {
+                        // Solution 9: 6 matching blocks 4. 
+                        for (let i = 0; i <= 3; i++) {
+                            _grid[y][x + i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        }
+                        for (let j = 1; j <= 2; j++) {
+                            _grid[y + j][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        }
+                        return _grid;
                     }
-                    if (row < 10) {
-                        oneBelow = _grid[row + 1][col].value;
-                        twoBelow = _grid[row + 2][col].value;
-                        
-                        if (pivot === oneBelow && pivot === twoBelow) {
-                            
-                            checkAndDeleteNexusClusters([row, col], 3);
-                            for (let i = 0; i < 3; i++) {
-                                _grid[row + i][col] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                
-                            } cursor.score += 100;
-                            audio.playSoundEffect();
+                } 
+                if (y < 9 && x < 4) {
+                    if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 1][x + 1].value, _grid[y + 1][x + 2].value])) {
+                        // Solution 10: 6 matching blocks 5. 
+                        for (let i = 0; i <= 3; i++) {
+                            _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         }
+                        for (let j = 1; j <= 2; j++) {
+                            _grid[y + 1][x + j] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        }
+                        return _grid;
+                    } 
+                    if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 2][x + 1].value, _grid[y + 2][x + 2].value])) {
+                        // Solution 11: 6 matching blocks 6. 
+                        for (let i = 0; i <= 3; i++) {
+                            _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        }
+                        for (let j = 1; j <= 2; j++) {
+                            _grid[y + 2][x + j] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        }
+                        return _grid;
                     }
-                    if (col < 2) {
-                        oneRight = _grid[row][col + 1].value;
-                        twoRight = _grid[row][col + 2].value;
-                        threeRight = _grid[row][col + 3].value;
-                        fourRight = _grid[row][col + 4].value;
-                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight && pivot === fourRight && _grid[row + 1][col + 1].value && _grid[row + 1][col + 2].value && _grid[row + 1][col + 3].value && _grid[row + 1][col + 4].value) {
-                            for (let i = 0; i < 5; i++) {
-                                _grid[row][col + i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            } cursor.score += 700;
-                            audio.playSoundEffect();
-                        }} if (col < 3) {
-                        oneRight = _grid[row][col + 1].value;
-                        twoRight = _grid[row][col + 2].value;
-                        threeRight = _grid[row][col + 3].value;
-                        if (pivot === oneRight && pivot === twoRight && pivot === threeRight && _grid[row + 1][col + 1].value && _grid[row + 1][col + 2].value && _grid[row + 1][col + 3].value) {
-                            for (let i = 0; i < 4; i++) {
-                                _grid[row][col + i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            } cursor.score += 300;
-                            audio.playSoundEffect();
+                } 
+                if (y < 10 && x < 4) {
+                    if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y][x + 1].value, _grid[y][x + 2].value])) {
+                        // Solution 12: 5 matching blocks 1. 
+                        for (let i = 0; i <= 2; i++) {
+                            _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            if (i > 0) {
+                                _grid[y][x + i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            }
                         }
-                        } if (col < 4) {
-                        oneRight = _grid[row][col + 1].value;
-                        twoRight = _grid[row][col + 2].value;
-                        if (pivot === oneRight && pivot === twoRight && _grid[row + 1][col + 1].value && _grid[row + 1][col + 2].value) {
-                            checkAndDeleteNexusClustersLeftAndDown([row, col + 2]);
-                            for (let i = 0; i < 3; i++) {
-                                _grid[row][col + i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            } cursor.score += 100;
-                            audio.playSoundEffect();
+                        return _grid;
+                    } 
+                    if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value])) {
+                        // Solution 13: 5 matching blocks 2.
+                        for (let i = 0; i <= 2; i++) {
+                            _grid[y][x + i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            if (i > 0) {
+                                _grid[y + i][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            }
                         }
+                        return _grid;
+                    } 
+                    if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y + 1][x + 2].value, _grid[y + 2][x + 2].value])) {
+                        // Solution 14: 5 matching blocks 3. 
+                        for (let i = 0; i <= 2; i++) {
+                            _grid[y][x + i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            if (i > 0) {
+                                _grid[y + i][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            }
+                        }
+                        return _grid;
+                    }
+                     if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 2][x + 1].value, _grid[y + 2][x + 2].value])) {
+                        // Solution 15: 5 matching blocks 5. 
+                        for (let i = 0; i <= 2; i++) {
+                            _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            if (i > 0) {
+                                _grid[y + 2][x + i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            }
+                        }
+                        return _grid;
                     }
                 }
-        }
-    }
+                if (y < 10 &&
+                    x > 1 &&
+                    isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 2][x - 1].value, _grid[y + 2][x - 2].value])) {
+                        // Solution 16: 5 matching blocks 4. 
+                        for (let i = 0; i <= 2; i++) {
+                            _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            if (i > 0) {
+                                _grid[y + 2][x - i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            }
+                        }
+                        return _grid;
+                } 
+                if (x < 4 && isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value])) {
+                    // Solution 17: 3 matching horizontal. 
+                    if (x < 3 && isMatching([block.value, _grid[y][x + 3].value])) {
+                        // Solution 18: 4 matching horizontal. 
+                        if (x < 2 && isMatching([block.value, _grid[y][x + 4].value])) {
+                            // Solution 19: 5 matching horizontal. 
+                            for (let i = 0; i <= 4; i++) {
+                                _grid[y][x + i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];   
+                            }
+                            return _grid;
+                        } else {
+                            for (let i = 0; i <= 3; i++) {
+                                _grid[y][x + i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];   
+                            }
+                            return _grid;
+                        }
+                    } else {
+                        for (let i = 0; i <= 2; i++) {
+                            _grid[y][x + i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];   
+                        }
+                        return _grid;
+                    }
+                } 
+                if (y < 10 && isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value])) {
+                    // Solution 20: 3 matching vertical. 
+                    if (y < 9 && block.value === _grid[y + 3][x].value) {
+                        // Solution 21: 4 matching vertical. 
+                        if (y < 8 && block.value === _grid[y + 4][x].value) {
+                            // Solution 22: 4 matching vertical. 
+                            for (let i = 0; i <= 4; i++) {
+                                _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];   
+                            }
+                            return _grid;
+                        } else {
+                            for (let i = 0; i <= 3; i++) {
+                                _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];   
+                            }
+                            return _grid;
+                        }
+                    } else {
+                        for (let i = 0; i <= 2; i++) {
+                            _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];   
+                        }
+                        return _grid;
+                    }
+                }
+            }
+        });
+    });
+
     return _grid;
 }
 
-
-// FIX THIS
-
-function checkAndDeleteNexusClustersLeftAndDown(position) {
-    let y = position[0];
-    let x = position[1];
-    if (y < 10 && grid[y][x].value === grid[y + 1][x].value && grid[y + 2][x].value) {
-        board[y + 1][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-        board[y + 2][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-        cursor.score += 200;
-    }
-}
-
-function checkAndDeleteNexusClusters(position, increment) {
-    let oneLeft;
-    let twoLeft;
-    let oneRight;
-    let twoRight;
-    for (let i = 0; i < increment; i++) {
-        let y = position[0] + i;
-        let x = position[1];
-        let pivot = board[y][x].value;
-        if (x >= 2) {
-            oneLeft = board[y][x - 1].value;
-            twoLeft = board[y][x - 2].value;
-            if (x <= 3) {
-                oneRight = board[y][x + 1].value;
-                twoRight = board[y][x + 2].value;
-                if (pivot === oneLeft && pivot === twoLeft && pivot === oneRight && pivot === twoRight) {
-                    board[y][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                    board[y][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                    board[y][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                    board[y][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                    cursor.score += 700;
-                }
-            } if (x <= 4) {
-                oneRight = board[y][x + 1].value;
-                if (pivot === oneLeft && pivot === twoLeft && pivot === oneRight) {
-                    board[y][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                    board[y][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                    board[y][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                    cursor.score += 500;
-                }
-            } if (pivot === oneLeft && pivot === twoLeft) {
-                board[y][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                board[y][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                cursor.score += 200;
-            }
-        } if (x <= 3) {
-            oneRight = board[y][x + 1].value;
-            twoRight = board[y][x + 2].value;
-            if (x >= 1) {
-                oneLeft = board[y][x - 1].value;
-                if (pivot === oneRight && pivot === twoRight && pivot === oneLeft) {
-                    board[y][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                    board[y][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                    board[y][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                    cursor.score += 500;
-                }
-            } if (pivot === oneRight && pivot === twoRight) {
-                board[y][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                board[y][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                cursor.score += 200;
-            }
-        } if (x >= 1 && x <= 4 && increment === 3) {
-            oneRight = board[y][x + 1].value;
-            oneLeft = board[y][x - 1].value;
-            if (pivot === oneRight && pivot === oneLeft) {
-                board[y][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                board[y][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                cursor.score += 200;
-            }
+const isMatching = blocks => {
+    // Return true if all blocks match.
+    for (let i = 0; i < blocks.length - 1; i++) {
+        if (blocks[i] !== blocks[i + 1]) {
+            return false;
         }
     }
-}
-
-
-function checkStartingPointHorizontal(row, col) {
-    if (board[row][col].value === board[row][col - 1].value && board[row - 1][col].value !== board[row][col].value) {
-        let col2 = col - 1;
-        return checkStartingPointHorizontal(row, col2);
-    } else {
-        return [row, col];
-    }
-}
-
-function checkStartingPointVertical(row, col) {
-    if ((board[row][col].value === board[row - 1][col].value && board[row][col].value === board[row + 1][col].value) || (board[row][col].value === board[row - 1][col].value && board[row][col].value === board[row - 2][col].value))  {
-        let row2 = row - 1;
-        return checkStartingPointVertical(row2, col);
-    } else {
-        return [row, col];
-    }
-}
+    return true;
+};
 
 /***/ })
 

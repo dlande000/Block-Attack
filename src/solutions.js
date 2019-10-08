@@ -63,7 +63,8 @@ export function clearSolutions(grid) {
                             _grid[y + i][x + 1] = instance;
                         }
                         return _grid;
-                } else if (y < 9 &&
+                }
+                if (y < 9 &&
                     x < 5 && 
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value]) && 
                     isMatching([_grid[y][x + 1].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value, _grid[y + 3][x + 1].value])) {
@@ -73,7 +74,8 @@ export function clearSolutions(grid) {
                             _grid[y + i][x + 1] = instance;
                         }
                         return _grid;
-                } else if (y < 8 && 
+                }
+                if (y < 8 && 
                     x > 1 &&
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 4][x].value, _grid[y + 2][x - 1].value, _grid[y + 2][x - 2].value])) {
                         // Solution 3: 7 matching blocks 1. 
@@ -84,7 +86,8 @@ export function clearSolutions(grid) {
                             _grid[y + 2][x - j] = instance;
                         }
                         return _grid;
-                } else if (y < 8 && 
+                } 
+                if (y < 8 && 
                     x < 4 &&
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 4][x].value, _grid[y + 2][x + 1].value, _grid[y + 2][x + 2].value])) {
                         // Solution 4: 7 matching blocks 2. 
@@ -95,7 +98,8 @@ export function clearSolutions(grid) {
                             _grid[y + 2][x + j] = instance;
                         }
                         return _grid;
-                } else if (y < 10 &&
+                } 
+                if (y < 10 &&
                     x < 5 &&
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value]) && 
                     isMatching([_grid[y][x + 1].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value])) {
@@ -105,7 +109,8 @@ export function clearSolutions(grid) {
                             _grid[y + i][x + 1] = instance;
                         }
                         return _grid;
-                } else if (y < 9 && x > 1) {
+                } 
+                if (y < 9 && x > 1) {
                     if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x], _grid[y + 1][x - 1].value, _grid[y + 1][x - 2].value])) {
                         // Solution 6: 6 matching blocks 1.
                         for (let i = 0; i <= 3; i++) {
@@ -115,7 +120,8 @@ export function clearSolutions(grid) {
                             _grid[y + 1][x - j] = instance;
                         }
                         return _grid;
-                    } else if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x], _grid[y + 2][x - 1].value, _grid[y + 2][x - 2].value])) {
+                    } 
+                    if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x], _grid[y + 2][x - 1].value, _grid[y + 2][x - 2].value])) {
                         // Solution 7: 6 matching blocks 2. 
                         for (let i = 0; i <= 3; i++) {
                             _grid[y + i][x] = instance;
@@ -125,7 +131,8 @@ export function clearSolutions(grid) {
                         }
                         return _grid;
                     }
-                } else if (y < 10 && x < 3) {
+                } 
+                if (y < 10 && x < 3) {
                     if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y][x + 3].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value])) {
                         // Solution 8: 6 matching blocks 3. 
                         for (let i = 0; i <= 3; i++) {
@@ -135,7 +142,8 @@ export function clearSolutions(grid) {
                             _grid[y + j][x + 1] = instance;
                         }
                         return _grid;
-                    } else if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y][x + 3].value, _grid[y + 1][x + 2].value, _grid[y + 2][x + 2].value])) {
+                    } 
+                    if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y][x + 3].value, _grid[y + 1][x + 2].value, _grid[y + 2][x + 2].value])) {
                         // Solution 9: 6 matching blocks 4. 
                         for (let i = 0; i <= 3; i++) {
                             _grid[y][x + i] = instance;
@@ -145,7 +153,8 @@ export function clearSolutions(grid) {
                         }
                         return _grid;
                     }
-                } else if (y < 9 && x < 4) {
+                } 
+                if (y < 9 && x < 4) {
                     if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 1][x + 1].value, _grid[y + 1][x + 2].value])) {
                         // Solution 10: 6 matching blocks 5. 
                         for (let i = 0; i <= 3; i++) {
@@ -155,7 +164,8 @@ export function clearSolutions(grid) {
                             _grid[y + 1][x + j] = instance;
                         }
                         return _grid;
-                    } else if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 2][x + 1].value, _grid[y + 2][x + 2].value])) {
+                    } 
+                    if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 3][x].value, _grid[y + 2][x + 1].value, _grid[y + 2][x + 2].value])) {
                         // Solution 11: 6 matching blocks 6. 
                         for (let i = 0; i <= 3; i++) {
                             _grid[y + i][x] = instance;
@@ -165,7 +175,8 @@ export function clearSolutions(grid) {
                         }
                         return _grid;
                     }
-                } else if (y < 10 && x < 4) {
+                } 
+                if (y < 10 && x < 4) {
                     if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y][x + 1].value, _grid[y][x + 2].value])) {
                         // Solution 12: 5 matching blocks 1. 
                         for (let i = 0; i <= 2; i++) {
@@ -175,7 +186,8 @@ export function clearSolutions(grid) {
                             }
                         }
                         return _grid;
-                    } else if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value])) {
+                    } 
+                    if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y + 1][x + 1].value, _grid[y + 2][x + 1].value])) {
                         // Solution 13: 5 matching blocks 2.
                         for (let i = 0; i <= 2; i++) {
                             _grid[y][x + i] = instance;
@@ -184,7 +196,8 @@ export function clearSolutions(grid) {
                             }
                         }
                         return _grid;
-                    } else if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y + 1][x + 2].value, _grid[y + 2][x + 2].value])) {
+                    } 
+                    if (isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value, _grid[y + 1][x + 2].value, _grid[y + 2][x + 2].value])) {
                         // Solution 14: 5 matching blocks 3. 
                         for (let i = 0; i <= 2; i++) {
                             _grid[y][x + i] = instance;
@@ -193,7 +206,8 @@ export function clearSolutions(grid) {
                             }
                         }
                         return _grid;
-                    } else if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 2][x + 1].value, _grid[y + 2][x + 2].value])) {
+                    }
+                     if (isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 2][x + 1].value, _grid[y + 2][x + 2].value])) {
                         // Solution 15: 5 matching blocks 5. 
                         for (let i = 0; i <= 2; i++) {
                             _grid[y + i][x] = instance;
@@ -203,7 +217,8 @@ export function clearSolutions(grid) {
                         }
                         return _grid;
                     }
-                } else if (y < 10 &&
+                }
+                if (y < 10 &&
                     x > 1 &&
                     isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value, _grid[y + 2][x - 1].value, _grid[y + 2][x - 2].value])) {
                         // Solution 16: 5 matching blocks 4. 
@@ -214,7 +229,8 @@ export function clearSolutions(grid) {
                             }
                         }
                         return _grid;
-                } else if (x < 4 && isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value])) {
+                } 
+                if (x < 4 && isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value])) {
                     // Solution 17: 3 matching horizontal. 
                     if (x < 3 && isMatching([block.value, _grid[y][x + 3].value])) {
                         // Solution 18: 4 matching horizontal. 
@@ -236,7 +252,8 @@ export function clearSolutions(grid) {
                         }
                         return _grid;
                     }
-                } else if (y < 10 && isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value])) {
+                } 
+                if (y < 10 && isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value])) {
                     // Solution 20: 3 matching vertical. 
                     if (y < 9 && block.value === _grid[y + 3][x].value) {
                         // Solution 21: 4 matching vertical. 
