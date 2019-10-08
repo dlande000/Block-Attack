@@ -42,35 +42,60 @@ export function clearSolutionsFromNewRow(row, grid) {
 export function clearSolutions(grid) {
     // Clear any solutions on grid after swap, fall, or new row, return new grid.
     let _grid = grid;
-    // check stuff here
+
+    // an array of arrays of y,x coordinates. 
+    let toClear = []; 
+
+    _grid.forEach((row, y) => {
+        row.forEach((block, x) => {
+            // Check if block has color value, and that the new row isn't checked for solutions.  
+            if (block.value && y < 12) {
+                let checkingValue = block.value;
+                // check horizontal
+                checkHorizontal(_grid, block, y, x);
+                // check vertical
+                checkVertical(_grid, block, y, x);
+            }
+        });
+    });
+
     return _grid;
 }
 
-const matchingThreeHorizontal = (block1, block2, block3) => {
-    if (block1 && block2 && block3) {
-        if (block1 === block2 && block1 === block3) {
-            return true;
+const checkHorizontal = (_grid, block, y, x) => {
+    let toClear = [];
+    if (x < 4 && isMatching([block.value, _grid[y][x + 1].value, _grid[y][x + 2].value])) {
+        toClear.concat([[y, x], [y, x + 1], [y, x + 2]]);
+        if (x < 3 && isMatching([block.value, _grid[y][x + 3].value])) {
+            toClear.concat([[y, x + 3]]);
+            if (x < 2 && isMatching([block.value, _grid[y][x + 4].value])) {
+                toClear.concat([y, x + 4]);
+            }
         }
     }
-    return false;
 };
 
-const matchingFourHorizontal = (block1, block2, block3, block4) => {
-    if (block1 && block2 && block3 && block4) {
-        if (block1 === block2 && block1 === block3 && block1 === block4) {
-            return true;
+const checkVertical = (_grid, block, y, x) => {
+    toClear = [];
+    if (y < 10 && toClear.length === 0 && isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value])) {
+        toClear.concat([[y, x], [y + 1, x], [y + 2, x]]);
+        if (y < 9 && isMatching([block.value, _grid[y + 3][x].value])) {
+            toClear.concat([y + 3, x]);
+            if (y < 8 && isMatching([block.value, _grid[y + 4][x].value])) {
+                toClear.concat([y + 4, x]);
+            }
         }
     }
-    return false;
 };
 
-const matchingFiveHorizontal = (block1, block2, block3, block4, block5) => {
-    if (block1 && block2 && block3 && block4 && block5) {
-        if (block1 === block2 && block1 === block3 && block1 === block4 && block1 === block5) {
-            return true;
+const isMatching = blocks => {
+    // Return true if blocks match.
+    for (let i = 0; i < blocks.length - 1; i++) {
+        if (!blocks[i] || !blocks[i + 1] || blocks[i] !== blocks[i + 1]) {
+            return false;
         }
     }
-    return false;
+    return true;
 };
 
 // export function clearSolutions(grid) {
