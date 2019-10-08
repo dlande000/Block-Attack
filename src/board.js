@@ -34,7 +34,7 @@ class Board {
             nextRow.push(new Block());
         }
         nextRow = clearSolutionsFromNewRow(nextRow, this.grid);
-        this.grid.shift();
+        this.checkGameOver(this.grid.shift());
         this.grid.push(nextRow);
         this.checkGameOver();
         this.grid = clearSolutions(this.grid);
@@ -61,9 +61,9 @@ class Board {
         this.grid = clearSolutions(this.grid);
     }
 
-    checkGameOver() {
+    checkGameOver(row) {
         for (let i = 0; i < 6; i++) {
-            if (this.grid[0][i].value) {
+            if (row[i].value) {
                 this.gameOver = true;
             }
         }

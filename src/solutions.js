@@ -1,5 +1,6 @@
 import Block from './block';
 import instance from './singleton';
+import Audio from './audio';
 
 export function clearSolutionsBeforeStart(grid) {
     // Remove any randomly-generated solutions from the board before game start.
@@ -50,11 +51,10 @@ export function clearSolutions(grid) {
         row.forEach((block, x) => {
             // Check if block has color value, and that the new row isn't checked for solutions.  
             if (block.value && y < 12) {
-                let checkingValue = block.value;
-                // check horizontal
-                checkHorizontal(_grid, block, y, x);
-                // check vertical
-                checkVertical(_grid, block, y, x);
+                // Block Attack! has 21 unique solutions; 
+                // the below funtions check each possible solution
+                // based first on the position of the checked block. 
+                // (Some solutions cannot be accessed in certain parts of the grid.)
             }
         });
     });
@@ -73,11 +73,12 @@ const checkHorizontal = (_grid, block, y, x) => {
             }
         }
     }
+    return toClear;
 };
 
 const checkVertical = (_grid, block, y, x) => {
     toClear = [];
-    if (y < 10 && toClear.length === 0 && isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value])) {
+    if (y < 10 && isMatching([block.value, _grid[y + 1][x].value, _grid[y + 2][x].value])) {
         toClear.concat([[y, x], [y + 1, x], [y + 2, x]]);
         if (y < 9 && isMatching([block.value, _grid[y + 3][x].value])) {
             toClear.concat([y + 3, x]);
@@ -86,6 +87,7 @@ const checkVertical = (_grid, block, y, x) => {
             }
         }
     }
+    return toClear;
 };
 
 const isMatching = blocks => {
