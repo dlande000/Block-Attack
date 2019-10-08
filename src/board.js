@@ -2,7 +2,7 @@ import Block from './block';
 import instance from './singleton';
 import { clearSolutionsBeforeStart,
     clearSolutionsFromNewRow,
-    clearSolutions } from './solutions';
+    checkSolutions } from './solutions';
 
 class Board {
     constructor() {
@@ -36,8 +36,7 @@ class Board {
         nextRow = clearSolutionsFromNewRow(nextRow, this.grid);
         this.checkGameOver(this.grid.shift());
         this.grid.push(nextRow);
-        this.checkGameOver();
-        this.grid = clearSolutions(this.grid);
+        this.grid = checkSolutions(this.grid);
     }
 
     swap(y, x) {
@@ -46,7 +45,7 @@ class Board {
         [a, b] = [b, a];
         this.grid[y][x] = a;
         this.grid[y][x + 1] = b;
-        this.grid = clearSolutions(this.grid);
+        this.grid = checkSolutions(this.grid);
     }
 
     fall() {
@@ -58,7 +57,7 @@ class Board {
                 }
             });
         });
-        this.grid = clearSolutions(this.grid);
+        this.grid = checkSolutions(this.grid);
     }
 
     checkGameOver(row) {
