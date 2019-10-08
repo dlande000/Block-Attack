@@ -37,7 +37,7 @@ class Board {
         this.grid.shift();
         this.grid.push(nextRow);
         this.checkGameOver();
-        // this.grid = clearSolutions(this.grid);
+        this.grid = clearSolutions(this.grid);
     }
 
     swap(y, x) {
@@ -46,7 +46,7 @@ class Board {
         [a, b] = [b, a];
         this.grid[y][x] = a;
         this.grid[y][x + 1] = b;
-        // this.grid = clearSolutions(this.grid);
+        this.grid = clearSolutions(this.grid);
     }
 
     fall() {
@@ -58,7 +58,7 @@ class Board {
                 }
             });
         });
-        // this.grid = clearSolutions(this.grid);
+        this.grid = clearSolutions(this.grid);
     }
 
     checkGameOver() {

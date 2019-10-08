@@ -199,7 +199,7 @@ class Board {
         this.grid.shift();
         this.grid.push(nextRow);
         this.checkGameOver();
-        // this.grid = clearSolutions(this.grid);
+        this.grid = Object(_solutions__WEBPACK_IMPORTED_MODULE_2__["clearSolutions"])(this.grid);
     }
 
     swap(y, x) {
@@ -208,7 +208,7 @@ class Board {
         [a, b] = [b, a];
         this.grid[y][x] = a;
         this.grid[y][x + 1] = b;
-        // this.grid = clearSolutions(this.grid);
+        this.grid = Object(_solutions__WEBPACK_IMPORTED_MODULE_2__["clearSolutions"])(this.grid);
     }
 
     fall() {
@@ -220,7 +220,7 @@ class Board {
                 }
             });
         });
-        // this.grid = clearSolutions(this.grid);
+        this.grid = Object(_solutions__WEBPACK_IMPORTED_MODULE_2__["clearSolutions"])(this.grid);
     }
 
     checkGameOver() {
@@ -432,7 +432,7 @@ document.addEventListener("DOMContentLoaded", () => {
         requestAnimationFrame(update);
     };
     // what is this line??
-    window.board = board;
+    // window.board = board;
 
     audio.playMusic();
     update();

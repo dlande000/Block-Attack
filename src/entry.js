@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
         requestAnimationFrame(update);
     };
     // what is this line??
-    window.board = board;
+    // window.board = board;
 
     audio.playMusic();
     update();
