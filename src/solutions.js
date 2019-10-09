@@ -56,7 +56,7 @@ export function clearSolutions(grid) {
                 // Some solutions cannot be accessed in certain parts of the grid.
 
                 // Vertical based solutions. 
-                if (y < 10 && isMatching([checkingValue, _grid[y + 1][x].value, _grid[y + 2][x].value])) {
+                if (y < 10 && checkingValue === _grid[y + 1][x].value && checkingValue === _grid[y + 2][x].value) {
                     // Solution 1: 3 matching vertical. 
                     for (let i = 0; i <= 2; i++) {
                         _grid[y + i][x] = instance;   
@@ -115,7 +115,7 @@ export function clearSolutions(grid) {
                 }
 
                 // Horizontal based solutions. 
-                else if (x < 4 && isMatching([checkingValue, _grid[y][x + 1].value, _grid[y][x + 2].value])) {
+                else if (x < 4 && checkingValue === _grid[y][x + 1].value && checkingValue === _grid[y][x + 2].value) {
                     // Solution 17: 3 matching horizontal. 
                     for (let i = 0; i <= 2; i++) {
                         _grid[y][x + i] = instance;   
@@ -128,25 +128,10 @@ export function clearSolutions(grid) {
                             _grid[y][x + 4] = instance;
                         }
                     }
-                    // return _grid;
-                }
-
-
-
-                
+                }  
             }
         });
     });
 
     return _grid;
 }
-
-const isMatching = blocks => {
-    // Return true if all blocks match.
-    for (let i = 0; i < blocks.length - 1; i++) {
-        if (blocks[i] !== blocks[i + 1]) {
-            return false;
-        }
-    }
-    return true;
-};
