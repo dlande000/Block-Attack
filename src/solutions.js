@@ -40,17 +40,8 @@ export function clearSolutionsFromNewRow(row, grid) {
     return _row;
 }
 
-function playSolutionSound(sound) {
-    sound.play();
-            setTimeout(() => {
-                sound.pause();
-                sound.currentTime = 0;
-            }, 450);
-}
-
 export function clearSolutions(grid) {
     // Check for any solutions after a swap, a fall, or a clear.
-    const solutionSound = document.getElementById("sound-effect"); 
     let _grid = grid;
     _grid.forEach((row, y) => {
         row.forEach((block, x) => {
@@ -73,35 +64,35 @@ export function clearSolutions(grid) {
                         _grid[y][x + 1] = instance;
                         _grid[y][x + 2] = instance;
                         cursor.score += 200;
-                        playSolutionSound(solutionSound);
+                        
                         return _grid;
                     } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
                         // Solution 3: 5 matching blocks. 
                         _grid[y + 2][x + 1] = instance;
                         _grid[y + 2][x + 2] = instance;
                         cursor.score += 200;
-                        playSolutionSound(solutionSound);
+                        
                         return _grid;
                     } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
                         // Solution 4: 5 matching blocks. 
                         _grid[y + 2][x - 1] = instance;
                         _grid[y + 2][x - 2] = instance;
                         cursor.score += 200;
-                        playSolutionSound(solutionSound);
+                        
                         return _grid;
                     } else if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
                         // Solution 5: 5 matching blocks. 
                         _grid[y + 1][x + 1] = instance;
                         _grid[y + 1][x + 2] = instance;
                         cursor.score += 200;
-                        playSolutionSound(solutionSound);
+                        
                         return _grid;
                     } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
                         // Solution 6: 5 matching blocks. 
                         _grid[y + 1][x - 1] = instance;
                         _grid[y + 1][x - 2] = instance;
                         cursor.score += 200;
-                        playSolutionSound(solutionSound);
+                        
                         return _grid;
                     } else if (y < 9 && checkingValue === _grid[y + 3][x].value) {
                         // Solution 7: 4 matching vertical. 
@@ -112,28 +103,28 @@ export function clearSolutions(grid) {
                             _grid[y + 1][x + 1] = instance;
                             _grid[y + 1][x + 2] = instance;
                             cursor.score += 200;
-                            playSolutionSound(solutionSound);
+                            
                             return _grid;
                         } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
                             // Solution 9: 6 matching blocks. 
                             _grid[y + 2][x + 1] = instance;
                             _grid[y + 2][x + 2] = instance;
                             cursor.score += 200;
-                            playSolutionSound(solutionSound);
+                            
                             return _grid;
                         } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
                             // Solution 10: 6 matching blocks. 
                             _grid[y + 1][x - 1] = instance;
                             _grid[y + 1][x - 2] = instance;
                             cursor.score += 200;
-                            playSolutionSound(solutionSound);
+                            
                             return _grid;
                         } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
                             // Solution 11: 6 matching blocks.
                             _grid[y + 2][x - 1] = instance;
                             _grid[y + 2][x - 2] = instance;
                             cursor.score += 200;
-                            playSolutionSound(solutionSound);
+                            
                             return _grid;
                         } else if (y < 8 && checkingValue === _grid[y + 4][x].value) {
                             // Solution 12: 5 matching vertical.
@@ -144,25 +135,25 @@ export function clearSolutions(grid) {
                                 _grid[y + 2][x - 1] = instance;
                                 _grid[y + 2][x - 2] = instance;
                                 cursor.score += 200;
-                                playSolutionSound(solutionSound);
+                                
                                 return _grid;
                             } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
                                 // Solution 14: 7 matching blocks. 
                                 _grid[y + 2][x + 1] = instance;
                                 _grid[y + 2][x + 2] = instance;
                                 cursor.score += 200;
-                                playSolutionSound(solutionSound);
+                                
                                 return _grid;
                             } else {
-                                playSolutionSound(solutionSound);
+                                
                                 return _grid;
                             }
                     } else {
-                        playSolutionSound(solutionSound);
+                        
                         return _grid;
                     }
                 } else {
-                    playSolutionSound(solutionSound);
+                    
                     return _grid;
                 }
             }
@@ -174,22 +165,20 @@ export function clearSolutions(grid) {
                         _grid[y][x + i] = instance;   
                     }
                     cursor.score += 300;
-                    if (y < 10) {
-                        if (checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
-                            // Solution 16: 5 matching blocks. 
-                            _grid[y + 1][x + 1] = instance;
-                            _grid[y + 2][x + 1] = instance;
-                            cursor.score += 200;
-                            playSolutionSound(solutionSound);
-                            return _grid;
-                        } else if (checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
-                            // Solution 17: 5 matching blocks. 
-                            _grid[y + 1][x + 2] = instance;
-                            _grid[y + 2][x + 2] = instance;
-                            cursor.score += 200;
-                            playSolutionSound(solutionSound);
-                            return _grid;
-                        }
+                    if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
+                        // Solution 16: 5 matching blocks. 
+                        _grid[y + 1][x + 1] = instance;
+                        _grid[y + 2][x + 1] = instance;
+                        cursor.score += 200;
+                        
+                        return _grid;
+                    } else if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
+                        // Solution 17: 5 matching blocks. 
+                        _grid[y + 1][x + 2] = instance;
+                        _grid[y + 2][x + 2] = instance;
+                        cursor.score += 200;
+                        
+                        return _grid;
                     } else if (x < 3 && checkingValue === _grid[y][x + 3].value) {
                         // Solution 18: 4 matching horizontal. 
                         _grid[y][x + 3] = instance;
@@ -200,14 +189,14 @@ export function clearSolutions(grid) {
                                 _grid[y + 1][x + 1] = instance;
                                 _grid[y + 2][x + 1] = instance;
                                 cursor.score += 200;
-                                playSolutionSound(solutionSound);
+                                
                                 return _grid;
                             } else if (checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
                                 // Solution 20: 6 matching. 
                                 _grid[y + 1][x + 2] = instance;
                                 _grid[y + 2][x + 2] = instance;
                                 cursor.score += 200;
-                                playSolutionSound(solutionSound);
+                                
                                 return _grid;
                             }
                         } else if (x < 2 && checkingValue === _grid[y][x + 4].value) {
@@ -219,18 +208,18 @@ export function clearSolutions(grid) {
                                 _grid[y + 1][x + 2] = instance;
                                 _grid[y + 2][x + 2] = instance;
                                 cursor.score += 200;
-                                playSolutionSound(solutionSound);
+                                
                                 return _grid;
                             } else {
-                                playSolutionSound(solutionSound);
+                                
                                 return _grid;
                             }
                         } else {
-                            playSolutionSound(solutionSound);
+                            
                             return _grid;
                         }
                     } else {
-                        playSolutionSound(solutionSound);
+                        
                         return _grid;
                     }
                 }  

@@ -54,6 +54,7 @@ class Board {
                 if (y < 11 && !this.grid[y + 1][x].value && block.value) {
                     this.grid[y + 1][x] = block;
                     this.grid[y][x] = instance;
+                    this.fall();
                 }
             });
         });

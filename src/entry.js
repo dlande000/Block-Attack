@@ -1,5 +1,6 @@
 import Cursor from './cursor';
 import Board from './board';
+import Audio from './audio';
 export let cursor = new Cursor();
 
 // webpack --watch --mode=development
@@ -8,21 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     ctx.scale(60, 60);
+    let music = new Audio(document.getElementById("music"));
+    let soundEffect = new Audio(document.getElementById("sound-effect"));
 
     let board = new Board();
     
     let startScreen = true;
-    const music = document.getElementById("music");
-    let musicPlaying = false;
-
-    const playMusic = (music, musicPlaying) => {
-        if (!musicPlaying) {
-            music.pause();
-            music.currentTime = 0;
-        } else {
-            music.play();
-        }
-    };
 
     const updateScore = () => document.getElementById('score').innerText = cursor.score;
 
@@ -39,17 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (y === 12) {
             ctx.drawImage(BLOCKS[block], 15.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
         } else if (y === 1) {
-            if (Math.round(Math.random() * 5) > 0) {
-                ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-            } else {
-                ctx.drawImage(BLOCKS[block], 45.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-            }
+            ctx.drawImage(BLOCKS[block], 65, 0.5, 15, 15, x, y - yIncrease, 1, 1);
         } else if (y === 0) {
-            if (Math.round(Math.random()) > 0) {
-                ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-            } else {
-                ctx.drawImage(BLOCKS[block], 45.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-            }
+            ctx.drawImage(BLOCKS[block], 80.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
         } else {
             ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
         }
@@ -96,16 +80,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 cursor.score = 0;
                 board = new Board();
                 yIncrease = 0;
-                musicPlaying = true;
-                playMusic(music, musicPlaying);
+                music.musicPlaying = true;
+                music.playMusic();
             } else {
                 board.swap(cursor.y, cursor.x);
             }
         } else if (event.keyCode === 90) {
             board.createNextRow();
         } else if (event.keyCode === 83) {
-            musicPlaying = !musicPlaying;
-            playMusic(music, musicPlaying);
+            music.musicPlaying = !music.musicPlaying;
+            if (music.musicPlaying) {
+                music.playMusic();
+            } else {
+                music.stopMusic();
+            }
         }
     });
 
@@ -147,9 +135,8 @@ document.addEventListener("DOMContentLoaded", () => {
             draw(board.grid, cursor);
             updateScore();
         } else if (board.gameOver) {
-            musicPlaying = false;
-            playMusic(music, musicPlaying);
-            music.currentTime = 0;
+            music.musicPlaying = false;
+            music.stopMusic();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
@@ -170,8 +157,6 @@ document.addEventListener("DOMContentLoaded", () => {
         requestAnimationFrame(update);
     };
 
-    // window.board = board;
-
-    playMusic(music, playMusic);
+    music.playMusic();
     update();
 });

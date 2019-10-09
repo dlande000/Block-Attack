@@ -86,6 +86,45 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/audio.js":
+/*!**********************!*\
+  !*** ./src/audio.js ***!
+  \**********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+class Audio {
+    constructor(file) {
+        this.source = file;
+        this.musicPlaying = false;
+    }
+
+    playMusic() {
+        this.musicPlaying = true;
+        this.source.play();
+    }
+
+    stopMusic() {
+        this.musicPlaying = false;
+        this.source.pause();
+        this.source.currentTime = 0;
+    }
+
+    playSoundEffect() {
+        this.source.play();
+                setTimeout(() => {
+                    this.source.pause();
+                    this.source.currentTime = 0;
+                }, 450);
+    }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Audio);
+
+/***/ }),
+
 /***/ "./src/block.js":
 /*!**********************!*\
   !*** ./src/block.js ***!
@@ -176,6 +215,7 @@ class Board {
                 if (y < 11 && !this.grid[y + 1][x].value && block.value) {
                     this.grid[y + 1][x] = block;
                     this.grid[y][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                    this.fall();
                 }
             });
         });
@@ -243,6 +283,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cursor", function() { return cursor; });
 /* harmony import */ var _cursor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cursor */ "./src/cursor.js");
 /* harmony import */ var _board__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./board */ "./src/board.js");
+/* harmony import */ var _audio__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./audio */ "./src/audio.js");
+
 
 
 let cursor = new _cursor__WEBPACK_IMPORTED_MODULE_0__["default"]();
@@ -253,21 +295,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     ctx.scale(60, 60);
+    let music = new _audio__WEBPACK_IMPORTED_MODULE_2__["default"](document.getElementById("music"));
+    let soundEffect = new _audio__WEBPACK_IMPORTED_MODULE_2__["default"](document.getElementById("sound-effect"));
 
     let board = new _board__WEBPACK_IMPORTED_MODULE_1__["default"]();
     
     let startScreen = true;
-    const music = document.getElementById("music");
-    let musicPlaying = false;
-
-    const playMusic = (music, musicPlaying) => {
-        if (!musicPlaying) {
-            music.pause();
-            music.currentTime = 0;
-        } else {
-            music.play();
-        }
-    };
 
     const updateScore = () => document.getElementById('score').innerText = cursor.score;
 
@@ -284,17 +317,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (y === 12) {
             ctx.drawImage(BLOCKS[block], 15.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
         } else if (y === 1) {
-            if (Math.round(Math.random() * 5) > 0) {
-                ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-            } else {
-                ctx.drawImage(BLOCKS[block], 45.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-            }
+            ctx.drawImage(BLOCKS[block], 65, 0.5, 15, 15, x, y - yIncrease, 1, 1);
         } else if (y === 0) {
-            if (Math.round(Math.random()) > 0) {
-                ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-            } else {
-                ctx.drawImage(BLOCKS[block], 45.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-            }
+            ctx.drawImage(BLOCKS[block], 80.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
         } else {
             ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
         }
@@ -341,16 +366,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 cursor.score = 0;
                 board = new _board__WEBPACK_IMPORTED_MODULE_1__["default"]();
                 yIncrease = 0;
-                musicPlaying = true;
-                playMusic(music, musicPlaying);
+                music.musicPlaying = true;
+                music.playMusic();
             } else {
                 board.swap(cursor.y, cursor.x);
             }
         } else if (event.keyCode === 90) {
             board.createNextRow();
         } else if (event.keyCode === 83) {
-            musicPlaying = !musicPlaying;
-            playMusic(music, musicPlaying);
+            music.musicPlaying = !music.musicPlaying;
+            if (music.musicPlaying) {
+                music.playMusic();
+            } else {
+                music.stopMusic();
+            }
         }
     });
 
@@ -392,9 +421,8 @@ document.addEventListener("DOMContentLoaded", () => {
             draw(board.grid, cursor);
             updateScore();
         } else if (board.gameOver) {
-            musicPlaying = false;
-            playMusic(music, musicPlaying);
-            music.currentTime = 0;
+            music.musicPlaying = false;
+            music.stopMusic();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
@@ -415,9 +443,7 @@ document.addEventListener("DOMContentLoaded", () => {
         requestAnimationFrame(update);
     };
 
-    // window.board = board;
-
-    playMusic(music, playMusic);
+    music.playMusic();
     update();
 });
 
@@ -505,17 +531,8 @@ function clearSolutionsFromNewRow(row, grid) {
     return _row;
 }
 
-function playSolutionSound(sound) {
-    sound.play();
-            setTimeout(() => {
-                sound.pause();
-                sound.currentTime = 0;
-            }, 450);
-}
-
 function clearSolutions(grid) {
     // Check for any solutions after a swap, a fall, or a clear.
-    const solutionSound = document.getElementById("sound-effect"); 
     let _grid = grid;
     _grid.forEach((row, y) => {
         row.forEach((block, x) => {
@@ -538,35 +555,35 @@ function clearSolutions(grid) {
                         _grid[y][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
-                        playSolutionSound(solutionSound);
+                        
                         return _grid;
                     } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
                         // Solution 3: 5 matching blocks. 
                         _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
-                        playSolutionSound(solutionSound);
+                        
                         return _grid;
                     } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
                         // Solution 4: 5 matching blocks. 
                         _grid[y + 2][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y + 2][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
-                        playSolutionSound(solutionSound);
+                        
                         return _grid;
                     } else if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
                         // Solution 5: 5 matching blocks. 
                         _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
-                        playSolutionSound(solutionSound);
+                        
                         return _grid;
                     } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
                         // Solution 6: 5 matching blocks. 
                         _grid[y + 1][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y + 1][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
-                        playSolutionSound(solutionSound);
+                        
                         return _grid;
                     } else if (y < 9 && checkingValue === _grid[y + 3][x].value) {
                         // Solution 7: 4 matching vertical. 
@@ -577,28 +594,28 @@ function clearSolutions(grid) {
                             _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
-                            playSolutionSound(solutionSound);
+                            
                             return _grid;
                         } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
                             // Solution 9: 6 matching blocks. 
                             _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
-                            playSolutionSound(solutionSound);
+                            
                             return _grid;
                         } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
                             // Solution 10: 6 matching blocks. 
                             _grid[y + 1][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _grid[y + 1][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
-                            playSolutionSound(solutionSound);
+                            
                             return _grid;
                         } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
                             // Solution 11: 6 matching blocks.
                             _grid[y + 2][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _grid[y + 2][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
-                            playSolutionSound(solutionSound);
+                            
                             return _grid;
                         } else if (y < 8 && checkingValue === _grid[y + 4][x].value) {
                             // Solution 12: 5 matching vertical.
@@ -609,25 +626,25 @@ function clearSolutions(grid) {
                                 _grid[y + 2][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
-                                playSolutionSound(solutionSound);
+                                
                                 return _grid;
                             } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
                                 // Solution 14: 7 matching blocks. 
                                 _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
-                                playSolutionSound(solutionSound);
+                                
                                 return _grid;
                             } else {
-                                playSolutionSound(solutionSound);
+                                
                                 return _grid;
                             }
                     } else {
-                        playSolutionSound(solutionSound);
+                        
                         return _grid;
                     }
                 } else {
-                    playSolutionSound(solutionSound);
+                    
                     return _grid;
                 }
             }
@@ -639,22 +656,20 @@ function clearSolutions(grid) {
                         _grid[y][x + i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];   
                     }
                     _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 300;
-                    if (y < 10) {
-                        if (checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
-                            // Solution 16: 5 matching blocks. 
-                            _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
-                            playSolutionSound(solutionSound);
-                            return _grid;
-                        } else if (checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
-                            // Solution 17: 5 matching blocks. 
-                            _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
-                            playSolutionSound(solutionSound);
-                            return _grid;
-                        }
+                    if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
+                        // Solution 16: 5 matching blocks. 
+                        _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                        
+                        return _grid;
+                    } else if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
+                        // Solution 17: 5 matching blocks. 
+                        _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                        
+                        return _grid;
                     } else if (x < 3 && checkingValue === _grid[y][x + 3].value) {
                         // Solution 18: 4 matching horizontal. 
                         _grid[y][x + 3] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
@@ -665,14 +680,14 @@ function clearSolutions(grid) {
                                 _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
-                                playSolutionSound(solutionSound);
+                                
                                 return _grid;
                             } else if (checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
                                 // Solution 20: 6 matching. 
                                 _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
-                                playSolutionSound(solutionSound);
+                                
                                 return _grid;
                             }
                         } else if (x < 2 && checkingValue === _grid[y][x + 4].value) {
@@ -684,18 +699,18 @@ function clearSolutions(grid) {
                                 _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
-                                playSolutionSound(solutionSound);
+                                
                                 return _grid;
                             } else {
-                                playSolutionSound(solutionSound);
+                                
                                 return _grid;
                             }
                         } else {
-                            playSolutionSound(solutionSound);
+                            
                             return _grid;
                         }
                     } else {
-                        playSolutionSound(solutionSound);
+                        
                         return _grid;
                     }
                 }  

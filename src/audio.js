@@ -1,27 +1,26 @@
 class Audio {
-    constructor() {
-        this.music = document.getElementById("music");
-        this.soundEffect = document.getElementById("sound-effect");
+    constructor(file) {
+        this.source = file;
         this.musicPlaying = false;
     }
 
     playMusic() {
-        if (!this.musicPlaying) {
-            this.music.pause();
-            this.music.currentTime = 0;
-        } else {
-            this.music.play();
-        }
+        this.musicPlaying = true;
+        this.source.play();
+    }
+
+    stopMusic() {
+        this.musicPlaying = false;
+        this.source.pause();
+        this.source.currentTime = 0;
     }
 
     playSoundEffect() {
-        if (this.musicPlaying) {
-            this.soundEffect.play();
-            setTimeout(() => {
-                this.soundEffect.pause();
-                this.soundEffect.currentTime = 0;
-            }, 450);
-        }
+        this.source.play();
+                setTimeout(() => {
+                    this.source.pause();
+                    this.source.currentTime = 0;
+                }, 450);
     }
 }
 
