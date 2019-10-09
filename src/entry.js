@@ -1,7 +1,4 @@
-import Cursor from './cursor';
-import Board from './board';
-import Audio from './audio';
-export let cursor = new Cursor();
+import Game from './game';
 
 // webpack --watch --mode=development
 
@@ -9,58 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     ctx.scale(60, 60);
-    let music = new Audio(document.getElementById("music"));
-    let soundEffect = new Audio(document.getElementById("sound-effect"));
 
-    let board = new Board();
-    
-    let startScreen = true;
-
-    const updateScore = () => document.getElementById('score').innerText = cursor.score;
-
-    const BLOCKS = {
-        "R": document.getElementById("red-block"),
-        "Y": document.getElementById("yellow-block"),
-        "G": document.getElementById("green-block"),
-        "B": document.getElementById("blue-block"),
-        "D": document.getElementById("dark-blue-block"),
-        "P": document.getElementById("purple-block")
-    };
-
-    const drawBlock = (block, y, x) => {
-        if (y === 12) {
-            ctx.drawImage(BLOCKS[block], 15.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-        } else if (y === 1) {
-            ctx.drawImage(BLOCKS[block], 65, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-        } else if (y === 0) {
-            ctx.drawImage(BLOCKS[block], 80.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-        } else {
-            ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-        }
-    };
-
-    const drawCursor = (y, x) => {
-        const cursorImg = document.getElementById("cursor");
-        let yIncreaseCursor = yIncrease;
-        if (y === 0) {
-            yIncreaseCursor = 0;
-        }
-        ctx.drawImage(cursorImg, 1, 1, 36, 20, x, y - yIncreaseCursor, 2, 1);
-    };
-
-    const drawBoard = board => {
-        board.forEach((row, y) => {
-            row.forEach((block, x) => {
-            if (block.value) {
-                drawBlock(block.value, y, x);
-            }});
-        });
-    };
-
-    const draw = (board, cursor) => {
-        drawBoard(board);
-        drawCursor(cursor.y, cursor.x);
-    };
+    const game = new Game(ctx);
 
     document.addEventListener('keydown', event => {
         if (event.keyCode === 37) {
@@ -97,24 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    let increaseInterval = 5000;
-    let yIncrease = 0;
-
-    const increaseY = () => {
-        yIncrease += (1/50);
-        if (yIncrease >= 1) {
-            board.createNextRow();
-            if (cursor.y !== 0) {
-                cursor.y--;
-            }
-            yIncrease = 0;
-        }
-    };
-
-    setInterval(increaseY, (increaseInterval/50));
+    setInterval(game.increaseY, (game.increaseInterval/50));
 
     const update = () => {
-        if (startScreen) {
+        if (!game.hasStarted) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -129,14 +62,12 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.fillText("top.", 0.3, 8);
             ctx.fillText("Press space", 0.3, 10);
             ctx.fillText("to begin!", 0.3, 11);
-        } else if (!board.gameOver) {
+        } else if (game.hasStarted && !game.gameOver) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            board.fall();
-            draw(board.grid, cursor);
-            updateScore();
-        } else if (board.gameOver) {
-            music.musicPlaying = false;
-            music.stopMusic();
+            game.draw(game.board.grid, game.cursor);
+            game.updateScore();
+        } else if (game.hasStarted && game.gameOver) {
+            game.music.stopMusic();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
@@ -147,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.fillText("Your score:", 0.3, 5);
             ctx.fillStyle = "gold";
             ctx.textAlign = "center";
-            ctx.fillText(cursor.score, 3, 6);
+            ctx.fillText(game.cursor.score, 3, 6);
             ctx.fillStyle = "white";
             ctx.textAlign = "left";
             ctx.fillText("Press space", 0.3, 8);
@@ -157,6 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
         requestAnimationFrame(update);
     };
 
-    music.playMusic();
+    game.music.playMusic();
     update();
 });

@@ -275,19 +275,13 @@ class Cursor {
 /*!**********************!*\
   !*** ./src/entry.js ***!
   \**********************/
-/*! exports provided: cursor */
+/*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cursor", function() { return cursor; });
-/* harmony import */ var _cursor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cursor */ "./src/cursor.js");
-/* harmony import */ var _board__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./board */ "./src/board.js");
-/* harmony import */ var _audio__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./audio */ "./src/audio.js");
+/* harmony import */ var _game__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game */ "./src/game.js");
 
-
-
-let cursor = new _cursor__WEBPACK_IMPORTED_MODULE_0__["default"]();
 
 // webpack --watch --mode=development
 
@@ -295,58 +289,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     ctx.scale(60, 60);
-    let music = new _audio__WEBPACK_IMPORTED_MODULE_2__["default"](document.getElementById("music"));
-    let soundEffect = new _audio__WEBPACK_IMPORTED_MODULE_2__["default"](document.getElementById("sound-effect"));
 
-    let board = new _board__WEBPACK_IMPORTED_MODULE_1__["default"]();
-    
-    let startScreen = true;
-
-    const updateScore = () => document.getElementById('score').innerText = cursor.score;
-
-    const BLOCKS = {
-        "R": document.getElementById("red-block"),
-        "Y": document.getElementById("yellow-block"),
-        "G": document.getElementById("green-block"),
-        "B": document.getElementById("blue-block"),
-        "D": document.getElementById("dark-blue-block"),
-        "P": document.getElementById("purple-block")
-    };
-
-    const drawBlock = (block, y, x) => {
-        if (y === 12) {
-            ctx.drawImage(BLOCKS[block], 15.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-        } else if (y === 1) {
-            ctx.drawImage(BLOCKS[block], 65, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-        } else if (y === 0) {
-            ctx.drawImage(BLOCKS[block], 80.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-        } else {
-            ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-        }
-    };
-
-    const drawCursor = (y, x) => {
-        const cursorImg = document.getElementById("cursor");
-        let yIncreaseCursor = yIncrease;
-        if (y === 0) {
-            yIncreaseCursor = 0;
-        }
-        ctx.drawImage(cursorImg, 1, 1, 36, 20, x, y - yIncreaseCursor, 2, 1);
-    };
-
-    const drawBoard = board => {
-        board.forEach((row, y) => {
-            row.forEach((block, x) => {
-            if (block.value) {
-                drawBlock(block.value, y, x);
-            }});
-        });
-    };
-
-    const draw = (board, cursor) => {
-        drawBoard(board);
-        drawCursor(cursor.y, cursor.x);
-    };
+    const game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"](ctx);
 
     document.addEventListener('keydown', event => {
         if (event.keyCode === 37) {
@@ -364,7 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 startScreen = false;
                 board.gameOver = false;
                 cursor.score = 0;
-                board = new _board__WEBPACK_IMPORTED_MODULE_1__["default"]();
+                board = new Board();
                 yIncrease = 0;
                 music.musicPlaying = true;
                 music.playMusic();
@@ -383,24 +327,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    let increaseInterval = 5000;
-    let yIncrease = 0;
-
-    const increaseY = () => {
-        yIncrease += (1/50);
-        if (yIncrease >= 1) {
-            board.createNextRow();
-            if (cursor.y !== 0) {
-                cursor.y--;
-            }
-            yIncrease = 0;
-        }
-    };
-
-    setInterval(increaseY, (increaseInterval/50));
+    setInterval(game.increaseY, (game.increaseInterval/50));
 
     const update = () => {
-        if (startScreen) {
+        if (!game.hasStarted) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -415,14 +345,12 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.fillText("top.", 0.3, 8);
             ctx.fillText("Press space", 0.3, 10);
             ctx.fillText("to begin!", 0.3, 11);
-        } else if (!board.gameOver) {
+        } else if (game.hasStarted && !game.gameOver) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            board.fall();
-            draw(board.grid, cursor);
-            updateScore();
-        } else if (board.gameOver) {
-            music.musicPlaying = false;
-            music.stopMusic();
+            game.draw(game.board.grid, game.cursor);
+            game.updateScore();
+        } else if (game.hasStarted && game.gameOver) {
+            game.music.stopMusic();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
@@ -433,7 +361,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.fillText("Your score:", 0.3, 5);
             ctx.fillStyle = "gold";
             ctx.textAlign = "center";
-            ctx.fillText(cursor.score, 3, 6);
+            ctx.fillText(game.cursor.score, 3, 6);
             ctx.fillStyle = "white";
             ctx.textAlign = "left";
             ctx.fillText("Press space", 0.3, 8);
@@ -443,9 +371,101 @@ document.addEventListener("DOMContentLoaded", () => {
         requestAnimationFrame(update);
     };
 
-    music.playMusic();
+    game.music.playMusic();
     update();
 });
+
+/***/ }),
+
+/***/ "./src/game.js":
+/*!*********************!*\
+  !*** ./src/game.js ***!
+  \*********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _cursor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cursor */ "./src/cursor.js");
+/* harmony import */ var _board__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./board */ "./src/board.js");
+/* harmony import */ var _audio__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./audio */ "./src/audio.js");
+
+
+
+
+class Game {
+    constructor(ctx) {
+        this.ctx = ctx;
+        this.board = new _board__WEBPACK_IMPORTED_MODULE_1__["default"]();
+        this.cursor = new _cursor__WEBPACK_IMPORTED_MODULE_0__["default"]();
+        this.music = new _audio__WEBPACK_IMPORTED_MODULE_2__["default"](document.getElementById("music"));
+        this.soundEffect = new _audio__WEBPACK_IMPORTED_MODULE_2__["default"](document.getElementById("sound-effect"));
+        this.BLOCKS = {
+            "R": document.getElementById("red-block"),
+            "Y": document.getElementById("yellow-block"),
+            "G": document.getElementById("green-block"),
+            "B": document.getElementById("blue-block"),
+            "D": document.getElementById("dark-blue-block"),
+            "P": document.getElementById("purple-block")
+        };
+        this.increaseInterval = 5000;
+        this.yIncrease = 0;
+        this.hasStarted = false;
+        this.gameOver = this.board.gameOver;
+    }
+
+    updateScore() {
+        document.getElementById('score').innerText = this.cursor.score;
+    }
+
+    drawBlock(block, y, x) {
+        if (y === 12) {
+            this.ctx.drawImage(this.BLOCKS[block], 15.5, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
+        } else if (y === 1) {
+            this.ctx.drawImage(this.BLOCKS[block], 65, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
+        } else if (y === 0) {
+            this.ctx.drawImage(this.BLOCKS[block], 80.5, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
+        } else {
+            this.ctx.drawImage(this.BLOCKS[block], 0.5, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
+        }
+    }
+
+    drawCursor(y, x) {
+        const cursorImg = document.getElementById("cursor");
+        let yIncreaseCursor = this.yIncrease;
+        if (y === 0) {
+            yIncreaseCursor = 0;
+        }
+        this.ctx.drawImage(cursorImg, 1, 1, 36, 20, x, y - yIncreaseCursor, 2, 1);
+    }
+
+    drawBoard(board) {
+        board.forEach((row, y) => {
+            row.forEach((block, x) => {
+            if (block.value) {
+                drawBlock(block.value, y, x);
+            }});
+        });
+    }
+
+    draw(board, cursor) {
+        this.drawBoard(board);
+        this.drawCursor(cursor);
+    }
+
+    increaseY() {
+        this.yIncrease += (1/50);
+        if (this.yIncrease >= 1) {
+            this.board.createNextRow();
+            if (this.cursor.y !== 0) {
+                this.cursor.y--;
+            }
+            this.yIncrease = 0;
+        }
+    }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Game);
 
 /***/ }),
 
