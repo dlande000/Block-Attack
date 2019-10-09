@@ -86,46 +86,6 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/audio.js":
-/*!**********************!*\
-  !*** ./src/audio.js ***!
-  \**********************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-class Audio {
-    constructor() {
-        this.music = document.getElementById("music");
-        this.soundEffect = document.getElementById("sound-effect");
-        this.musicPlaying = false;
-    }
-
-    playMusic() {
-        if (!this.musicPlaying) {
-            this.music.pause();
-            this.music.currentTime = 0;
-        } else {
-            this.music.play();
-        }
-    }
-
-    playSoundEffect() {
-        if (this.musicPlaying) {
-            this.soundEffect.play();
-            setTimeout(() => {
-                this.soundEffect.pause();
-                this.soundEffect.currentTime = 0;
-            }, 450);
-        }
-    }
-}
-
-/* harmony default export */ __webpack_exports__["default"] = (Audio);
-
-/***/ }),
-
 /***/ "./src/block.js":
 /*!**********************!*\
   !*** ./src/block.js ***!
@@ -275,21 +235,17 @@ class Cursor {
 /*!**********************!*\
   !*** ./src/entry.js ***!
   \**********************/
-/*! exports provided: cursor, audio */
+/*! exports provided: cursor */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cursor", function() { return cursor; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "audio", function() { return audio; });
-/* harmony import */ var _audio__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./audio */ "./src/audio.js");
-/* harmony import */ var _cursor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./cursor */ "./src/cursor.js");
-/* harmony import */ var _board__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./board */ "./src/board.js");
+/* harmony import */ var _cursor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cursor */ "./src/cursor.js");
+/* harmony import */ var _board__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./board */ "./src/board.js");
 
 
-
-let cursor = new _cursor__WEBPACK_IMPORTED_MODULE_1__["default"]();
-let audio = new _audio__WEBPACK_IMPORTED_MODULE_0__["default"]();
+let cursor = new _cursor__WEBPACK_IMPORTED_MODULE_0__["default"]();
 
 // webpack --watch --mode=development
 
@@ -298,10 +254,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const ctx = canvas.getContext('2d');
     ctx.scale(60, 60);
 
-    let board = new _board__WEBPACK_IMPORTED_MODULE_2__["default"]();
+    let board = new _board__WEBPACK_IMPORTED_MODULE_1__["default"]();
     
-    let gameOver = board.gameOver;
     let startScreen = true;
+    const music = document.getElementById("music");
+    let musicPlaying = false;
+
+    const playMusic = (music, musicPlaying) => {
+        if (!musicPlaying) {
+            music.pause();
+            music.currentTime = 0;
+        } else {
+            music.play();
+        }
+    };
 
     const updateScore = () => document.getElementById('score').innerText = cursor.score;
 
@@ -373,18 +339,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 startScreen = false;
                 board.gameOver = false;
                 cursor.score = 0;
-                board = new _board__WEBPACK_IMPORTED_MODULE_2__["default"]();
+                board = new _board__WEBPACK_IMPORTED_MODULE_1__["default"]();
                 yIncrease = 0;
-                // audio.musicPlaying = true;
-                // audio.playMusic();
+                musicPlaying = true;
+                playMusic(music, musicPlaying);
             } else {
                 board.swap(cursor.y, cursor.x);
             }
         } else if (event.keyCode === 90) {
             board.createNextRow();
         } else if (event.keyCode === 83) {
-            // audio.musicPlaying = !audio.musicPlaying;
-            // audio.playMusic();
+            musicPlaying = !musicPlaying;
+            playMusic(music, musicPlaying);
         }
     });
 
@@ -426,9 +392,9 @@ document.addEventListener("DOMContentLoaded", () => {
             draw(board.grid, cursor);
             updateScore();
         } else if (board.gameOver) {
-            // audio.musicPlaying = false;
-            // audio.playMusic();
-            // audio.music.currentTime = 0;
+            musicPlaying = false;
+            playMusic(music, musicPlaying);
+            music.currentTime = 0;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
@@ -451,7 +417,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // window.board = board;
 
-    // audio.playMusic();
+    playMusic(music, playMusic);
     update();
 });
 

@@ -1,8 +1,6 @@
-import Audio from './audio';
 import Cursor from './cursor';
 import Board from './board';
 export let cursor = new Cursor();
-export let audio = new Audio();
 
 // webpack --watch --mode=development
 
@@ -13,8 +11,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let board = new Board();
     
-    let gameOver = board.gameOver;
     let startScreen = true;
+    const music = document.getElementById("music");
+    let musicPlaying = false;
+
+    const playMusic = (music, musicPlaying) => {
+        if (!musicPlaying) {
+            music.pause();
+            music.currentTime = 0;
+        } else {
+            music.play();
+        }
+    };
 
     const updateScore = () => document.getElementById('score').innerText = cursor.score;
 
@@ -88,16 +96,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 cursor.score = 0;
                 board = new Board();
                 yIncrease = 0;
-                // audio.musicPlaying = true;
-                // audio.playMusic();
+                musicPlaying = true;
+                playMusic(music, musicPlaying);
             } else {
                 board.swap(cursor.y, cursor.x);
             }
         } else if (event.keyCode === 90) {
             board.createNextRow();
         } else if (event.keyCode === 83) {
-            // audio.musicPlaying = !audio.musicPlaying;
-            // audio.playMusic();
+            musicPlaying = !musicPlaying;
+            playMusic(music, musicPlaying);
         }
     });
 
@@ -139,9 +147,9 @@ document.addEventListener("DOMContentLoaded", () => {
             draw(board.grid, cursor);
             updateScore();
         } else if (board.gameOver) {
-            // audio.musicPlaying = false;
-            // audio.playMusic();
-            // audio.music.currentTime = 0;
+            musicPlaying = false;
+            playMusic(music, musicPlaying);
+            music.currentTime = 0;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
@@ -164,6 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // window.board = board;
 
-    // audio.playMusic();
+    playMusic(music, playMusic);
     update();
 });
