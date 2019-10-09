@@ -45,7 +45,7 @@ class Board {
         [a, b] = [b, a];
         this.grid[y][x] = a;
         this.grid[y][x + 1] = b;
-        this.grid = clearSolutions(this.grid);
+        this.fall();
     }
 
     fall() {
@@ -57,7 +57,11 @@ class Board {
                 }
             });
         });
-        this.grid = clearSolutions(this.grid);
+        let _grid = clearSolutions(this.grid);
+        if (this.grid !== _grid) {
+            this.grid = _grid;
+            this.fall();
+        }
     }
 
     checkGameOver(row) {

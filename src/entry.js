@@ -1,6 +1,8 @@
 import Audio from './audio';
 import Cursor from './cursor';
 import Board from './board';
+export let cursor = new Cursor();
+export let audio = new Audio();
 
 // webpack --watch --mode=development
 
@@ -9,10 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const ctx = canvas.getContext('2d');
     ctx.scale(60, 60);
 
-    let cursor = new Cursor();
     let board = new Board();
-    let audio = new Audio();
-
+    
+    let gameOver = board.gameOver;
     let startScreen = true;
 
     const updateScore = () => document.getElementById('score').innerText = cursor.score;
@@ -26,17 +27,23 @@ document.addEventListener("DOMContentLoaded", () => {
         "P": document.getElementById("purple-block")
     };
 
-    const drawBlock = (color, y, x) => {
+    const drawBlock = (block, y, x) => {
         if (y === 12) {
-            ctx.drawImage(BLOCKS[color], 15.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-        } else if (y === 0) {
+            ctx.drawImage(BLOCKS[block], 15.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+        } else if (y === 1) {
             if (Math.round(Math.random() * 5) > 0) {
-                ctx.drawImage(BLOCKS[color], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+                ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
             } else {
-                ctx.drawImage(BLOCKS[color], 2.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+                ctx.drawImage(BLOCKS[block], 45.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+            }
+        } else if (y === 0) {
+            if (Math.round(Math.random()) > 0) {
+                ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+            } else {
+                ctx.drawImage(BLOCKS[block], 45.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
             }
         } else {
-            ctx.drawImage(BLOCKS[color], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+            ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
         }
     };
 
@@ -58,8 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
-    const draw = () => {
-        drawBoard(board.grid);
+    const draw = (board, cursor) => {
+        drawBoard(board);
         drawCursor(cursor.y, cursor.x);
     };
 
@@ -78,19 +85,19 @@ document.addEventListener("DOMContentLoaded", () => {
             if (startScreen || board.gameOver) {
                 startScreen = false;
                 board.gameOver = false;
-                cursor = new Cursor();
+                cursor.score = 0;
                 board = new Board();
                 yIncrease = 0;
-                audio.musicPlaying = true;
-                audio.playMusic();
+                // audio.musicPlaying = true;
+                // audio.playMusic();
             } else {
                 board.swap(cursor.y, cursor.x);
             }
         } else if (event.keyCode === 90) {
             board.createNextRow();
         } else if (event.keyCode === 83) {
-            audio.musicPlaying = !audio.musicPlaying;
-            audio.playMusic();
+            // audio.musicPlaying = !audio.musicPlaying;
+            // audio.playMusic();
         }
     });
 
@@ -129,13 +136,12 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (!board.gameOver) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             board.fall();
-            draw();
+            draw(board.grid, cursor);
             updateScore();
-            // board.checkGameOver();
         } else if (board.gameOver) {
-            audio.musicPlaying = false;
-            audio.playMusic();
-            audio.music.currentTime = 0;
+            // audio.musicPlaying = false;
+            // audio.playMusic();
+            // audio.music.currentTime = 0;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
@@ -155,9 +161,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         requestAnimationFrame(update);
     };
-    // what is this line??
+
     // window.board = board;
 
-    audio.playMusic();
+    // audio.playMusic();
     update();
 });

@@ -207,7 +207,7 @@ class Board {
         [a, b] = [b, a];
         this.grid[y][x] = a;
         this.grid[y][x + 1] = b;
-        this.grid = Object(_solutions__WEBPACK_IMPORTED_MODULE_2__["clearSolutions"])(this.grid);
+        this.fall();
     }
 
     fall() {
@@ -219,7 +219,11 @@ class Board {
                 }
             });
         });
-        this.grid = Object(_solutions__WEBPACK_IMPORTED_MODULE_2__["clearSolutions"])(this.grid);
+        let _grid = Object(_solutions__WEBPACK_IMPORTED_MODULE_2__["clearSolutions"])(this.grid);
+        if (this.grid !== _grid) {
+            this.grid = _grid;
+            this.fall();
+        }
     }
 
     checkGameOver(row) {
@@ -271,17 +275,21 @@ class Cursor {
 /*!**********************!*\
   !*** ./src/entry.js ***!
   \**********************/
-/*! no exports provided */
+/*! exports provided: cursor, audio */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cursor", function() { return cursor; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "audio", function() { return audio; });
 /* harmony import */ var _audio__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./audio */ "./src/audio.js");
 /* harmony import */ var _cursor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./cursor */ "./src/cursor.js");
 /* harmony import */ var _board__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./board */ "./src/board.js");
 
 
 
+let cursor = new _cursor__WEBPACK_IMPORTED_MODULE_1__["default"]();
+let audio = new _audio__WEBPACK_IMPORTED_MODULE_0__["default"]();
 
 // webpack --watch --mode=development
 
@@ -290,10 +298,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const ctx = canvas.getContext('2d');
     ctx.scale(60, 60);
 
-    let cursor = new _cursor__WEBPACK_IMPORTED_MODULE_1__["default"]();
     let board = new _board__WEBPACK_IMPORTED_MODULE_2__["default"]();
-    let audio = new _audio__WEBPACK_IMPORTED_MODULE_0__["default"]();
-
+    
+    let gameOver = board.gameOver;
     let startScreen = true;
 
     const updateScore = () => document.getElementById('score').innerText = cursor.score;
@@ -307,17 +314,23 @@ document.addEventListener("DOMContentLoaded", () => {
         "P": document.getElementById("purple-block")
     };
 
-    const drawBlock = (color, y, x) => {
+    const drawBlock = (block, y, x) => {
         if (y === 12) {
-            ctx.drawImage(BLOCKS[color], 15.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-        } else if (y === 0) {
+            ctx.drawImage(BLOCKS[block], 15.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+        } else if (y === 1) {
             if (Math.round(Math.random() * 5) > 0) {
-                ctx.drawImage(BLOCKS[color], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+                ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
             } else {
-                ctx.drawImage(BLOCKS[color], 2.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+                ctx.drawImage(BLOCKS[block], 45.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+            }
+        } else if (y === 0) {
+            if (Math.round(Math.random()) > 0) {
+                ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+            } else {
+                ctx.drawImage(BLOCKS[block], 45.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
             }
         } else {
-            ctx.drawImage(BLOCKS[color], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+            ctx.drawImage(BLOCKS[block], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
         }
     };
 
@@ -339,8 +352,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
-    const draw = () => {
-        drawBoard(board.grid);
+    const draw = (board, cursor) => {
+        drawBoard(board);
         drawCursor(cursor.y, cursor.x);
     };
 
@@ -359,19 +372,19 @@ document.addEventListener("DOMContentLoaded", () => {
             if (startScreen || board.gameOver) {
                 startScreen = false;
                 board.gameOver = false;
-                cursor = new _cursor__WEBPACK_IMPORTED_MODULE_1__["default"]();
+                cursor.score = 0;
                 board = new _board__WEBPACK_IMPORTED_MODULE_2__["default"]();
                 yIncrease = 0;
-                audio.musicPlaying = true;
-                audio.playMusic();
+                // audio.musicPlaying = true;
+                // audio.playMusic();
             } else {
                 board.swap(cursor.y, cursor.x);
             }
         } else if (event.keyCode === 90) {
             board.createNextRow();
         } else if (event.keyCode === 83) {
-            audio.musicPlaying = !audio.musicPlaying;
-            audio.playMusic();
+            // audio.musicPlaying = !audio.musicPlaying;
+            // audio.playMusic();
         }
     });
 
@@ -410,13 +423,12 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (!board.gameOver) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             board.fall();
-            draw();
+            draw(board.grid, cursor);
             updateScore();
-            // board.checkGameOver();
         } else if (board.gameOver) {
-            audio.musicPlaying = false;
-            audio.playMusic();
-            audio.music.currentTime = 0;
+            // audio.musicPlaying = false;
+            // audio.playMusic();
+            // audio.music.currentTime = 0;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
@@ -436,10 +448,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         requestAnimationFrame(update);
     };
-    // what is this line??
+
     // window.board = board;
 
-    audio.playMusic();
+    // audio.playMusic();
     update();
 });
 
@@ -484,7 +496,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "clearSolutions", function() { return clearSolutions; });
 /* harmony import */ var _block__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./block */ "./src/block.js");
 /* harmony import */ var _singleton__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./singleton */ "./src/singleton.js");
-/* harmony import */ var _audio__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./audio */ "./src/audio.js");
+/* harmony import */ var _entry__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./entry */ "./src/entry.js");
 
 
 
@@ -527,8 +539,17 @@ function clearSolutionsFromNewRow(row, grid) {
     return _row;
 }
 
-function clearSolutions(grid, addToScore = 0) {
-    // Check for any solutions after a swap, a fall, or a clear. 
+function playSolutionSound(sound) {
+    sound.play();
+            setTimeout(() => {
+                sound.pause();
+                sound.currentTime = 0;
+            }, 450);
+}
+
+function clearSolutions(grid) {
+    // Check for any solutions after a swap, a fall, or a clear.
+    const solutionSound = document.getElementById("sound-effect"); 
     let _grid = grid;
     _grid.forEach((row, y) => {
         row.forEach((block, x) => {
@@ -545,89 +566,103 @@ function clearSolutions(grid, addToScore = 0) {
                     for (let i = 0; i <= 2; i++) {
                         _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];   
                     }
-                    addToScore += 300;
+                    _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 300;
                     if (x < 4 && checkingValue === _grid[y][x + 1].value && checkingValue === _grid[y][x + 2].value) {
                         // Solution 2: 5 matching blocks.  
                         _grid[y][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        addToScore += 200;
-                        return clearSolutions(_grid, addToScore);
+                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                        playSolutionSound(solutionSound);
+                        return _grid;
                     } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
                         // Solution 3: 5 matching blocks. 
-                        _grid[y + 2][x + 1].value = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        _grid[y + 2][x + 2].value = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        addToScore += 200;
-                        return clearSolutions(_grid, addToScore);
+                        _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                        playSolutionSound(solutionSound);
+                        return _grid;
                     } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
                         // Solution 4: 5 matching blocks. 
                         _grid[y + 2][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y + 2][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        addToScore += 200;
-                        return clearSolutions(_grid, addToScore);
+                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                        playSolutionSound(solutionSound);
+                        return _grid;
                     } else if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
                         // Solution 5: 5 matching blocks. 
-                        _grid[y + 1][x + 1].value = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        _grid[y + 1][x + 2].value = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        addToScore += 200;
-                        return clearSolutions(_grid, addToScore);
+                        _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                        playSolutionSound(solutionSound);
+                        return _grid;
                     } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
                         // Solution 6: 5 matching blocks. 
                         _grid[y + 1][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y + 1][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        addToScore += 200;
-                        return clearSolutions(_grid, addToScore);
+                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                        playSolutionSound(solutionSound);
+                        return _grid;
                     } else if (y < 9 && checkingValue === _grid[y + 3][x].value) {
                         // Solution 7: 4 matching vertical. 
                         _grid[y + 3][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        addToScore += 100;
+                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 100;
                         if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
                             // Solution 8: 6 matching blocks. 
                             _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            addToScore += 200;
-                            return clearSolutions(_grid, addToScore);
+                            _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                            playSolutionSound(solutionSound);
+                            return _grid;
                         } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
                             // Solution 9: 6 matching blocks. 
                             _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            addToScore += 200;
-                            return clearSolutions(_grid, addToScore);
+                            _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                            playSolutionSound(solutionSound);
+                            return _grid;
                         } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
                             // Solution 10: 6 matching blocks. 
                             _grid[y + 1][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _grid[y + 1][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            addToScore += 200;
-                            return clearSolutions(_grid, addToScore);
+                            _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                            playSolutionSound(solutionSound);
+                            return _grid;
                         } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
                             // Solution 11: 6 matching blocks.
                             _grid[y + 2][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _grid[y + 2][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            addToScore += 200;
-                            return clearSolutions(_grid, addToScore);
+                            _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                            playSolutionSound(solutionSound);
+                            return _grid;
                         } else if (y < 8 && checkingValue === _grid[y + 4][x].value) {
                             // Solution 12: 5 matching vertical.
                             _grid[y + 4][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            addToScore += 100;
+                            _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 100;
                             if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
                                 // Solution 13: 7 matching blocks. 
                                 _grid[y + 2][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                addToScore += 200;
-                                return clearSolutions(_grid, addToScore);
+                                _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                                playSolutionSound(solutionSound);
+                                return _grid;
                             } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
                                 // Solution 14: 7 matching blocks. 
                                 _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                addToScore += 200;
-                                return clearSolutions(_grid, addToScore);
+                                _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                                playSolutionSound(solutionSound);
+                                return _grid;
                             } else {
-                                return clearSolutions(_grid, addToScore);
+                                playSolutionSound(solutionSound);
+                                return _grid;
                             }
                     } else {
-                        return clearSolutions(_grid, addToScore);
+                        playSolutionSound(solutionSound);
+                        return _grid;
                     }
                 } else {
-                    return clearSolutions(_grid, addToScore);
+                    playSolutionSound(solutionSound);
+                    return _grid;
                 }
             }
 
@@ -637,66 +672,70 @@ function clearSolutions(grid, addToScore = 0) {
                     for (let i = 0; i <= 2; i++) {
                         _grid[y][x + i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];   
                     }
-                    addToScore += 300;
+                    _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 300;
                     if (y < 10) {
                         if (checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
                             // Solution 16: 5 matching blocks. 
                             _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            addToScore += 200;
-                            return clearSolutions(_grid, addToScore);
+                            _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                            playSolutionSound(solutionSound);
+                            return _grid;
                         } else if (checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
                             // Solution 17: 5 matching blocks. 
                             _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            addToScore += 200;
-                            return clearSolutions(_grid, addToScore);
+                            _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                            playSolutionSound(solutionSound);
+                            return _grid;
                         }
                     } else if (x < 3 && checkingValue === _grid[y][x + 3].value) {
                         // Solution 18: 4 matching horizontal. 
                         _grid[y][x + 3] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        addToScore += 100;
+                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 100;
                         if (y < 10) {
                             if (checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
                                 // Solution 19: 6 matching. 
                                 _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                addToScore += 200;
-                                return clearSolutions(_grid, addToScore);
+                                _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                                playSolutionSound(solutionSound);
+                                return _grid;
                             } else if (checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
                                 // Solution 20: 6 matching. 
                                 _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                addToScore += 200;
-                                return clearSolutions(_grid, addToScore);
+                                _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                                playSolutionSound(solutionSound);
+                                return _grid;
                             }
                         } else if (x < 2 && checkingValue === _grid[y][x + 4].value) {
                             // Solution 21: 5 matching horizontal. 
                             _grid[y][x + 4] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            addToScore += 100;
+                            _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 100;
                             if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
                                 // Solution 22: 7 matching. 
                                 _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                addToScore += 200;
-                                return clearSolutions(_grid, addToScore);
+                                _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                                playSolutionSound(solutionSound);
+                                return _grid;
                             } else {
-                                return clearSolutions(_grid, addToScore);
+                                playSolutionSound(solutionSound);
+                                return _grid;
                             }
                         } else {
-                            return clearSolutions(_grid, addToScore);
+                            playSolutionSound(solutionSound);
+                            return _grid;
                         }
                     } else {
-                        return clearSolutions(_grid, addToScore);
+                        playSolutionSound(solutionSound);
+                        return _grid;
                     }
                 }  
             }
         });
     });
-    if (addToScore > 0) {
-        // add score to cursor score. 
-        // play sound effect. 
-    }
     return _grid;
 }
 
