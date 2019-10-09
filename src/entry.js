@@ -27,10 +27,16 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const drawBlock = (color, y, x) => {
-        if (y !== 12) {
-            ctx.drawImage(BLOCKS[color], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-        } else {
+        if (y === 12) {
             ctx.drawImage(BLOCKS[color], 15.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+        } else if (y === 0) {
+            if (Math.round(Math.random() * 5) > 0) {
+                ctx.drawImage(BLOCKS[color], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+            } else {
+                ctx.drawImage(BLOCKS[color], 2.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+            }
+        } else {
+            ctx.drawImage(BLOCKS[color], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
         }
     };
 

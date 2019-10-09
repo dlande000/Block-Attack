@@ -308,10 +308,16 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const drawBlock = (color, y, x) => {
-        if (y !== 12) {
-            ctx.drawImage(BLOCKS[color], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
-        } else {
+        if (y === 12) {
             ctx.drawImage(BLOCKS[color], 15.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+        } else if (y === 0) {
+            if (Math.round(Math.random() * 5) > 0) {
+                ctx.drawImage(BLOCKS[color], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+            } else {
+                ctx.drawImage(BLOCKS[color], 2.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
+            }
+        } else {
+            ctx.drawImage(BLOCKS[color], 0.5, 0.5, 15, 15, x, y - yIncrease, 1, 1);
         }
     };
 
@@ -586,7 +592,7 @@ function clearSolutions(grid, addToScore = 0) {
                             _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             addToScore += 200;
                             return clearSolutions(_grid, addToScore);
-                        } else if (x > 1 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y - 1][x - 2].value) {
+                        } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
                             // Solution 10: 6 matching blocks. 
                             _grid[y + 1][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _grid[y + 1][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];

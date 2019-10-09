@@ -105,7 +105,7 @@ export function clearSolutions(grid, addToScore = 0) {
                             _grid[y + 2][x + 2] = instance;
                             addToScore += 200;
                             return clearSolutions(_grid, addToScore);
-                        } else if (x > 1 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y - 1][x - 2].value) {
+                        } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
                             // Solution 10: 6 matching blocks. 
                             _grid[y + 1][x - 1] = instance;
                             _grid[y + 1][x - 2] = instance;
