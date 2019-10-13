@@ -60,163 +60,181 @@ export function clearSolutions(grid, cursor) {
                     // [x]
                     // [x]
                     // [x]
+
                     for (let i = 0; i <= 2; i++) {
                         _grid[y + i][x] = instance;   
                     }
                     // cursor.score += 300;
-                    if (x < 4 && checkingValue === _grid[y][x + 1].value && checkingValue === _grid[y][x + 2].value) {
-                        // Solution 2: 5 matching blocks.  
-                        // [x][x][x]
-                        // [x]
-                        // [x]
-                        _grid[y][x + 1] = instance;
-                        _grid[y][x + 2] = instance;
-                        // cursor.score += 200;
-                        
-                        return _grid;
-                    } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
-                        // Solution 3: 5 matching blocks. 
-                        // [x]
-                        // [x]
-                        // [x][x][x]
-                        _grid[y + 2][x + 1] = instance;
-                        _grid[y + 2][x + 2] = instance;
-                        // cursor.score += 200;
-                        
-                        return _grid;
-                    } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
-                        // Solution 4: 5 matching blocks. 
-                        //       [x]
-                        //       [x]
-                        // [x][x][x]
-                        _grid[y + 2][x - 1] = instance;
-                        _grid[y + 2][x - 2] = instance;
-                        // cursor.score += 200;
-                        
-                        return _grid;
-                    } else if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
-                        // Solution 5: 5 matching blocks. 
-                        // [x]
-                        // [x][x][x]
-                        // [x]
-                        _grid[y + 1][x + 1] = instance;
-                        _grid[y + 1][x + 2] = instance;
-                        // cursor.score += 200;
-                        
-                        return _grid;
-                    } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
-                        // Solution 6: 5 matching blocks. 
-                        //       [x]
-                        // [x][x][x]
-                        //       [x]
-                        _grid[y + 1][x - 1] = instance;
-                        _grid[y + 1][x - 2] = instance;
-                        // cursor.score += 200;
-                        
-                        return _grid;
-                    } else if (y < 9 && checkingValue === _grid[y + 3][x].value) {
-                        // Solution 7: 4 matching vertical. 
+
+                    if (y < 9 && checkingValue === _grid[y + 3][x].value) {
+                        // Solution 2: 4 matching vertical. 
                         // [x]
                         // [x]
                         // [x]
                         // [x]
+
                         _grid[y + 3][x] = instance;
                         // cursor.score += 100;
-                        if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
-                            // Solution 8: 6 matching blocks. 
-                            // [x]
-                            // [x][x][x]
-                            // [x]
-                            // [x]
-                            _grid[y + 1][x + 1] = instance;
-                            _grid[y + 1][x + 2] = instance;
-                            // cursor.score += 200;
-                            
-                            return _grid;
-                        } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
-                            // Solution 9: 6 matching blocks. 
-                            // [x]
-                            // [x]
-                            // [x][x][x]
-                            // [x]
-                            _grid[y + 2][x + 1] = instance;
-                            _grid[y + 2][x + 2] = instance;
-                            // cursor.score += 200;
-                            
-                            return _grid;
-                        } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
-                            // Solution 10: 6 matching blocks. 
-                            //       [x]
-                            // [x][x][x]
-                            //       [x]
-                            //       [x]
-                            _grid[y + 1][x - 1] = instance;
-                            _grid[y + 1][x - 2] = instance;
-                            // cursor.score += 200;
-                            
-                            return _grid;
-                        } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
-                            // Solution 11: 6 matching blocks.
-                            //       [x]
-                            //       [x]
-                            // [x][x][x]
-                            //       [x]
-                            _grid[y + 2][x - 1] = instance;
-                            _grid[y + 2][x - 2] = instance;
-                            // cursor.score += 200;
-                            
-                            return _grid;
-                        } else if (y < 8 && checkingValue === _grid[y + 4][x].value) {
-                            // Solution 12: 5 matching vertical.
+                        
+                        if (y < 8 && checkingValue === _grid[y + 4][x].value) {
+                            // Solution 3: 5 matching vertical.
                             // [x]
                             // [x]
                             // [x]
                             // [x]
                             // [x]
+
                             _grid[y + 4][x] = instance;
                             // cursor.score += 100;
+
                             if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
-                                // Solution 13: 7 matching blocks. 
+                                // Solution 4: 7 matching blocks. 
                                 //       [x]
                                 //       [x]
                                 // [x][x][x]
                                 //       [x]
                                 //       [x]
+
                                 _grid[y + 2][x - 1] = instance;
                                 _grid[y + 2][x - 2] = instance;
                                 // cursor.score += 200;
-                                
+                        
                                 return _grid;
                             } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
-                                // Solution 14: 7 matching blocks. 
+                                // Solution 5: 7 matching blocks. 
                                 // [x]
                                 // [x]
                                 // [x][x][x]
                                 // [x]
                                 // [x]
+
                                 _grid[y + 2][x + 1] = instance;
                                 _grid[y + 2][x + 2] = instance;
                                 // cursor.score += 200;
                                 
                                 return _grid;
                             } else {
-                                
+                                //return for solution 3. 
                                 return _grid;
                             }
-                    } else {
+                        } else if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
+                            // Solution 6: 6 matching blocks. 
+                            // [x]
+                            // [x][x][x]
+                            // [x]
+                            // [x]
+
+                            _grid[y + 1][x + 1] = instance;
+                            _grid[y + 1][x + 2] = instance;
+                            // cursor.score += 200;
+                            
+                            return _grid;
+                        } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
+                            // Solution 7: 6 matching blocks. 
+                            // [x]
+                            // [x]
+                            // [x][x][x]
+                            // [x]
+
+                            _grid[y + 2][x + 1] = instance;
+                            _grid[y + 2][x + 2] = instance;
+                            // cursor.score += 200;
+                            
+                            return _grid;
+                        } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
+                            // Solution 8: 6 matching blocks. 
+                            //       [x]
+                            // [x][x][x]
+                            //       [x]
+                            //       [x]
+
+                            _grid[y + 1][x - 1] = instance;
+                            _grid[y + 1][x - 2] = instance;
+                            // cursor.score += 200;
+                            
+                            return _grid;
+                        } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
+                            // Solution 9: 6 matching blocks.
+                            //       [x]
+                            //       [x]
+                            // [x][x][x]
+                            //       [x]
+
+                            _grid[y + 2][x - 1] = instance;
+                            _grid[y + 2][x - 2] = instance;
+                            // cursor.score += 200;
+                            
+                            return _grid;
+                        } else {
+                            // return for solution 2. 
+                            return _grid;
+                        }
+                    } else if (x < 4 && checkingValue === _grid[y][x + 1].value && checkingValue === _grid[y][x + 2].value) {
+                        // Solution 10: 5 matching blocks.  
+                        // [x][x][x]
+                        // [x]
+                        // [x]
+
+                        _grid[y][x + 1] = instance;
+                        _grid[y][x + 2] = instance;
+                        // cursor.score += 200;
                         
                         return _grid;
+                    } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
+                        // Solution 11: 5 matching blocks. 
+                        // [x]
+                        // [x]
+                        // [x][x][x]
+
+                        _grid[y + 2][x + 1] = instance;
+                        _grid[y + 2][x + 2] = instance;
+                        // cursor.score += 200;
+                        
+                        return _grid;
+                    } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
+                        // Solution 12: 5 matching blocks. 
+                        //       [x]
+                        //       [x]
+                        // [x][x][x]
+
+                        _grid[y + 2][x - 1] = instance;
+                        _grid[y + 2][x - 2] = instance;
+                        // cursor.score += 200;
+                        
+                        return _grid;
+                    } else if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
+                        // Solution 13: 5 matching blocks. 
+                        // [x]
+                        // [x][x][x]
+                        // [x]
+
+                        _grid[y + 1][x + 1] = instance;
+                        _grid[y + 1][x + 2] = instance;
+                        // cursor.score += 200;
+                        
+                        return _grid;
+                    } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
+                        // Solution 14: 5 matching blocks. 
+                        //       [x]
+                        // [x][x][x]
+                        //       [x]
+
+                        _grid[y + 1][x - 1] = instance;
+                        _grid[y + 1][x - 2] = instance;
+                        // cursor.score += 200;
+                        
+                        return _grid;
+                    } else {
+                        // return for solution 1. 
+                        return _grid;
                     }
-                } else {
-                    
-                    return _grid;
                 }
-            }
 
                 // Horizontal-starting solutions. 
                 else if (x < 4 && checkingValue === _grid[y][x + 1].value && checkingValue === _grid[y][x + 2].value) {
                     // Solution 15: 3 matching horizontal. 
                     // [x][x][x]
+
                     for (let i = 0; i <= 2; i++) {
                         _grid[y][x + i] = instance;   
                     }
@@ -226,6 +244,7 @@ export function clearSolutions(grid, cursor) {
                         // [x][x][x]
                         //    [x]
                         //    [x]
+
                         _grid[y + 1][x + 1] = instance;
                         _grid[y + 2][x + 1] = instance;
                         // cursor.score += 200;
@@ -236,6 +255,7 @@ export function clearSolutions(grid, cursor) {
                         //       [x]
                         //       [x]
                         // [x][x][x]
+
                         _grid[y + 1][x + 2] = instance;
                         _grid[y + 2][x + 2] = instance;
                         // cursor.score += 200;
@@ -244,6 +264,7 @@ export function clearSolutions(grid, cursor) {
                     } else if (x < 3 && checkingValue === _grid[y][x + 3].value) {
                         // Solution 18: 4 matching horizontal. 
                         // [x][x][x][x]
+
                         _grid[y][x + 3] = instance;
                         // cursor.score += 100;
                         if (y < 10) {
@@ -253,6 +274,7 @@ export function clearSolutions(grid, cursor) {
                                 //    [x]
                                 //    [x]
                                 //    [x]
+
                                 _grid[y + 1][x + 1] = instance;
                                 _grid[y + 2][x + 1] = instance;
                                 // cursor.score += 200;
@@ -264,6 +286,7 @@ export function clearSolutions(grid, cursor) {
                                 //       [x]
                                 //       [x]
                                 //       [x]
+
                                 _grid[y + 1][x + 2] = instance;
                                 _grid[y + 2][x + 2] = instance;
                                 // cursor.score += 200;
@@ -273,6 +296,7 @@ export function clearSolutions(grid, cursor) {
                         } else if (x < 2 && checkingValue === _grid[y][x + 4].value) {
                             // Solution 21: 5 matching horizontal. 
                             // [x][x][x][x][x]
+
                             _grid[y][x + 4] = instance;
                             // cursor.score += 100;
                             if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
@@ -280,6 +304,7 @@ export function clearSolutions(grid, cursor) {
                                 // [x][x][x][x][x]
                                 //       [x]
                                 //       [x]
+
                                 _grid[y + 1][x + 2] = instance;
                                 _grid[y + 2][x + 2] = instance;
                                 // cursor.score += 200;
@@ -301,5 +326,6 @@ export function clearSolutions(grid, cursor) {
             }
         });
     });
+
     return _grid;
 }
