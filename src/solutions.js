@@ -239,7 +239,64 @@ export function clearSolutions(grid, cursor) {
                         _grid[y][x + i] = instance;   
                     }
                     // cursor.score += 300;
-                    if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
+
+                    if (x < 3 && checkingValue === _grid[y][x + 3].value) {
+                        // Solution 18: 4 matching horizontal. 
+                        // [x][x][x][x]
+
+                        _grid[y][x + 3] = instance;
+                        // cursor.score += 100;
+
+                        if (x < 2 && checkingValue === _grid[y][x + 4].value) {
+                            // Solution 21: 5 matching horizontal. 
+                            // [x][x][x][x][x]
+
+                            _grid[y][x + 4] = instance;
+                            // cursor.score += 100;
+                            if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
+                                // Solution 22: 7 matching. 
+                                // [x][x][x][x][x]
+                                //       [x]
+                                //       [x]
+
+                                _grid[y + 1][x + 2] = instance;
+                                _grid[y + 2][x + 2] = instance;
+                                // cursor.score += 200;
+                                
+                                return _grid;
+                            } else {
+                                // return value for 5 across. 
+                                return _grid;
+                            }
+                        } else if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
+                            // Solution 19: 6 matching. 
+                            // [x][x][x][x]
+                            //    [x]
+                            //    [x]
+                            //    [x]
+
+                            _grid[y + 1][x + 1] = instance;
+                            _grid[y + 2][x + 1] = instance;
+                            // cursor.score += 200;
+                            
+                            return _grid;
+                        } else if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
+                            // Solution 20: 6 matching. 
+                            // [x][x][x][x]
+                            //       [x]
+                            //       [x]
+                            //       [x]
+
+                            _grid[y + 1][x + 2] = instance;
+                            _grid[y + 2][x + 2] = instance;
+                            // cursor.score += 200;
+                            
+                            return _grid;
+                        } else {
+                            // return for four across. 
+                            return _grid;
+                        }
+                    } else if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
                         // Solution 16: 5 matching blocks. 
                         // [x][x][x]
                         //    [x]
@@ -261,65 +318,8 @@ export function clearSolutions(grid, cursor) {
                         // cursor.score += 200;
                         
                         return _grid;
-                    } else if (x < 3 && checkingValue === _grid[y][x + 3].value) {
-                        // Solution 18: 4 matching horizontal. 
-                        // [x][x][x][x]
-
-                        _grid[y][x + 3] = instance;
-                        // cursor.score += 100;
-                        if (y < 10) {
-                            if (checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
-                                // Solution 19: 6 matching. 
-                                // [x][x][x][x]
-                                //    [x]
-                                //    [x]
-                                //    [x]
-
-                                _grid[y + 1][x + 1] = instance;
-                                _grid[y + 2][x + 1] = instance;
-                                // cursor.score += 200;
-                                
-                                return _grid;
-                            } else if (checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
-                                // Solution 20: 6 matching. 
-                                // [x][x][x][x]
-                                //       [x]
-                                //       [x]
-                                //       [x]
-
-                                _grid[y + 1][x + 2] = instance;
-                                _grid[y + 2][x + 2] = instance;
-                                // cursor.score += 200;
-                                
-                                return _grid;
-                            }
-                        } else if (x < 2 && checkingValue === _grid[y][x + 4].value) {
-                            // Solution 21: 5 matching horizontal. 
-                            // [x][x][x][x][x]
-
-                            _grid[y][x + 4] = instance;
-                            // cursor.score += 100;
-                            if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
-                                // Solution 22: 7 matching. 
-                                // [x][x][x][x][x]
-                                //       [x]
-                                //       [x]
-
-                                _grid[y + 1][x + 2] = instance;
-                                _grid[y + 2][x + 2] = instance;
-                                // cursor.score += 200;
-                                
-                                return _grid;
-                            } else {
-                                
-                                return _grid;
-                            }
-                        } else {
-                            
-                            return _grid;
-                        }
                     } else {
-                        
+                        // return for 3 across. 
                         return _grid;
                     }
                 }  
