@@ -215,15 +215,14 @@ class Board {
                 if (y < 11 && !this.grid[y + 1][x].value && block.value) {
                     this.grid[y + 1][x] = block;
                     this.grid[y][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                    this.fall();
                 }
             });
         });
         let _grid = Object(_solutions__WEBPACK_IMPORTED_MODULE_2__["clearSolutions"])(this.grid);
         if (this.grid !== _grid) {
             this.grid = _grid;
-            this.fall();
         }
+        this.fall();
     }
 
     checkGameOver(row) {
@@ -287,11 +286,10 @@ __webpack_require__.r(__webpack_exports__);
 
 // webpack --watch --mode=development
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     ctx.scale(60, 60);
-
     let game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"](ctx);
 
     document.addEventListener('keydown', event => {
@@ -412,8 +410,9 @@ class Game {
             "D": document.getElementById("dark-blue-block"),
             "P": document.getElementById("purple-block")
         };
-        this.increaseInterval = 3000;
+        // this.increaseInterval = 1000;
         this.yIncrease = 0;
+        this.gamePace = 300;
         this.hasStarted = false;
         this.gameOver = false;
     }
@@ -458,7 +457,8 @@ class Game {
     }
 
     increaseY() {
-        this.yIncrease += (1/50);
+        this.yIncrease += (1/this.gamePace);
+        this.gamePace -= (1/50);
         if (this.yIncrease >= 1) {
             this.board.createNextRow();
             if (this.cursor.y !== 0) {

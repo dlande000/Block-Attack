@@ -3,11 +3,10 @@ import Board from './board';
 
 // webpack --watch --mode=development
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     ctx.scale(60, 60);
-
     let game = new Game(ctx);
 
     document.addEventListener('keydown', event => {

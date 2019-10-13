@@ -17,8 +17,9 @@ class Game {
             "D": document.getElementById("dark-blue-block"),
             "P": document.getElementById("purple-block")
         };
-        this.increaseInterval = 3000;
+        // this.increaseInterval = 1000;
         this.yIncrease = 0;
+        this.gamePace = 300;
         this.hasStarted = false;
         this.gameOver = false;
     }
@@ -63,7 +64,8 @@ class Game {
     }
 
     increaseY() {
-        this.yIncrease += (1/50);
+        this.yIncrease += (1/this.gamePace);
+        this.gamePace -= (1/50);
         if (this.yIncrease >= 1) {
             this.board.createNextRow();
             if (this.cursor.y !== 0) {

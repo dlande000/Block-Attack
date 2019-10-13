@@ -54,15 +54,14 @@ class Board {
                 if (y < 11 && !this.grid[y + 1][x].value && block.value) {
                     this.grid[y + 1][x] = block;
                     this.grid[y][x] = instance;
-                    this.fall();
                 }
             });
         });
         let _grid = clearSolutions(this.grid);
         if (this.grid !== _grid) {
             this.grid = _grid;
-            this.fall();
         }
+        this.fall();
     }
 
     checkGameOver(row) {
