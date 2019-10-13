@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 game.yIncrease = 0;
                 // game.music.musicPlaying = true;
                 // game.music.playMusic();
+            } else if (game.hasStarted && game.gameOver) {
+                game = new Game(ctx);
+                game.hasStarted = true;
             } else {
                 game.board.swap(game.cursor.y, game.cursor.x);
             }

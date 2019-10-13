@@ -47,12 +47,15 @@ export function clearSolutions(grid, cursor) {
             // Check if block has color value, if block is floating, and that the new row isn't checked for solutions.  
             if (y < 12 && block.value && _grid[y + 1][x].value) {
                 let checkingValue = block.value;
-                // Block Attack! has 22 unique solutions; 
-                // the below funtion checks each possible solution based first on the position of the checked block. 
-                // Some solutions cannot be accessed in certain parts of the grid.
-                // When checking the grid for solutions, we iterate from top (y = 0) to bottom (y = 11)
-                // and left (x = 0) to right (x = 5). The first blocks of a solution will always be the top-most and 
-                // lef-most. The below algorithm first checks for solutions vertically, then horizontally. 
+
+                // Block Attack! has 22 unique solutions. 
+                // When checking the grid for solutions, 
+                // we iterate from top (y = 0) to bottom (y = 11)
+                // and left (x = 0) to right (x = 5). 
+                // The first blocks of a solution will always be
+                // the top-most and left-most. 
+                // The below algorithm first checks for 
+                // solutions vertically, then horizontally. 
 
                 // Vertical-starting solutions. 
                 if (y < 10 && checkingValue === _grid[y + 1][x].value && checkingValue === _grid[y + 2][x].value) {
@@ -241,20 +244,20 @@ export function clearSolutions(grid, cursor) {
                     // cursor.score += 300;
 
                     if (x < 3 && checkingValue === _grid[y][x + 3].value) {
-                        // Solution 18: 4 matching horizontal. 
+                        // Solution 16: 4 matching horizontal. 
                         // [x][x][x][x]
 
                         _grid[y][x + 3] = instance;
                         // cursor.score += 100;
 
                         if (x < 2 && checkingValue === _grid[y][x + 4].value) {
-                            // Solution 21: 5 matching horizontal. 
+                            // Solution 17: 5 matching horizontal. 
                             // [x][x][x][x][x]
 
                             _grid[y][x + 4] = instance;
                             // cursor.score += 100;
                             if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
-                                // Solution 22: 7 matching. 
+                                // Solution 18: 7 matching. 
                                 // [x][x][x][x][x]
                                 //       [x]
                                 //       [x]
@@ -265,13 +268,12 @@ export function clearSolutions(grid, cursor) {
                                 
                                 return _grid;
                             } else {
-                                // return value for 5 across. 
+                                // return value for solution 17. 
                                 return _grid;
                             }
                         } else if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
                             // Solution 19: 6 matching. 
                             // [x][x][x][x]
-                            //    [x]
                             //    [x]
                             //    [x]
 
@@ -285,7 +287,6 @@ export function clearSolutions(grid, cursor) {
                             // [x][x][x][x]
                             //       [x]
                             //       [x]
-                            //       [x]
 
                             _grid[y + 1][x + 2] = instance;
                             _grid[y + 2][x + 2] = instance;
@@ -293,7 +294,7 @@ export function clearSolutions(grid, cursor) {
                             
                             return _grid;
                         } else {
-                            // return for four across. 
+                            // return for solution 16. 
                             return _grid;
                         }
                     } else if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
@@ -319,7 +320,7 @@ export function clearSolutions(grid, cursor) {
                         
                         return _grid;
                     } else {
-                        // return for 3 across. 
+                        // return for solution 15. 
                         return _grid;
                     }
                 }  

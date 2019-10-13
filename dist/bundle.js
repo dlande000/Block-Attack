@@ -312,6 +312,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 game.yIncrease = 0;
                 // game.music.musicPlaying = true;
                 // game.music.playMusic();
+            } else if (game.hasStarted && game.gameOver) {
+                game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"](ctx);
+                game.hasStarted = true;
             } else {
                 game.board.swap(game.cursor.y, game.cursor.x);
             }
@@ -554,7 +557,7 @@ function clearSolutionsFromNewRow(row, grid) {
     return _row;
 }
 
-function clearSolutions(grid) {
+function clearSolutions(grid, cursor) {
     // Check for any solutions after a swap, a fall, or a clear.
     let _grid = grid;
     _grid.forEach((row, y) => {
@@ -562,125 +565,262 @@ function clearSolutions(grid) {
             // Check if block has color value, if block is floating, and that the new row isn't checked for solutions.  
             if (y < 12 && block.value && _grid[y + 1][x].value) {
                 let checkingValue = block.value;
-                // Block Attack! has 22 unique solutions; 
-                // the below funtion checks each possible solution based first on the position of the checked block. 
-                // Some solutions cannot be accessed in certain parts of the grid.
+
+                // Block Attack! has 22 unique solutions. 
+                // When checking the grid for solutions, 
+                // we iterate from top (y = 0) to bottom (y = 11)
+                // and left (x = 0) to right (x = 5). 
+                // The first blocks of a solution will always be
+                // the top-most and left-most. 
+                // The below algorithm first checks for 
+                // solutions vertically, then horizontally. 
 
                 // Vertical-starting solutions. 
                 if (y < 10 && checkingValue === _grid[y + 1][x].value && checkingValue === _grid[y + 2][x].value) {
                     // Solution 1: 3 matching vertical. 
+                    // [x]
+                    // [x]
+                    // [x]
+
                     for (let i = 0; i <= 2; i++) {
                         _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];   
                     }
                     // cursor.score += 300;
-                    if (x < 4 && checkingValue === _grid[y][x + 1].value && checkingValue === _grid[y][x + 2].value) {
-                        // Solution 2: 5 matching blocks.  
-                        _grid[y][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        _grid[y][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        // cursor.score += 200;
-                        
-                        return _grid;
-                    } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
-                        // Solution 3: 5 matching blocks. 
-                        _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        // cursor.score += 200;
-                        
-                        return _grid;
-                    } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
-                        // Solution 4: 5 matching blocks. 
-                        _grid[y + 2][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        _grid[y + 2][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        // cursor.score += 200;
-                        
-                        return _grid;
-                    } else if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
-                        // Solution 5: 5 matching blocks. 
-                        _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        // cursor.score += 200;
-                        
-                        return _grid;
-                    } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
-                        // Solution 6: 5 matching blocks. 
-                        _grid[y + 1][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        _grid[y + 1][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        // cursor.score += 200;
-                        
-                        return _grid;
-                    } else if (y < 9 && checkingValue === _grid[y + 3][x].value) {
-                        // Solution 7: 4 matching vertical. 
+
+                    if (y < 9 && checkingValue === _grid[y + 3][x].value) {
+                        // Solution 2: 4 matching vertical. 
+                        // [x]
+                        // [x]
+                        // [x]
+                        // [x]
+
                         _grid[y + 3][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         // cursor.score += 100;
-                        if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
-                            // Solution 8: 6 matching blocks. 
-                            _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            // cursor.score += 200;
-                            
-                            return _grid;
-                        } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
-                            // Solution 9: 6 matching blocks. 
-                            _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            // cursor.score += 200;
-                            
-                            return _grid;
-                        } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
-                            // Solution 10: 6 matching blocks. 
-                            _grid[y + 1][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            _grid[y + 1][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            // cursor.score += 200;
-                            
-                            return _grid;
-                        } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
-                            // Solution 11: 6 matching blocks.
-                            _grid[y + 2][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            _grid[y + 2][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            // cursor.score += 200;
-                            
-                            return _grid;
-                        } else if (y < 8 && checkingValue === _grid[y + 4][x].value) {
-                            // Solution 12: 5 matching vertical.
+                        
+                        if (y < 8 && checkingValue === _grid[y + 4][x].value) {
+                            // Solution 3: 5 matching vertical.
+                            // [x]
+                            // [x]
+                            // [x]
+                            // [x]
+                            // [x]
+
                             _grid[y + 4][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             // cursor.score += 100;
+
                             if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
-                                // Solution 13: 7 matching blocks. 
+                                // Solution 4: 7 matching blocks. 
+                                //       [x]
+                                //       [x]
+                                // [x][x][x]
+                                //       [x]
+                                //       [x]
+
                                 _grid[y + 2][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 // cursor.score += 200;
-                                
+                        
                                 return _grid;
                             } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
-                                // Solution 14: 7 matching blocks. 
+                                // Solution 5: 7 matching blocks. 
+                                // [x]
+                                // [x]
+                                // [x][x][x]
+                                // [x]
+                                // [x]
+
                                 _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 // cursor.score += 200;
                                 
                                 return _grid;
                             } else {
-                                
+                                //return for solution 3. 
                                 return _grid;
                             }
-                    } else {
+                        } else if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
+                            // Solution 6: 6 matching blocks. 
+                            // [x]
+                            // [x][x][x]
+                            // [x]
+                            // [x]
+
+                            _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            // cursor.score += 200;
+                            
+                            return _grid;
+                        } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
+                            // Solution 7: 6 matching blocks. 
+                            // [x]
+                            // [x]
+                            // [x][x][x]
+                            // [x]
+
+                            _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            // cursor.score += 200;
+                            
+                            return _grid;
+                        } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
+                            // Solution 8: 6 matching blocks. 
+                            //       [x]
+                            // [x][x][x]
+                            //       [x]
+                            //       [x]
+
+                            _grid[y + 1][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            _grid[y + 1][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            // cursor.score += 200;
+                            
+                            return _grid;
+                        } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
+                            // Solution 9: 6 matching blocks.
+                            //       [x]
+                            //       [x]
+                            // [x][x][x]
+                            //       [x]
+
+                            _grid[y + 2][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            _grid[y + 2][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            // cursor.score += 200;
+                            
+                            return _grid;
+                        } else {
+                            // return for solution 2. 
+                            return _grid;
+                        }
+                    } else if (x < 4 && checkingValue === _grid[y][x + 1].value && checkingValue === _grid[y][x + 2].value) {
+                        // Solution 10: 5 matching blocks.  
+                        // [x][x][x]
+                        // [x]
+                        // [x]
+
+                        _grid[y][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        _grid[y][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        // cursor.score += 200;
                         
                         return _grid;
+                    } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
+                        // Solution 11: 5 matching blocks. 
+                        // [x]
+                        // [x]
+                        // [x][x][x]
+
+                        _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        // cursor.score += 200;
+                        
+                        return _grid;
+                    } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
+                        // Solution 12: 5 matching blocks. 
+                        //       [x]
+                        //       [x]
+                        // [x][x][x]
+
+                        _grid[y + 2][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        _grid[y + 2][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        // cursor.score += 200;
+                        
+                        return _grid;
+                    } else if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
+                        // Solution 13: 5 matching blocks. 
+                        // [x]
+                        // [x][x][x]
+                        // [x]
+
+                        _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        // cursor.score += 200;
+                        
+                        return _grid;
+                    } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
+                        // Solution 14: 5 matching blocks. 
+                        //       [x]
+                        // [x][x][x]
+                        //       [x]
+
+                        _grid[y + 1][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        _grid[y + 1][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        // cursor.score += 200;
+                        
+                        return _grid;
+                    } else {
+                        // return for solution 1. 
+                        return _grid;
                     }
-                } else {
-                    
-                    return _grid;
                 }
-            }
 
                 // Horizontal-starting solutions. 
                 else if (x < 4 && checkingValue === _grid[y][x + 1].value && checkingValue === _grid[y][x + 2].value) {
                     // Solution 15: 3 matching horizontal. 
+                    // [x][x][x]
+
                     for (let i = 0; i <= 2; i++) {
                         _grid[y][x + i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];   
                     }
                     // cursor.score += 300;
-                    if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
+
+                    if (x < 3 && checkingValue === _grid[y][x + 3].value) {
+                        // Solution 16: 4 matching horizontal. 
+                        // [x][x][x][x]
+
+                        _grid[y][x + 3] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                        // cursor.score += 100;
+
+                        if (x < 2 && checkingValue === _grid[y][x + 4].value) {
+                            // Solution 17: 5 matching horizontal. 
+                            // [x][x][x][x][x]
+
+                            _grid[y][x + 4] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            // cursor.score += 100;
+                            if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
+                                // Solution 18: 7 matching. 
+                                // [x][x][x][x][x]
+                                //       [x]
+                                //       [x]
+
+                                _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                                _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                                // cursor.score += 200;
+                                
+                                return _grid;
+                            } else {
+                                // return value for solution 17. 
+                                return _grid;
+                            }
+                        } else if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
+                            // Solution 19: 6 matching. 
+                            // [x][x][x][x]
+                            //    [x]
+                            //    [x]
+
+                            _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            // cursor.score += 200;
+                            
+                            return _grid;
+                        } else if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
+                            // Solution 20: 6 matching. 
+                            // [x][x][x][x]
+                            //       [x]
+                            //       [x]
+
+                            _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                            // cursor.score += 200;
+                            
+                            return _grid;
+                        } else {
+                            // return for solution 16. 
+                            return _grid;
+                        }
+                    } else if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
                         // Solution 16: 5 matching blocks. 
+                        // [x][x][x]
+                        //    [x]
+                        //    [x]
+
                         _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         // cursor.score += 200;
@@ -688,58 +828,24 @@ function clearSolutions(grid) {
                         return _grid;
                     } else if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
                         // Solution 17: 5 matching blocks. 
+                        //       [x]
+                        //       [x]
+                        // [x][x][x]
+
                         _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         // cursor.score += 200;
                         
                         return _grid;
-                    } else if (x < 3 && checkingValue === _grid[y][x + 3].value) {
-                        // Solution 18: 4 matching horizontal. 
-                        _grid[y][x + 3] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        // cursor.score += 100;
-                        if (y < 10) {
-                            if (checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
-                                // Solution 19: 6 matching. 
-                                _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                // cursor.score += 200;
-                                
-                                return _grid;
-                            } else if (checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
-                                // Solution 20: 6 matching. 
-                                _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                // cursor.score += 200;
-                                
-                                return _grid;
-                            }
-                        } else if (x < 2 && checkingValue === _grid[y][x + 4].value) {
-                            // Solution 21: 5 matching horizontal. 
-                            _grid[y][x + 4] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            // cursor.score += 100;
-                            if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
-                                // Solution 22: 7 matching. 
-                                _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                // cursor.score += 200;
-                                
-                                return _grid;
-                            } else {
-                                
-                                return _grid;
-                            }
-                        } else {
-                            
-                            return _grid;
-                        }
                     } else {
-                        
+                        // return for solution 15. 
                         return _grid;
                     }
                 }  
             }
         });
     });
+
     return _grid;
 }
 
