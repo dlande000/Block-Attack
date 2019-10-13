@@ -17,10 +17,10 @@ class Game {
             "D": document.getElementById("dark-blue-block"),
             "P": document.getElementById("purple-block")
         };
-        this.increaseInterval = 5000;
+        this.increaseInterval = 3000;
         this.yIncrease = 0;
         this.hasStarted = false;
-        this.gameOver = this.board.gameOver;
+        this.gameOver = false;
     }
 
     updateScore() {
@@ -52,14 +52,14 @@ class Game {
         board.forEach((row, y) => {
             row.forEach((block, x) => {
             if (block.value) {
-                drawBlock(block.value, y, x);
+                this.drawBlock(block.value, y, x);
             }});
         });
     }
 
     draw(board, cursor) {
         this.drawBoard(board);
-        this.drawCursor(cursor);
+        this.drawCursor(cursor.y, cursor.x);
     }
 
     increaseY() {
@@ -71,6 +71,10 @@ class Game {
             }
             this.yIncrease = 0;
         }
+    }
+
+    checkGameOver() {
+        this.gameOver = this.board.gameOver;
     }
 }
 

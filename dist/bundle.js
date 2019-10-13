@@ -281,6 +281,8 @@ class Cursor {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _game__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game */ "./src/game.js");
+/* harmony import */ var _board__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./board */ "./src/board.js");
+
 
 
 // webpack --watch --mode=development
@@ -290,44 +292,44 @@ document.addEventListener("DOMContentLoaded", () => {
     const ctx = canvas.getContext('2d');
     ctx.scale(60, 60);
 
-    const game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"](ctx);
+    let game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"](ctx);
 
     document.addEventListener('keydown', event => {
         if (event.keyCode === 37) {
-            cursor.move(0, -1);
+            event.preventDefault();
+            game.cursor.move(0, -1);
         } else if (event.keyCode === 38) {
             event.preventDefault();
-            cursor.move(-1, 0);
+            game.cursor.move(-1, 0);
         } else if (event.keyCode === 39) {
-            cursor.move(0, 1);
+            event.preventDefault();
+            game.cursor.move(0, 1);
         } else if (event.keyCode === 40) {
             event.preventDefault();
-            cursor.move(1, 0);
+            game.cursor.move(1, 0);
         } else if (event.keyCode === 32) {
-            if (startScreen || board.gameOver) {
-                startScreen = false;
-                board.gameOver = false;
-                cursor.score = 0;
-                board = new Board();
-                yIncrease = 0;
-                music.musicPlaying = true;
-                music.playMusic();
+            if (!game.hasStarted) {
+                game.hasStarted = true;
+                game.cursor.score = 0;
+                game.yIncrease = 0;
+                // game.music.musicPlaying = true;
+                // game.music.playMusic();
             } else {
-                board.swap(cursor.y, cursor.x);
+                game.board.swap(game.cursor.y, game.cursor.x);
             }
         } else if (event.keyCode === 90) {
-            board.createNextRow();
+            game.board.createNextRow();
         } else if (event.keyCode === 83) {
-            music.musicPlaying = !music.musicPlaying;
-            if (music.musicPlaying) {
-                music.playMusic();
-            } else {
-                music.stopMusic();
-            }
+            // game.music.musicPlaying = !game.music.musicPlaying;
+            // if (game.music.musicPlaying) {
+            //     game.music.playMusic();
+            // } else {
+            //     game.music.stopMusic();
+            // }
         }
     });
 
-    setInterval(game.increaseY, (game.increaseInterval/50));
+    // setInterval(game.increaseY, (game.increaseInterval/50));
 
     const update = () => {
         if (!game.hasStarted) {
@@ -348,9 +350,11 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (game.hasStarted && !game.gameOver) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             game.draw(game.board.grid, game.cursor);
+            game.increaseY();
             game.updateScore();
+            game.checkGameOver();
         } else if (game.hasStarted && game.gameOver) {
-            game.music.stopMusic();
+            // game.music.stopMusic();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
@@ -371,7 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
         requestAnimationFrame(update);
     };
 
-    game.music.playMusic();
+    // game.music.playMusic();
     update();
 });
 
@@ -408,10 +412,10 @@ class Game {
             "D": document.getElementById("dark-blue-block"),
             "P": document.getElementById("purple-block")
         };
-        this.increaseInterval = 5000;
+        this.increaseInterval = 3000;
         this.yIncrease = 0;
         this.hasStarted = false;
-        this.gameOver = this.board.gameOver;
+        this.gameOver = false;
     }
 
     updateScore() {
@@ -443,14 +447,14 @@ class Game {
         board.forEach((row, y) => {
             row.forEach((block, x) => {
             if (block.value) {
-                drawBlock(block.value, y, x);
+                this.drawBlock(block.value, y, x);
             }});
         });
     }
 
     draw(board, cursor) {
         this.drawBoard(board);
-        this.drawCursor(cursor);
+        this.drawCursor(cursor.y, cursor.x);
     }
 
     increaseY() {
@@ -462,6 +466,10 @@ class Game {
             }
             this.yIncrease = 0;
         }
+    }
+
+    checkGameOver() {
+        this.gameOver = this.board.gameOver;
     }
 }
 
@@ -508,8 +516,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "clearSolutions", function() { return clearSolutions; });
 /* harmony import */ var _block__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./block */ "./src/block.js");
 /* harmony import */ var _singleton__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./singleton */ "./src/singleton.js");
-/* harmony import */ var _entry__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./entry */ "./src/entry.js");
-
 
 
 
@@ -569,90 +575,90 @@ function clearSolutions(grid) {
                     for (let i = 0; i <= 2; i++) {
                         _grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];   
                     }
-                    _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 300;
+                    // cursor.score += 300;
                     if (x < 4 && checkingValue === _grid[y][x + 1].value && checkingValue === _grid[y][x + 2].value) {
                         // Solution 2: 5 matching blocks.  
                         _grid[y][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                        // cursor.score += 200;
                         
                         return _grid;
                     } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
                         // Solution 3: 5 matching blocks. 
                         _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                        // cursor.score += 200;
                         
                         return _grid;
                     } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
                         // Solution 4: 5 matching blocks. 
                         _grid[y + 2][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y + 2][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                        // cursor.score += 200;
                         
                         return _grid;
                     } else if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
                         // Solution 5: 5 matching blocks. 
                         _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                        // cursor.score += 200;
                         
                         return _grid;
                     } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
                         // Solution 6: 5 matching blocks. 
                         _grid[y + 1][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y + 1][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                        // cursor.score += 200;
                         
                         return _grid;
                     } else if (y < 9 && checkingValue === _grid[y + 3][x].value) {
                         // Solution 7: 4 matching vertical. 
                         _grid[y + 3][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 100;
+                        // cursor.score += 100;
                         if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
                             // Solution 8: 6 matching blocks. 
                             _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                            // cursor.score += 200;
                             
                             return _grid;
                         } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
                             // Solution 9: 6 matching blocks. 
                             _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                            // cursor.score += 200;
                             
                             return _grid;
                         } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
                             // Solution 10: 6 matching blocks. 
                             _grid[y + 1][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _grid[y + 1][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                            // cursor.score += 200;
                             
                             return _grid;
                         } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
                             // Solution 11: 6 matching blocks.
                             _grid[y + 2][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                             _grid[y + 2][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                            // cursor.score += 200;
                             
                             return _grid;
                         } else if (y < 8 && checkingValue === _grid[y + 4][x].value) {
                             // Solution 12: 5 matching vertical.
                             _grid[y + 4][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 100;
+                            // cursor.score += 100;
                             if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
                                 // Solution 13: 7 matching blocks. 
                                 _grid[y + 2][x - 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x - 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                                // cursor.score += 200;
                                 
                                 return _grid;
                             } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
                                 // Solution 14: 7 matching blocks. 
                                 _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                                // cursor.score += 200;
                                 
                                 return _grid;
                             } else {
@@ -675,50 +681,50 @@ function clearSolutions(grid) {
                     for (let i = 0; i <= 2; i++) {
                         _grid[y][x + i] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];   
                     }
-                    _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 300;
+                    // cursor.score += 300;
                     if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
                         // Solution 16: 5 matching blocks. 
                         _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                        // cursor.score += 200;
                         
                         return _grid;
                     } else if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
                         // Solution 17: 5 matching blocks. 
                         _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                         _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                        // cursor.score += 200;
                         
                         return _grid;
                     } else if (x < 3 && checkingValue === _grid[y][x + 3].value) {
                         // Solution 18: 4 matching horizontal. 
                         _grid[y][x + 3] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                        _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 100;
+                        // cursor.score += 100;
                         if (y < 10) {
                             if (checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
                                 // Solution 19: 6 matching. 
                                 _grid[y + 1][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x + 1] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                                // cursor.score += 200;
                                 
                                 return _grid;
                             } else if (checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
                                 // Solution 20: 6 matching. 
                                 _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                                // cursor.score += 200;
                                 
                                 return _grid;
                             }
                         } else if (x < 2 && checkingValue === _grid[y][x + 4].value) {
                             // Solution 21: 5 matching horizontal. 
                             _grid[y][x + 4] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                            _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 100;
+                            // cursor.score += 100;
                             if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
                                 // Solution 22: 7 matching. 
                                 _grid[y + 1][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                                 _grid[y + 2][x + 2] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                                _entry__WEBPACK_IMPORTED_MODULE_2__["cursor"].score += 200;
+                                // cursor.score += 200;
                                 
                                 return _grid;
                             } else {
