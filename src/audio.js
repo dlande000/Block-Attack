@@ -1,16 +1,13 @@
 class Audio {
     constructor(file) {
         this.source = file;
-        this.musicPlaying = false;
     }
 
     playMusic() {
-        this.musicPlaying = true;
         this.source.play();
     }
 
     stopMusic() {
-        this.musicPlaying = false;
         this.source.pause();
         this.source.currentTime = 0;
     }

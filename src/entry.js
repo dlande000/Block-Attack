@@ -25,10 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (event.keyCode === 32) {
             if (!game.hasStarted) {
                 game.hasStarted = true;
-                game.cursor.score = 0;
-                game.yIncrease = 0;
-                // game.music.musicPlaying = true;
-                // game.music.playMusic();
+                game.musicPlaying = true;
+                game.music.playMusic();
             } else if (game.hasStarted && game.gameOver) {
                 game = new Game(ctx);
                 game.hasStarted = true;
@@ -38,12 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (event.keyCode === 90) {
             game.board.createNextRow();
         } else if (event.keyCode === 83) {
-            // game.music.musicPlaying = !game.music.musicPlaying;
-            // if (game.music.musicPlaying) {
-            //     game.music.playMusic();
-            // } else {
-            //     game.music.stopMusic();
-            // }
+            game.musicPlaying = !game.musicPlaying;
+            if (game.musicPlaying) {
+                game.music.playMusic();
+            } else {
+                game.music.stopMusic();
+            }
         }
     });
 
@@ -70,7 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
             game.updateScore();
             game.checkGameOver();
         } else if (game.hasStarted && game.gameOver) {
-            // game.music.stopMusic();
+            // game.musicPlaying = false;
+            // game.audio.stopMusic();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
@@ -91,6 +90,5 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(update);
     };
 
-    // game.music.playMusic();
     update();
 });

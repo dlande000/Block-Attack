@@ -39,7 +39,7 @@ export function clearSolutionsFromNewRow(row, grid) {
     return _row;
 }
 
-export function clearSolutions(grid, cursor) {
+export function clearSolutions(grid, cursor, soundEffect) {
     // Check for any solutions after a swap, a fall, or a clear.
     let _grid = grid;
     _grid.forEach((row, y) => {
@@ -67,7 +67,8 @@ export function clearSolutions(grid, cursor) {
                     for (let i = 0; i <= 2; i++) {
                         _grid[y + i][x] = instance;   
                     }
-                    // cursor.score += 300;
+                    cursor.score += 300;
+                    soundEffect.playSoundEffect();
 
                     if (y < 9 && checkingValue === _grid[y + 3][x].value) {
                         // Solution 2: 4 matching vertical. 
@@ -77,7 +78,8 @@ export function clearSolutions(grid, cursor) {
                         // [x]
 
                         _grid[y + 3][x] = instance;
-                        // cursor.score += 100;
+                        cursor.score += 100;
+                        soundEffect.playSoundEffect();
                         
                         if (y < 8 && checkingValue === _grid[y + 4][x].value) {
                             // Solution 3: 5 matching vertical.
@@ -88,7 +90,7 @@ export function clearSolutions(grid, cursor) {
                             // [x]
 
                             _grid[y + 4][x] = instance;
-                            // cursor.score += 100;
+                            cursor.score += 100;
 
                             if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
                                 // Solution 4: 7 matching blocks. 
@@ -100,7 +102,8 @@ export function clearSolutions(grid, cursor) {
 
                                 _grid[y + 2][x - 1] = instance;
                                 _grid[y + 2][x - 2] = instance;
-                                // cursor.score += 200;
+                                cursor.score += 200;
+                                soundEffect.playSoundEffect();
                         
                                 return _grid;
                             } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
@@ -113,11 +116,13 @@ export function clearSolutions(grid, cursor) {
 
                                 _grid[y + 2][x + 1] = instance;
                                 _grid[y + 2][x + 2] = instance;
-                                // cursor.score += 200;
+                                cursor.score += 200;
+                                soundEffect.playSoundEffect();
                                 
                                 return _grid;
                             } else {
                                 //return for solution 3. 
+                                soundEffect.playSoundEffect();
                                 return _grid;
                             }
                         } else if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
@@ -129,7 +134,8 @@ export function clearSolutions(grid, cursor) {
 
                             _grid[y + 1][x + 1] = instance;
                             _grid[y + 1][x + 2] = instance;
-                            // cursor.score += 200;
+                            cursor.score += 200;
+                            soundEffect.playSoundEffect();
                             
                             return _grid;
                         } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
@@ -141,7 +147,8 @@ export function clearSolutions(grid, cursor) {
 
                             _grid[y + 2][x + 1] = instance;
                             _grid[y + 2][x + 2] = instance;
-                            // cursor.score += 200;
+                            cursor.score += 200;
+                            soundEffect.playSoundEffect();
                             
                             return _grid;
                         } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
@@ -153,7 +160,8 @@ export function clearSolutions(grid, cursor) {
 
                             _grid[y + 1][x - 1] = instance;
                             _grid[y + 1][x - 2] = instance;
-                            // cursor.score += 200;
+                            cursor.score += 200;
+                            soundEffect.playSoundEffect();
                             
                             return _grid;
                         } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
@@ -165,11 +173,13 @@ export function clearSolutions(grid, cursor) {
 
                             _grid[y + 2][x - 1] = instance;
                             _grid[y + 2][x - 2] = instance;
-                            // cursor.score += 200;
+                            cursor.score += 200;
+                            soundEffect.playSoundEffect();
                             
                             return _grid;
                         } else {
                             // return for solution 2. 
+                            soundEffect.playSoundEffect();
                             return _grid;
                         }
                     } else if (x < 4 && checkingValue === _grid[y][x + 1].value && checkingValue === _grid[y][x + 2].value) {
@@ -180,7 +190,8 @@ export function clearSolutions(grid, cursor) {
 
                         _grid[y][x + 1] = instance;
                         _grid[y][x + 2] = instance;
-                        // cursor.score += 200;
+                        cursor.score += 200;
+                        soundEffect.playSoundEffect();
                         
                         return _grid;
                     } else if (x < 4 && checkingValue === _grid[y + 2][x + 1].value && checkingValue === _grid[y + 2][x + 2].value) {
@@ -191,7 +202,8 @@ export function clearSolutions(grid, cursor) {
 
                         _grid[y + 2][x + 1] = instance;
                         _grid[y + 2][x + 2] = instance;
-                        // cursor.score += 200;
+                        cursor.score += 200;
+                        soundEffect.playSoundEffect();
                         
                         return _grid;
                     } else if (x > 1 && checkingValue === _grid[y + 2][x - 1].value && checkingValue === _grid[y + 2][x - 2].value) {
@@ -202,7 +214,8 @@ export function clearSolutions(grid, cursor) {
 
                         _grid[y + 2][x - 1] = instance;
                         _grid[y + 2][x - 2] = instance;
-                        // cursor.score += 200;
+                        cursor.score += 200;
+                        soundEffect.playSoundEffect();
                         
                         return _grid;
                     } else if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
@@ -213,7 +226,8 @@ export function clearSolutions(grid, cursor) {
 
                         _grid[y + 1][x + 1] = instance;
                         _grid[y + 1][x + 2] = instance;
-                        // cursor.score += 200;
+                        cursor.score += 200;
+                        soundEffect.playSoundEffect();
                         
                         return _grid;
                     } else if (x > 1 && checkingValue === _grid[y + 1][x - 1].value && checkingValue === _grid[y + 1][x - 2].value) {
@@ -224,11 +238,13 @@ export function clearSolutions(grid, cursor) {
 
                         _grid[y + 1][x - 1] = instance;
                         _grid[y + 1][x - 2] = instance;
-                        // cursor.score += 200;
+                        cursor.score += 200;
+                        soundEffect.playSoundEffect();
                         
                         return _grid;
                     } else {
                         // return for solution 1. 
+                        soundEffect.playSoundEffect();
                         return _grid;
                     }
                 }
@@ -241,21 +257,21 @@ export function clearSolutions(grid, cursor) {
                     for (let i = 0; i <= 2; i++) {
                         _grid[y][x + i] = instance;   
                     }
-                    // cursor.score += 300;
+                    cursor.score += 300;
 
                     if (x < 3 && checkingValue === _grid[y][x + 3].value) {
                         // Solution 16: 4 matching horizontal. 
                         // [x][x][x][x]
 
                         _grid[y][x + 3] = instance;
-                        // cursor.score += 100;
+                        cursor.score += 100;
 
                         if (x < 2 && checkingValue === _grid[y][x + 4].value) {
                             // Solution 17: 5 matching horizontal. 
                             // [x][x][x][x][x]
 
                             _grid[y][x + 4] = instance;
-                            // cursor.score += 100;
+                            cursor.score += 100;
                             if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
                                 // Solution 18: 7 matching. 
                                 // [x][x][x][x][x]
@@ -264,11 +280,13 @@ export function clearSolutions(grid, cursor) {
 
                                 _grid[y + 1][x + 2] = instance;
                                 _grid[y + 2][x + 2] = instance;
-                                // cursor.score += 200;
+                                cursor.score += 200;
+                                soundEffect.playSoundEffect();
                                 
                                 return _grid;
                             } else {
                                 // return value for solution 17. 
+                                soundEffect.playSoundEffect();
                                 return _grid;
                             }
                         } else if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
@@ -279,7 +297,8 @@ export function clearSolutions(grid, cursor) {
 
                             _grid[y + 1][x + 1] = instance;
                             _grid[y + 2][x + 1] = instance;
-                            // cursor.score += 200;
+                            cursor.score += 200;
+                            soundEffect.playSoundEffect();
                             
                             return _grid;
                         } else if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
@@ -290,11 +309,13 @@ export function clearSolutions(grid, cursor) {
 
                             _grid[y + 1][x + 2] = instance;
                             _grid[y + 2][x + 2] = instance;
-                            // cursor.score += 200;
+                            cursor.score += 200;
+                            soundEffect.playSoundEffect();
                             
                             return _grid;
                         } else {
                             // return for solution 16. 
+                            soundEffect.playSoundEffect();
                             return _grid;
                         }
                     } else if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
@@ -305,7 +326,8 @@ export function clearSolutions(grid, cursor) {
 
                         _grid[y + 1][x + 1] = instance;
                         _grid[y + 2][x + 1] = instance;
-                        // cursor.score += 200;
+                        cursor.score += 200;
+                        soundEffect.playSoundEffect();
                         
                         return _grid;
                     } else if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
@@ -316,11 +338,13 @@ export function clearSolutions(grid, cursor) {
 
                         _grid[y + 1][x + 2] = instance;
                         _grid[y + 2][x + 2] = instance;
-                        // cursor.score += 200;
+                        cursor.score += 200;
+                        soundEffect.playSoundEffect();
                         
                         return _grid;
                     } else {
                         // return for solution 15. 
+                        soundEffect.playSoundEffect();
                         return _grid;
                     }
                 }  

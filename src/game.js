@@ -1,4 +1,3 @@
-import Cursor from './cursor';
 import Board from './board';
 import Audio from './audio';
 
@@ -6,9 +5,8 @@ class Game {
     constructor(ctx) {
         this.ctx = ctx;
         this.board = new Board();
-        this.cursor = new Cursor();
+        this.cursor = this.board.cursor;
         this.music = new Audio(document.getElementById("music"));
-        this.soundEffect = new Audio(document.getElementById("sound-effect"));
         this.BLOCKS = {
             "R": document.getElementById("red-block"),
             "Y": document.getElementById("yellow-block"),
@@ -21,6 +19,7 @@ class Game {
         this.gamePace = 300;
         this.hasStarted = false;
         this.gameOver = false;
+        this.musicPlaying = false;
     }
 
     updateScore() {

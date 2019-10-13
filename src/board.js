@@ -3,11 +3,15 @@ import instance from './singleton';
 import { clearSolutionsBeforeStart,
     clearSolutionsFromNewRow,
     clearSolutions } from './solutions';
+import Cursor from './cursor';
+import Audio from './audio';
 
 class Board {
     constructor() {
         this.grid = this.createGrid();
+        this.cursor = new Cursor();
         this.gameOver = false;
+        this.soundEffect = new Audio(document.getElementById("sound-effect"));
     }
 
     createGrid() {
@@ -36,7 +40,7 @@ class Board {
         nextRow = clearSolutionsFromNewRow(nextRow, this.grid);
         this.checkGameOver(this.grid.shift());
         this.grid.push(nextRow);
-        this.grid = clearSolutions(this.grid);
+        this.grid = clearSolutions(this.grid, this.cursor, this.soundEffect);
     }
 
     swap(y, x) {
@@ -57,7 +61,7 @@ class Board {
                 }
             });
         });
-        let _grid = clearSolutions(this.grid);
+        let _grid = clearSolutions(this.grid, this.cursor, this.soundEffect);
         if (this.grid !== _grid) {
             this.grid = _grid;
         }
