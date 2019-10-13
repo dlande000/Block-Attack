@@ -17,7 +17,6 @@ class Game {
             "D": document.getElementById("dark-blue-block"),
             "P": document.getElementById("purple-block")
         };
-        // this.increaseInterval = 1000;
         this.yIncrease = 0;
         this.gamePace = 300;
         this.hasStarted = false;

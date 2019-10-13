@@ -51,9 +51,9 @@ class Board {
     fall() {
         this.grid.forEach((row, y) => {
             row.forEach((block, x) => {
-                if (y < 11 && !this.grid[y + 1][x].value && block.value) {
-                    this.grid[y + 1][x] = block;
-                    this.grid[y][x] = instance;
+                for (let i = 0; y < 11 && this.grid[y + i][x].value && !this.grid[y + i + 1][x].value ; i++) {
+                    this.grid[y + i + 1][x] = block;
+                    this.grid[y + i][x] = instance;
                 }
             });
         });

@@ -44,8 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // setInterval(game.increaseY, (game.increaseInterval/50));
-
     const update = () => {
         if (!game.hasStarted) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);

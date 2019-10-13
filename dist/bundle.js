@@ -212,9 +212,9 @@ class Board {
     fall() {
         this.grid.forEach((row, y) => {
             row.forEach((block, x) => {
-                if (y < 11 && !this.grid[y + 1][x].value && block.value) {
-                    this.grid[y + 1][x] = block;
-                    this.grid[y][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                for (let i = 0; y < 11 && this.grid[y + i][x].value && !this.grid[y + i + 1][x].value ; i++) {
+                    this.grid[y + i + 1][x] = block;
+                    this.grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
                 }
             });
         });
@@ -327,8 +327,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // setInterval(game.increaseY, (game.increaseInterval/50));
-
     const update = () => {
         if (!game.hasStarted) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -410,7 +408,6 @@ class Game {
             "D": document.getElementById("dark-blue-block"),
             "P": document.getElementById("purple-block")
         };
-        // this.increaseInterval = 1000;
         this.yIncrease = 0;
         this.gamePace = 300;
         this.hasStarted = false;
