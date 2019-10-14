@@ -72,6 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
             game.increaseY();
             game.updateScore();
             game.checkGameOver();
+            setTimeout(() => {
+                game.board.fall();
+            }, 1000);
         } else if (game.hasStarted && game.gameOver) {
             game.musicPlaying = false;
             game.music.stopMusic();

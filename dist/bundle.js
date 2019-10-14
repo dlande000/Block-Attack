@@ -182,7 +182,7 @@ class Board {
             grid.push(new Array(6).fill(_singleton__WEBPACK_IMPORTED_MODULE_1__["default"]));
         }
 
-        for (let row = 12; row > 6; row--) {
+        for (let row = 12; row > 4; row--) {
             for (let col = 0; col < 6; col++) {
                 if (col !== 3) {
                     grid[row][col] = new _block__WEBPACK_IMPORTED_MODULE_0__["default"]();
@@ -222,24 +222,18 @@ class Board {
     fall() {
         this.grid.forEach((row, y) => {
             row.forEach((block, x) => {
-                // for (let i = 0; y < 10 && this.grid[y + i][x].value && !this.grid[y + i + 1][x].value ; i++) {
-                //     this.grid[y + i][x] = instance;
-                //     this.grid[y + i + 1][x] = block;
-                // }
-                if (y < 10 && this.grid[y][x].value && !this.grid[y + 1][x].value) {
-                    this.grid[y + 1][x] = block;
-                    this.grid[y][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
-                    this.fall();
+                if (y < 11 && this.grid[y][x].value && !this.grid[y + 1][x].value) {
+                    for (let i = 0; !this.grid[y + i + 1][x].value; i++) {
+                        this.grid[y + i + 1][x] = block;
+                        this.grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                    }
                 }
             });
         });
 
         let _grid = Object(_solutions__WEBPACK_IMPORTED_MODULE_2__["clearSolutions"])(this.grid, this.cursor, this.soundEffect, this.soundEffectPlaying);
 
-        if (this.grid !== _grid) {
-            this.grid = _grid;
-            this.fall();
-        }  
+        this.grid = _grid;
     }
 
     checkGameOver(row) {
@@ -371,6 +365,9 @@ document.addEventListener('DOMContentLoaded', () => {
             game.increaseY();
             game.updateScore();
             game.checkGameOver();
+            setTimeout(() => {
+                game.board.fall();
+            }, 1000);
         } else if (game.hasStarted && game.gameOver) {
             game.musicPlaying = false;
             game.music.stopMusic();
@@ -419,7 +416,7 @@ class Game {
         this.ctx = ctx;
         this.musicPlaying = false;
         this.yIncrease = 0;
-        this.gamePace = 300;
+        this.gamePace = 320;
         this.hasStarted = false;
         this.gameOver = false;
         this.board = new _board__WEBPACK_IMPORTED_MODULE_0__["default"](this.musicPlaying);
@@ -484,7 +481,7 @@ class Game {
 
     increaseY() {
         this.yIncrease += (1/this.gamePace);
-        this.gamePace -= (1/70);
+        this.gamePace -= (1/60);
 
         if (this.yIncrease >= 1) {
             this.board.createNextRow();
@@ -603,9 +600,9 @@ function clearSolutions(grid, cursor, soundEffect, sfPlaying) {
                 // solutions vertically, then horizontally. 
 
                 if (y < 10 && checkingValue === _grid[y + 1][x].value && checkingValue === _grid[y + 2][x].value) {
-                    clearVerticalSolutions(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
+                    return clearVerticalSolutions(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
                 } else if (x < 4 && checkingValue === _grid[y][x + 1].value && checkingValue === _grid[y][x + 2].value) {
-                    clearHorizontalSolutions(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
+                    return clearHorizontalSolutions(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
                 }  
             }
         });
@@ -626,7 +623,7 @@ const clearVerticalSolutions = (checkingValue, y, x, _grid, cursor, soundEffect,
     cursor.score += 300;
 
     if (y < 9 && checkingValue === _grid[y + 3][x].value) {
-        clearVerticalSolutionsFourDown(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
+        return clearVerticalSolutionsFourDown(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
     } else if (x < 4 && checkingValue === _grid[y][x + 1].value && checkingValue === _grid[y][x + 2].value) {
         // Solution 2: 5 matching blocks.  
         // [x][x][x]
@@ -705,7 +702,7 @@ const clearVerticalSolutionsFourDown = (checkingValue, y, x, _grid, cursor, soun
     cursor.score += 100;
     
     if (y < 8 && checkingValue === _grid[y + 4][x].value) {
-        clearVerticalSolutionsFiveDown(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
+        return clearVerticalSolutionsFiveDown(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
     } else if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
         // Solution 8: 6 matching blocks. 
         // [x]
@@ -821,7 +818,7 @@ const clearHorizontalSolutions = (checkingValue, y, x, _grid, cursor, soundEffec
     cursor.score += 300;
 
     if (x < 3 && checkingValue === _grid[y][x + 3].value) {
-        clearHorizontalSolutionsFourAcross(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
+        return clearHorizontalSolutionsFourAcross(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
     } else if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
         // Solution 16: 5 matching blocks. 
         // [x][x][x]
@@ -861,7 +858,7 @@ const clearHorizontalSolutionsFourAcross = (checkingValue, y, x, _grid, cursor, 
     cursor.score += 100;
 
     if (x < 2 && checkingValue === _grid[y][x + 4].value) {
-        clearHorizontalSolutionsFiveAcross(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
+        return clearHorizontalSolutionsFiveAcross(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
     } else if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
         // Solution 19: 6 matching. 
         // [x][x][x][x]

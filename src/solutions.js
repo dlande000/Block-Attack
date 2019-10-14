@@ -58,9 +58,9 @@ export function clearSolutions(grid, cursor, soundEffect, sfPlaying) {
                 // solutions vertically, then horizontally. 
 
                 if (y < 10 && checkingValue === _grid[y + 1][x].value && checkingValue === _grid[y + 2][x].value) {
-                    clearVerticalSolutions(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
+                    return clearVerticalSolutions(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
                 } else if (x < 4 && checkingValue === _grid[y][x + 1].value && checkingValue === _grid[y][x + 2].value) {
-                    clearHorizontalSolutions(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
+                    return clearHorizontalSolutions(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
                 }  
             }
         });
@@ -81,7 +81,7 @@ const clearVerticalSolutions = (checkingValue, y, x, _grid, cursor, soundEffect,
     cursor.score += 300;
 
     if (y < 9 && checkingValue === _grid[y + 3][x].value) {
-        clearVerticalSolutionsFourDown(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
+        return clearVerticalSolutionsFourDown(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
     } else if (x < 4 && checkingValue === _grid[y][x + 1].value && checkingValue === _grid[y][x + 2].value) {
         // Solution 2: 5 matching blocks.  
         // [x][x][x]
@@ -160,7 +160,7 @@ const clearVerticalSolutionsFourDown = (checkingValue, y, x, _grid, cursor, soun
     cursor.score += 100;
     
     if (y < 8 && checkingValue === _grid[y + 4][x].value) {
-        clearVerticalSolutionsFiveDown(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
+        return clearVerticalSolutionsFiveDown(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
     } else if (x < 4 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 1][x + 2].value) {
         // Solution 8: 6 matching blocks. 
         // [x]
@@ -276,7 +276,7 @@ const clearHorizontalSolutions = (checkingValue, y, x, _grid, cursor, soundEffec
     cursor.score += 300;
 
     if (x < 3 && checkingValue === _grid[y][x + 3].value) {
-        clearHorizontalSolutionsFourAcross(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
+        return clearHorizontalSolutionsFourAcross(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
     } else if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
         // Solution 16: 5 matching blocks. 
         // [x][x][x]
@@ -316,7 +316,7 @@ const clearHorizontalSolutionsFourAcross = (checkingValue, y, x, _grid, cursor, 
     cursor.score += 100;
 
     if (x < 2 && checkingValue === _grid[y][x + 4].value) {
-        clearHorizontalSolutionsFiveAcross(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
+        return clearHorizontalSolutionsFiveAcross(checkingValue, y, x, _grid, cursor, soundEffect, sfPlaying);
     } else if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
         // Solution 19: 6 matching. 
         // [x][x][x][x]

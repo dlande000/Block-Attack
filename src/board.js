@@ -22,7 +22,7 @@ class Board {
             grid.push(new Array(6).fill(instance));
         }
 
-        for (let row = 12; row > 6; row--) {
+        for (let row = 12; row > 4; row--) {
             for (let col = 0; col < 6; col++) {
                 if (col !== 3) {
                     grid[row][col] = new Block();
@@ -62,24 +62,18 @@ class Board {
     fall() {
         this.grid.forEach((row, y) => {
             row.forEach((block, x) => {
-                // for (let i = 0; y < 10 && this.grid[y + i][x].value && !this.grid[y + i + 1][x].value ; i++) {
-                //     this.grid[y + i][x] = instance;
-                //     this.grid[y + i + 1][x] = block;
-                // }
-                if (y < 10 && this.grid[y][x].value && !this.grid[y + 1][x].value) {
-                    this.grid[y + 1][x] = block;
-                    this.grid[y][x] = instance;
-                    this.fall();
+                if (y < 11 && this.grid[y][x].value && !this.grid[y + 1][x].value) {
+                    for (let i = 0; !this.grid[y + i + 1][x].value; i++) {
+                        this.grid[y + i + 1][x] = block;
+                        this.grid[y + i][x] = instance;
+                    }
                 }
             });
         });
 
         let _grid = clearSolutions(this.grid, this.cursor, this.soundEffect, this.soundEffectPlaying);
 
-        if (this.grid !== _grid) {
-            this.grid = _grid;
-            this.fall();
-        }  
+        this.grid = _grid;
     }
 
     checkGameOver(row) {

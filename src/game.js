@@ -6,7 +6,7 @@ class Game {
         this.ctx = ctx;
         this.musicPlaying = false;
         this.yIncrease = 0;
-        this.gamePace = 300;
+        this.gamePace = 320;
         this.hasStarted = false;
         this.gameOver = false;
         this.board = new Board(this.musicPlaying);
@@ -71,7 +71,7 @@ class Game {
 
     increaseY() {
         this.yIncrease += (1/this.gamePace);
-        this.gamePace -= (1/70);
+        this.gamePace -= (1/60);
 
         if (this.yIncrease >= 1) {
             this.board.createNextRow();
