@@ -1,6 +1,6 @@
 import Game from './game';
-import Board from './board';
 
+// To run in development: 
 // webpack --watch --mode=development
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fillText("to play", 0.3, 9);
             ctx.fillText("again!", 0.3, 10);
         }
+        
         requestAnimationFrame(update);
     };
 

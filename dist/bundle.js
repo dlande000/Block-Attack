@@ -177,9 +177,11 @@ class Board {
 
     createGrid() {
         let grid = [];
+
         for (let height = 0; height < 13; height++) {
             grid.push(new Array(6).fill(_singleton__WEBPACK_IMPORTED_MODULE_1__["default"]));
         }
+
         for (let row = 12; row > 6; row--) {
             for (let col = 0; col < 6; col++) {
                 if (col !== 3) {
@@ -187,21 +189,25 @@ class Board {
                 }
             }
         }
+
         for (let x = 10; x < 13; x++) {
             grid[x][3] = new _block__WEBPACK_IMPORTED_MODULE_0__["default"]();
         }
+
         return Object(_solutions__WEBPACK_IMPORTED_MODULE_2__["clearSolutionsBeforeStart"])(grid);
     }
 
     createNextRow() {
         let nextRow = [];
+
         for (let i = 0; i < 6; i++) {
             nextRow.push(new _block__WEBPACK_IMPORTED_MODULE_0__["default"]());
         }
+
         nextRow = Object(_solutions__WEBPACK_IMPORTED_MODULE_2__["clearSolutionsFromNewRow"])(nextRow, this.grid);
         this.checkGameOver(this.grid.shift());
         this.grid.push(nextRow);
-        this.grid = Object(_solutions__WEBPACK_IMPORTED_MODULE_2__["clearSolutions"])(this.grid, this.cursor, this.soundEffect, this.soundEffectPlaying);
+        this.fall();
     }
 
     swap(y, x) {
@@ -216,17 +222,24 @@ class Board {
     fall() {
         this.grid.forEach((row, y) => {
             row.forEach((block, x) => {
-                for (let i = 0; y < 11 && this.grid[y + i][x].value && !this.grid[y + i + 1][x].value ; i++) {
-                    this.grid[y + i + 1][x] = block;
-                    this.grid[y + i][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                // for (let i = 0; y < 10 && this.grid[y + i][x].value && !this.grid[y + i + 1][x].value ; i++) {
+                //     this.grid[y + i][x] = instance;
+                //     this.grid[y + i + 1][x] = block;
+                // }
+                if (y < 10 && this.grid[y][x].value && !this.grid[y + 1][x].value) {
+                    this.grid[y + 1][x] = block;
+                    this.grid[y][x] = _singleton__WEBPACK_IMPORTED_MODULE_1__["default"];
+                    this.fall();
                 }
             });
         });
+
         let _grid = Object(_solutions__WEBPACK_IMPORTED_MODULE_2__["clearSolutions"])(this.grid, this.cursor, this.soundEffect, this.soundEffectPlaying);
+
         if (this.grid !== _grid) {
             this.grid = _grid;
-        }
-        this.fall();
+            this.fall();
+        }  
     }
 
     checkGameOver(row) {
@@ -284,10 +297,9 @@ class Cursor {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _game__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game */ "./src/game.js");
-/* harmony import */ var _board__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./board */ "./src/board.js");
 
 
-
+// To run in development: 
 // webpack --watch --mode=development
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -379,6 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fillText("to play", 0.3, 9);
             ctx.fillText("again!", 0.3, 10);
         }
+        
         requestAnimationFrame(update);
     };
 
@@ -433,7 +446,7 @@ class Game {
             if (Math.round(Math.random() * 5) > 0) {
                 this.ctx.drawImage(this.BLOCKS[block], 65, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
             } else {
-                this.ctx.drawImage(this.BLOCKS[block], 66, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
+                this.ctx.drawImage(this.BLOCKS[block], 65.7, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
             }
         } else if (y === 0) {
             if (Math.round(Math.random() * 3) > 0) {
@@ -447,9 +460,11 @@ class Game {
     drawCursor(y, x) {
         const cursorImg = document.getElementById("cursor");
         let yIncreaseCursor = this.yIncrease;
+
         if (y === 0) {
             yIncreaseCursor = 0;
         }
+
         this.ctx.drawImage(cursorImg, 1, 1, 36, 20, x, y - yIncreaseCursor, 2, 1);
     }
 
@@ -470,6 +485,7 @@ class Game {
     increaseY() {
         this.yIncrease += (1/this.gamePace);
         this.gamePace -= (1/70);
+
         if (this.yIncrease >= 1) {
             this.board.createNextRow();
             if (this.cursor.y !== 0) {

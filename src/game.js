@@ -33,7 +33,7 @@ class Game {
             if (Math.round(Math.random() * 5) > 0) {
                 this.ctx.drawImage(this.BLOCKS[block], 65, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
             } else {
-                this.ctx.drawImage(this.BLOCKS[block], 66, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
+                this.ctx.drawImage(this.BLOCKS[block], 65.7, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
             }
         } else if (y === 0) {
             if (Math.round(Math.random() * 3) > 0) {
@@ -47,9 +47,11 @@ class Game {
     drawCursor(y, x) {
         const cursorImg = document.getElementById("cursor");
         let yIncreaseCursor = this.yIncrease;
+
         if (y === 0) {
             yIncreaseCursor = 0;
         }
+
         this.ctx.drawImage(cursorImg, 1, 1, 36, 20, x, y - yIncreaseCursor, 2, 1);
     }
 
@@ -70,6 +72,7 @@ class Game {
     increaseY() {
         this.yIncrease += (1/this.gamePace);
         this.gamePace -= (1/70);
+
         if (this.yIncrease >= 1) {
             this.board.createNextRow();
             if (this.cursor.y !== 0) {

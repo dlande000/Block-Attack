@@ -17,9 +17,11 @@ class Board {
 
     createGrid() {
         let grid = [];
+
         for (let height = 0; height < 13; height++) {
             grid.push(new Array(6).fill(instance));
         }
+
         for (let row = 12; row > 6; row--) {
             for (let col = 0; col < 6; col++) {
                 if (col !== 3) {
@@ -27,21 +29,25 @@ class Board {
                 }
             }
         }
+
         for (let x = 10; x < 13; x++) {
             grid[x][3] = new Block();
         }
+
         return clearSolutionsBeforeStart(grid);
     }
 
     createNextRow() {
         let nextRow = [];
+
         for (let i = 0; i < 6; i++) {
             nextRow.push(new Block());
         }
+
         nextRow = clearSolutionsFromNewRow(nextRow, this.grid);
         this.checkGameOver(this.grid.shift());
         this.grid.push(nextRow);
-        this.grid = clearSolutions(this.grid, this.cursor, this.soundEffect, this.soundEffectPlaying);
+        this.fall();
     }
 
     swap(y, x) {
@@ -56,17 +62,24 @@ class Board {
     fall() {
         this.grid.forEach((row, y) => {
             row.forEach((block, x) => {
-                for (let i = 0; y < 11 && this.grid[y + i][x].value && !this.grid[y + i + 1][x].value ; i++) {
-                    this.grid[y + i + 1][x] = block;
-                    this.grid[y + i][x] = instance;
+                // for (let i = 0; y < 10 && this.grid[y + i][x].value && !this.grid[y + i + 1][x].value ; i++) {
+                //     this.grid[y + i][x] = instance;
+                //     this.grid[y + i + 1][x] = block;
+                // }
+                if (y < 10 && this.grid[y][x].value && !this.grid[y + 1][x].value) {
+                    this.grid[y + 1][x] = block;
+                    this.grid[y][x] = instance;
+                    this.fall();
                 }
             });
         });
+
         let _grid = clearSolutions(this.grid, this.cursor, this.soundEffect, this.soundEffectPlaying);
+
         if (this.grid !== _grid) {
             this.grid = _grid;
-        }
-        this.fall();
+            this.fall();
+        }  
     }
 
     checkGameOver(row) {
