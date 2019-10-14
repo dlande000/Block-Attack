@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (game.hasStarted && !game.gameOver) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             game.draw(game.board.grid, game.cursor);
-            game.increaseY();
+            if (game.cursor.score > 0) game.increaseY();
             game.updateScore();
             game.checkGameOver();
             setTimeout(() => {
