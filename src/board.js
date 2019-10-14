@@ -7,11 +7,12 @@ import Cursor from './cursor';
 import Audio from './audio';
 
 class Board {
-    constructor() {
+    constructor(musicBoolean) {
         this.grid = this.createGrid();
         this.cursor = new Cursor();
         this.gameOver = false;
         this.soundEffect = new Audio(document.getElementById("sound-effect"));
+        this.soundEffectPlaying = musicBoolean;
     }
 
     createGrid() {
@@ -40,7 +41,7 @@ class Board {
         nextRow = clearSolutionsFromNewRow(nextRow, this.grid);
         this.checkGameOver(this.grid.shift());
         this.grid.push(nextRow);
-        this.grid = clearSolutions(this.grid, this.cursor, this.soundEffect);
+        this.grid = clearSolutions(this.grid, this.cursor, this.soundEffect, this.soundEffectPlaying);
     }
 
     swap(y, x) {
@@ -61,7 +62,7 @@ class Board {
                 }
             });
         });
-        let _grid = clearSolutions(this.grid, this.cursor, this.soundEffect);
+        let _grid = clearSolutions(this.grid, this.cursor, this.soundEffect, this.soundEffectPlaying);
         if (this.grid !== _grid) {
             this.grid = _grid;
         }

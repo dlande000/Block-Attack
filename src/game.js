@@ -4,7 +4,12 @@ import Audio from './audio';
 class Game {
     constructor(ctx) {
         this.ctx = ctx;
-        this.board = new Board();
+        this.musicPlaying = false;
+        this.yIncrease = 0;
+        this.gamePace = 300;
+        this.hasStarted = false;
+        this.gameOver = false;
+        this.board = new Board(this.musicPlaying);
         this.cursor = this.board.cursor;
         this.music = new Audio(document.getElementById("music"));
         this.BLOCKS = {
@@ -15,11 +20,6 @@ class Game {
             "D": document.getElementById("dark-blue-block"),
             "P": document.getElementById("purple-block")
         };
-        this.yIncrease = 0;
-        this.gamePace = 300;
-        this.hasStarted = false;
-        this.gameOver = false;
-        this.musicPlaying = false;
     }
 
     updateScore() {
@@ -63,7 +63,7 @@ class Game {
 
     increaseY() {
         this.yIncrease += (1/this.gamePace);
-        this.gamePace -= (1/50);
+        this.gamePace -= (1/70);
         if (this.yIncrease >= 1) {
             this.board.createNextRow();
             if (this.cursor.y !== 0) {

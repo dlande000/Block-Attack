@@ -14,10 +14,10 @@ class Audio {
 
     playSoundEffect() {
         this.source.play();
-                setTimeout(() => {
-                    this.source.pause();
-                    this.source.currentTime = 0;
-                }, 450);
+        setTimeout(() => {
+            this.source.pause();
+            this.source.currentTime = 0;
+        }, 450);
     }
 }
 

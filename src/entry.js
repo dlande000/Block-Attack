@@ -25,11 +25,15 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (event.keyCode === 32) {
             if (!game.hasStarted) {
                 game.hasStarted = true;
+                game.board.soundEffectPlaying = true;
                 game.musicPlaying = true;
                 game.music.playMusic();
             } else if (game.hasStarted && game.gameOver) {
                 game = new Game(ctx);
                 game.hasStarted = true;
+                game.musicPlaying = true;
+                game.board.soundEffectPlaying = true;
+                game.music.playMusic();
             } else {
                 game.board.swap(game.cursor.y, game.cursor.x);
             }
@@ -37,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             game.board.createNextRow();
         } else if (event.keyCode === 83) {
             game.musicPlaying = !game.musicPlaying;
+            game.board.soundEffectPlaying = !game.board.soundEffectPlaying;
             if (game.musicPlaying) {
                 game.music.playMusic();
             } else {
@@ -68,8 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
             game.updateScore();
             game.checkGameOver();
         } else if (game.hasStarted && game.gameOver) {
-            // game.musicPlaying = false;
-            // game.audio.stopMusic();
+            game.musicPlaying = false;
+            game.music.stopMusic();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#2c1960";
