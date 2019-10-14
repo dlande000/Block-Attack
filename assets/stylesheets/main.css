@@ -37,7 +37,7 @@ body {
 }
 
 canvas {
-    height: 70vh;
+    height: 500px;
     border: 8px solid black;
     border-radius: 2px;
     font-family: 'Press Start 2P', cursive;
@@ -45,13 +45,14 @@ canvas {
 
 html {
     background-image: url('../images/skyline.png');
-    background-repeat: no-repeat;
-    background-position: left center;
-    -webkit-background-size: cover;
+    /* background-repeat: no-repeat;
+    background-position: left center; */
+    /* -webkit-background-size: cover;
     -moz-background-size: 100% 100%;
     -o-background-size: cover;
-    background-size: cover;
+    background-size: cover; */
     height: 100%;
+    width: 100%;
 }
 
 .box {
