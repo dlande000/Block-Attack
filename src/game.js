@@ -30,9 +30,15 @@ class Game {
         if (y === 12) {
             this.ctx.drawImage(this.BLOCKS[block], 15.5, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
         } else if (y === 1) {
-            this.ctx.drawImage(this.BLOCKS[block], 65, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
+            if (Math.round(Math.random() * 5) > 0) {
+                this.ctx.drawImage(this.BLOCKS[block], 65, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
+            } else {
+                this.ctx.drawImage(this.BLOCKS[block], 66, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
+            }
         } else if (y === 0) {
-            this.ctx.drawImage(this.BLOCKS[block], 80.5, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
+            if (Math.round(Math.random() * 3) > 0) {
+                this.ctx.drawImage(this.BLOCKS[block], 80.5, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
+            }
         } else {
             this.ctx.drawImage(this.BLOCKS[block], 0.5, 0.5, 15, 15, x, y - this.yIncrease, 1, 1);
         }
