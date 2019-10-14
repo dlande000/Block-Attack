@@ -57,109 +57,10 @@ export function clearSolutions(grid, cursor, soundEffect, sfPlaying) {
                 // The below algorithm first checks for 
                 // solutions vertically, then horizontally. 
 
-                // Vertical-starting solutions. 
                 if (y < 10 && checkingValue === _grid[y + 1][x].value && checkingValue === _grid[y + 2][x].value) {
                     clearVerticalSolutions(checkingValue, y, x, _grid);
-                }
-
-                // Horizontal-starting solutions. 
-                else if (x < 4 && checkingValue === _grid[y][x + 1].value && checkingValue === _grid[y][x + 2].value) {
-                    // Solution 15: 3 matching horizontal. 
-                    // [x][x][x]
-
-                    for (let i = 0; i <= 2; i++) {
-                        _grid[y][x + i] = instance;   
-                    }
-                    cursor.score += 300;
-
-                    if (x < 3 && checkingValue === _grid[y][x + 3].value) {
-                        // Solution 16: 4 matching horizontal. 
-                        // [x][x][x][x]
-
-                        _grid[y][x + 3] = instance;
-                        cursor.score += 100;
-
-                        if (x < 2 && checkingValue === _grid[y][x + 4].value) {
-                            // Solution 17: 5 matching horizontal. 
-                            // [x][x][x][x][x]
-
-                            _grid[y][x + 4] = instance;
-                            cursor.score += 100;
-                            if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
-                                // Solution 18: 7 matching. 
-                                // [x][x][x][x][x]
-                                //       [x]
-                                //       [x]
-
-                                _grid[y + 1][x + 2] = instance;
-                                _grid[y + 2][x + 2] = instance;
-                                cursor.score += 200;
-                                if (sfPlaying) soundEffect.playSoundEffect();
-                                
-                                return _grid;
-                            } else {
-                                // return value for solution 17. 
-                                if (sfPlaying) soundEffect.playSoundEffect();
-                                return _grid;
-                            }
-                        } else if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
-                            // Solution 19: 6 matching. 
-                            // [x][x][x][x]
-                            //    [x]
-                            //    [x]
-
-                            _grid[y + 1][x + 1] = instance;
-                            _grid[y + 2][x + 1] = instance;
-                            cursor.score += 200;
-                            if (sfPlaying) soundEffect.playSoundEffect();
-                            
-                            return _grid;
-                        } else if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
-                            // Solution 20: 6 matching. 
-                            // [x][x][x][x]
-                            //       [x]
-                            //       [x]
-
-                            _grid[y + 1][x + 2] = instance;
-                            _grid[y + 2][x + 2] = instance;
-                            cursor.score += 200;
-                            if (sfPlaying) soundEffect.playSoundEffect();
-                            
-                            return _grid;
-                        } else {
-                            // return for solution 16. 
-                            if (sfPlaying) soundEffect.playSoundEffect();
-                            return _grid;
-                        }
-                    } else if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
-                        // Solution 16: 5 matching blocks. 
-                        // [x][x][x]
-                        //    [x]
-                        //    [x]
-
-                        _grid[y + 1][x + 1] = instance;
-                        _grid[y + 2][x + 1] = instance;
-                        cursor.score += 200;
-                        if (sfPlaying) soundEffect.playSoundEffect();
-                        
-                        return _grid;
-                    } else if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
-                        // Solution 17: 5 matching blocks. 
-                        //       [x]
-                        //       [x]
-                        // [x][x][x]
-
-                        _grid[y + 1][x + 2] = instance;
-                        _grid[y + 2][x + 2] = instance;
-                        cursor.score += 200;
-                        if (sfPlaying) soundEffect.playSoundEffect();
-                        
-                        return _grid;
-                    } else {
-                        // return for solution 15. 
-                        if (sfPlaying) soundEffect.playSoundEffect();
-                        return _grid;
-                    }
+                } else if (x < 4 && checkingValue === _grid[y][x + 1].value && checkingValue === _grid[y][x + 2].value) {
+                    clearHorizontalSolutions(checkingValue, y, x, _grid);
                 }  
             }
         });
@@ -360,6 +261,113 @@ const clearVerticalSolutionsFiveDown = (checkingValue, y, x, _grid) => {
         return _grid;
     } else {
         //return for solution 3. 
+        if (sfPlaying) soundEffect.playSoundEffect();
+        return _grid;
+    }
+};
+
+const clearHorizontalSolutions = (checkingValue, y, x, _grid) => {
+    // Solution 15: 3 matching horizontal. 
+    // [x][x][x]
+
+    for (let i = 0; i <= 2; i++) {
+        _grid[y][x + i] = instance;   
+    }
+    cursor.score += 300;
+
+    if (x < 3 && checkingValue === _grid[y][x + 3].value) {
+        clearHorizontalSolutionsFourAcross(checkingValue, y, x, _grid);
+    } else if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
+        // Solution 16: 5 matching blocks. 
+        // [x][x][x]
+        //    [x]
+        //    [x]
+
+        _grid[y + 1][x + 1] = instance;
+        _grid[y + 2][x + 1] = instance;
+        cursor.score += 200;
+        if (sfPlaying) soundEffect.playSoundEffect();
+        
+        return _grid;
+    } else if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
+        // Solution 17: 5 matching blocks. 
+        // [x][x][x]
+        //       [x]
+        //       [x]
+
+        _grid[y + 1][x + 2] = instance;
+        _grid[y + 2][x + 2] = instance;
+        cursor.score += 200;
+        if (sfPlaying) soundEffect.playSoundEffect();
+        
+        return _grid;
+    } else {
+        // return for solution 15. 
+        if (sfPlaying) soundEffect.playSoundEffect();
+        return _grid;
+    }
+};
+
+const clearHorizontalSolutionsFourAcross = (checkingValue, y, x, _grid) => {
+    // Solution 16: 4 matching horizontal. 
+    // [x][x][x][x]
+
+    _grid[y][x + 3] = instance;
+    cursor.score += 100;
+
+    if (x < 2 && checkingValue === _grid[y][x + 4].value) {
+        clearHorizontalSolutionsFiveAcross(checkingValue, y, x, _grid);
+    } else if (y < 10 && checkingValue === _grid[y + 1][x + 1].value && checkingValue === _grid[y + 2][x + 1].value) {
+        // Solution 19: 6 matching. 
+        // [x][x][x][x]
+        //    [x]
+        //    [x]
+
+        _grid[y + 1][x + 1] = instance;
+        _grid[y + 2][x + 1] = instance;
+        cursor.score += 200;
+        if (sfPlaying) soundEffect.playSoundEffect();
+        
+        return _grid;
+    } else if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
+        // Solution 20: 6 matching. 
+        // [x][x][x][x]
+        //       [x]
+        //       [x]
+
+        _grid[y + 1][x + 2] = instance;
+        _grid[y + 2][x + 2] = instance;
+        cursor.score += 200;
+        if (sfPlaying) soundEffect.playSoundEffect();
+        
+        return _grid;
+    } else {
+        // return for solution 16. 
+        if (sfPlaying) soundEffect.playSoundEffect();
+        return _grid;
+    }
+};
+
+const clearHorizontalSolutionsFiveAcross = (checkingValue, y, x, _grid) => {
+    // Solution 17: 5 matching horizontal. 
+    // [x][x][x][x][x]
+
+    _grid[y][x + 4] = instance;
+    cursor.score += 100;
+    if (y < 10 && checkingValue === _grid[y + 1][x + 2].value && checkingValue === _grid[y + 2][x + 2].value) {
+        // Solution 18: 7 matching. 
+        // [x][x][x][x][x]
+        //       [x]
+        //       [x]
+
+        _grid[y + 1][x + 2] = instance;
+        _grid[y + 2][x + 2] = instance;
+        cursor.score += 200;
+        if (sfPlaying) soundEffect.playSoundEffect();
+        
+        return _grid;
+    } else {
+        // return value for solution 17. 
         if (sfPlaying) soundEffect.playSoundEffect();
         return _grid;
     }
