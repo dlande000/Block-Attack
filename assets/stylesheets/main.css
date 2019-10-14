@@ -45,12 +45,12 @@ canvas {
 
 html {
     background-image: url('../images/skyline.png');
-    /* background-repeat: no-repeat;
-    background-position: left center; */
+    background-repeat: no-repeat;
+    /* background-position: left center; */
     /* -webkit-background-size: cover;
     -moz-background-size: 100% 100%;
-    -o-background-size: cover;
-    background-size: cover; */
+    -o-background-size: cover; */
+    background-size: cover;
     height: 100%;
     width: 100%;
 }

@@ -22,7 +22,7 @@ class Board {
             grid.push(new Array(6).fill(instance));
         }
 
-        for (let row = 12; row > 4; row--) {
+        for (let row = 12; row > 5; row--) {
             for (let col = 0; col < 6; col++) {
                 if (col !== 3) {
                     grid[row][col] = new Block();

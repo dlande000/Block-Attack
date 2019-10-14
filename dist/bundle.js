@@ -182,7 +182,7 @@ class Board {
             grid.push(new Array(6).fill(_singleton__WEBPACK_IMPORTED_MODULE_1__["default"]));
         }
 
-        for (let row = 12; row > 4; row--) {
+        for (let row = 12; row > 5; row--) {
             for (let col = 0; col < 6; col++) {
                 if (col !== 3) {
                     grid[row][col] = new _block__WEBPACK_IMPORTED_MODULE_0__["default"]();
