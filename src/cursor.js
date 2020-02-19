@@ -8,9 +8,11 @@ class Cursor {
     move(y, x) {
         let dy = this.y + y;
         let dx = this.x + x;
+
         if (dx <= 4 && dx >= 0) {
             this.x = dx;
         }
+        
         if (dy < 12 && dy >= 0) {
             this.y = dy;
         }

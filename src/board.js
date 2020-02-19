@@ -72,7 +72,6 @@ class Board {
         });
 
         let _grid = clearSolutions(this.grid, this.cursor, this.soundEffect, this.soundEffectPlaying);
-
         this.grid = _grid;
     }
 

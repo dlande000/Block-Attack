@@ -5,8 +5,10 @@ export function clearSolutionsBeforeStart(grid) {
     // Remove any randomly-generated solutions from the board before game start.
     let _grid = grid;
     let checking = true;
+
     while (checking) {
         checking = false;
+
         _grid.forEach((row, y) => {
             row.forEach((block, x) => {
                 if (block.value) {
@@ -19,6 +21,7 @@ export function clearSolutionsBeforeStart(grid) {
             });
         });
     }
+
     return _grid;
 }
 
@@ -26,8 +29,10 @@ export function clearSolutionsFromNewRow(row, grid) {
     // Remove any randomly-generated solutions from a new row before adding to grid.
     let _row = row;
     let checking = true;
+
     while (checking) {
         checking = false;
+
         for (let i = 0; i < 6; i++) {
             if ((i < 4 && _row[i].value === _row[i + 1].value && _row[i].value === _row[i + 2].value) || 
                 (_row[i].value === grid[12][i].value)) {
@@ -36,12 +41,14 @@ export function clearSolutionsFromNewRow(row, grid) {
             } 
         }
     }
+
     return _row;
 }
 
 export function clearSolutions(grid, cursor, soundEffect, sfPlaying) {
     // Check for any solutions after a swap, a fall, or a clear.
     let _grid = grid;
+
     _grid.forEach((row, y) => {
         row.forEach((block, x) => {
             // Check if block has color value, if block is floating, and that the new row isn't checked for solutions.  
@@ -78,6 +85,7 @@ const clearVerticalSolutions = (checkingValue, y, x, _grid, cursor, soundEffect,
     for (let i = 0; i <= 2; i++) {
         _grid[y + i][x] = instance;   
     }
+
     cursor.score += 300;
 
     if (y < 9 && checkingValue === _grid[y + 3][x].value) {
@@ -91,6 +99,7 @@ const clearVerticalSolutions = (checkingValue, y, x, _grid, cursor, soundEffect,
         _grid[y][x + 1] = instance;
         _grid[y][x + 2] = instance;
         cursor.score += 300;
+
         if (sfPlaying) soundEffect.playSoundEffect();
         
         return _grid;
@@ -103,6 +112,7 @@ const clearVerticalSolutions = (checkingValue, y, x, _grid, cursor, soundEffect,
         _grid[y + 2][x + 1] = instance;
         _grid[y + 2][x + 2] = instance;
         cursor.score += 300;
+
         if (sfPlaying) soundEffect.playSoundEffect();
         
         return _grid;
@@ -115,6 +125,7 @@ const clearVerticalSolutions = (checkingValue, y, x, _grid, cursor, soundEffect,
         _grid[y + 2][x - 1] = instance;
         _grid[y + 2][x - 2] = instance;
         cursor.score += 300;
+
         if (sfPlaying) soundEffect.playSoundEffect();
         
         return _grid;
@@ -127,6 +138,7 @@ const clearVerticalSolutions = (checkingValue, y, x, _grid, cursor, soundEffect,
         _grid[y + 1][x + 1] = instance;
         _grid[y + 1][x + 2] = instance;
         cursor.score += 300;
+
         if (sfPlaying) soundEffect.playSoundEffect();
         
         return _grid;
@@ -139,6 +151,7 @@ const clearVerticalSolutions = (checkingValue, y, x, _grid, cursor, soundEffect,
         _grid[y + 1][x - 1] = instance;
         _grid[y + 1][x - 2] = instance;
         cursor.score += 300;
+
         if (sfPlaying) soundEffect.playSoundEffect();
         
         return _grid;
@@ -171,6 +184,7 @@ const clearVerticalSolutionsFourDown = (checkingValue, y, x, _grid, cursor, soun
         _grid[y + 1][x + 1] = instance;
         _grid[y + 1][x + 2] = instance;
         cursor.score += 300;
+
         if (sfPlaying) soundEffect.playSoundEffect();
         
         return _grid;
@@ -184,6 +198,7 @@ const clearVerticalSolutionsFourDown = (checkingValue, y, x, _grid, cursor, soun
         _grid[y + 2][x + 1] = instance;
         _grid[y + 2][x + 2] = instance;
         cursor.score += 300;
+
         if (sfPlaying) soundEffect.playSoundEffect();
         
         return _grid;
@@ -197,6 +212,7 @@ const clearVerticalSolutionsFourDown = (checkingValue, y, x, _grid, cursor, soun
         _grid[y + 1][x - 1] = instance;
         _grid[y + 1][x - 2] = instance;
         cursor.score += 300;
+
         if (sfPlaying) soundEffect.playSoundEffect();
         
         return _grid;
@@ -210,6 +226,7 @@ const clearVerticalSolutionsFourDown = (checkingValue, y, x, _grid, cursor, soun
         _grid[y + 2][x - 1] = instance;
         _grid[y + 2][x - 2] = instance;
         cursor.score += 300;
+
         if (sfPlaying) soundEffect.playSoundEffect();
         
         return _grid;
@@ -242,6 +259,7 @@ const clearVerticalSolutionsFiveDown = (checkingValue, y, x, _grid, cursor, soun
         _grid[y + 2][x - 1] = instance;
         _grid[y + 2][x - 2] = instance;
         cursor.score += 300;
+
         if (sfPlaying) soundEffect.playSoundEffect();
 
         return _grid;
@@ -256,6 +274,7 @@ const clearVerticalSolutionsFiveDown = (checkingValue, y, x, _grid, cursor, soun
         _grid[y + 2][x + 1] = instance;
         _grid[y + 2][x + 2] = instance;
         cursor.score += 300;
+
         if (sfPlaying) soundEffect.playSoundEffect();
         
         return _grid;
@@ -273,6 +292,7 @@ const clearHorizontalSolutions = (checkingValue, y, x, _grid, cursor, soundEffec
     for (let i = 0; i <= 2; i++) {
         _grid[y][x + i] = instance;   
     }
+
     cursor.score += 300;
 
     if (x < 3 && checkingValue === _grid[y][x + 3].value) {
@@ -286,6 +306,7 @@ const clearHorizontalSolutions = (checkingValue, y, x, _grid, cursor, soundEffec
         _grid[y + 1][x + 1] = instance;
         _grid[y + 2][x + 1] = instance;
         cursor.score += 300;
+
         if (sfPlaying) soundEffect.playSoundEffect();
         
         return _grid;
@@ -298,6 +319,7 @@ const clearHorizontalSolutions = (checkingValue, y, x, _grid, cursor, soundEffec
         _grid[y + 1][x + 2] = instance;
         _grid[y + 2][x + 2] = instance;
         cursor.score += 300;
+
         if (sfPlaying) soundEffect.playSoundEffect();
         
         return _grid;
@@ -326,6 +348,7 @@ const clearHorizontalSolutionsFourAcross = (checkingValue, y, x, _grid, cursor, 
         _grid[y + 1][x + 1] = instance;
         _grid[y + 2][x + 1] = instance;
         cursor.score += 300;
+
         if (sfPlaying) soundEffect.playSoundEffect();
         
         return _grid;
@@ -338,6 +361,7 @@ const clearHorizontalSolutionsFourAcross = (checkingValue, y, x, _grid, cursor, 
         _grid[y + 1][x + 2] = instance;
         _grid[y + 2][x + 2] = instance;
         cursor.score += 300;
+
         if (sfPlaying) soundEffect.playSoundEffect();
         
         return _grid;
@@ -363,6 +387,7 @@ const clearHorizontalSolutionsFiveAcross = (checkingValue, y, x, _grid, cursor, 
         _grid[y + 1][x + 2] = instance;
         _grid[y + 2][x + 2] = instance;
         cursor.score += 300;
+        
         if (sfPlaying) soundEffect.playSoundEffect();
         
         return _grid;

@@ -78,6 +78,7 @@ class Game {
             if (this.cursor.y !== 0) {
                 this.cursor.y--;
             }
+            
             this.yIncrease = 0;
         }
     }
