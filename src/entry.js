@@ -1,8 +1,5 @@
 import Game from './game';
 
-// To run in development: 
-// webpack --watch --mode=development
-
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
