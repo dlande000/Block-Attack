@@ -20,7 +20,7 @@
   "homepage": "https://github.com/dlande000/Block-Attack#readme",
   "dependencies": {
     "webpack": "^4.42.0",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.12"
   },
   "devDependencies": {}
 }
